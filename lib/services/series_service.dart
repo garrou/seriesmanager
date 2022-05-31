@@ -14,4 +14,19 @@ class SeriesService {
     final response = await client.get(Uri.parse('$endpoint/api/discover'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> searchSeries(String name) async {
+    final response = await client.get(Uri.parse('$endpoint/api/search/$name'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> getUserSeries() async {
+    final response = await client.get(Uri.parse('$endpoint/api/series'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> searchUserSeries(String name) async {
+    final response = await client.get(Uri.parse('$endpoint/api/series/$name'));
+    return HttpResponse(response);
+  }
 }

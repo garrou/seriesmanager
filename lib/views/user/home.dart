@@ -15,14 +15,10 @@ class _UserHomePageState extends State<UserHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        title: Text('Accueil', style: textStyle),
       ),
       drawer: const AppDrawer(),
-      body: ListView(children: <Widget>[
-        Text(
-          'Accueil',
-          style: titleTextStyle,
-        )
-      ]),
+      body: Container(),
     );
   }
 }

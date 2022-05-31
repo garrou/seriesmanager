@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/widgets/drawer.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -14,6 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        title: Text('Mon profil', style: textStyle),
       ),
       drawer: const AppDrawer(),
     );

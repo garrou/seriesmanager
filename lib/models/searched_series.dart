@@ -11,6 +11,6 @@ class SearchedSeries {
         images = json['images'];
 }
 
-List<SearchedSeries> createPreviewsSeries(List<dynamic> records) => records
+List<SearchedSeries> createSearchedSeries(List<dynamic> records) => records
     .map((json) => SearchedSeries.fromJson(json))
     .toList(growable: false);

@@ -17,6 +17,7 @@ class AppDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             child: CircleAvatar(
+              backgroundColor: Colors.black,
               backgroundImage: NetworkImage(
                 "https://pictures.betaseries.com/fonds/show/10051_1389097.jpg",
               ),
@@ -28,14 +29,14 @@ class AppDrawer extends StatelessWidget {
             onTap: () => push(context, const UserHomePage()),
           ),
           ListTile(
-            leading: const Icon(Icons.all_inbox_outlined),
-            title: const Text('Mes séries'),
-            onTap: () => push(context, const SeriesPage()),
-          ),
-          ListTile(
             leading: const Icon(Icons.search_outlined),
             title: const Text('Chercher des séries'),
             onTap: () => push(context, const SearchPage()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.all_inbox_outlined),
+            title: const Text('Mes séries'),
+            onTap: () => push(context, const SeriesPage()),
           ),
           ListTile(
             leading: const Icon(Icons.bar_chart_outlined),
