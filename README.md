@@ -1,0 +1,3 @@
+# seriesmanager
+
+WORK IN PROGRESS
