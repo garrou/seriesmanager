@@ -7,7 +7,7 @@ import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
-import 'package:seriesmanager/views/layouts/responsive_layout.dart';
+import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';

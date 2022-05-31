@@ -14,7 +14,16 @@ class _SeriesPageState extends State<SeriesPage> {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.black),
       drawer: const AppDrawer(),
-      body: ListView(children: []),
+      body: const Layout(),
     );
+  }
+}
+
+class Layout extends StatelessWidget {
+  const Layout({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

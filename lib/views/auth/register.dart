@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/layouts/responsive_layout.dart';
+import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';
 import 'package:seriesmanager/widgets/textfield.dart';

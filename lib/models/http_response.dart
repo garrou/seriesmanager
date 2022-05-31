@@ -5,7 +5,6 @@ class HttpResponse {
   late final dynamic _body;
 
   HttpResponse(Response response) {
-    print(response.body);
     _body = jsonDecode(response.body);
   }
 
@@ -13,5 +12,5 @@ class HttpResponse {
 
   String message() => _body['message'];
 
-  String content() => _body['data'];
+  dynamic content() => _body['data'];
 }
