@@ -11,7 +11,7 @@ class UserService {
   ]);
 
   Future<HttpResponse> getUser() async {
-    final Response response = await client.get(Uri.parse('$endpoint/api/user'));
+    final Response response = await client.get(Uri.parse('$endpoint/user'));
     return HttpResponse(response);
   }
 }

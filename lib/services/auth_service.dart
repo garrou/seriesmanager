@@ -8,7 +8,7 @@ import 'package:seriesmanager/utils/constants.dart';
 class AuthService {
   Future<HttpResponse> login(String email, String password) async {
     final Response response = await http.post(
-      Uri.parse('$endpoint/api/login'),
+      Uri.parse('$endpoint/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8'
       },
@@ -19,7 +19,7 @@ class AuthService {
 
   Future<HttpResponse> register(String email, String password) async {
     final Response response = await http.post(
-      Uri.parse('$endpoint/api/register'),
+      Uri.parse('$endpoint/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8'
       },

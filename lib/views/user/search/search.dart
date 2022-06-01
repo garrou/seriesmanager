@@ -7,6 +7,7 @@ import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/error.dart';
 import 'package:seriesmanager/views/user/search/search_details.dart';
+import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -57,16 +58,6 @@ class _LayoutState extends State<Layout> {
     } else {
       throw Exception();
     }
-  }
-
-  _LayoutState() {
-    _name.addListener(() {
-      if (_name.text.isEmpty) {
-        setState(() => name = '');
-      } else {
-        setState(() => name = _name.text);
-      }
-    });
   }
 
   @override
@@ -131,6 +122,12 @@ class _LayoutState extends State<Layout> {
               validator: fieldValidator,
               icon: Icons.search_outlined,
             ),
+            AppButton(
+              content: 'Chercher',
+              onPressed: () {
+                setState(() => name = _name.text);
+              },
+            )
           ],
         ),
       );

@@ -12,19 +12,19 @@ class SearchService {
 
   Future<HttpResponse> discoverSeries() async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/api/search/discover'));
+        await client.get(Uri.parse('$endpoint/search/discover'));
     return HttpResponse(response);
   }
 
   Future<HttpResponse> searchSeriesByName(String name) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/api/search/names/$name'));
+        await client.get(Uri.parse('$endpoint/search/names/$name'));
     return HttpResponse(response);
   }
 
   Future<HttpResponse> getDetailsById(int id) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/api/search/series/$id'));
+        await client.get(Uri.parse('$endpoint/search/series/$id'));
     return HttpResponse(response);
   }
 }

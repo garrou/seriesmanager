@@ -9,6 +9,8 @@ class UserPreviewSeries {
       : id = json['id'],
         title = json['title'],
         poster = json['poster'];
+
+  Map<String, dynamic> toJson() => {'id': id, 'title': title, 'poster': poster};
 }
 
 List<UserPreviewSeries> createUserPreviewSeries(List<dynamic>? records) =>

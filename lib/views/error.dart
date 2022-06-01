@@ -8,11 +8,14 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text("E R R O R", style: textStyle),
-          SvgPicture.asset('assets/error.svg'),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("E R R O R", style: textStyle),
+            SvgPicture.asset('assets/error.svg'),
+          ],
+        ),
       ),
     );
   }

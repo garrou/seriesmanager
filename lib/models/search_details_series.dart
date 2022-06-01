@@ -8,7 +8,8 @@ class SearchDetailsSeries {
   final String creation;
   final Map<String, dynamic> kinds;
   final String length;
-  final String status;
+  final bool ended;
+  final List<dynamic> platforms;
 
   SearchDetailsSeries(
       this.id,
@@ -20,7 +21,8 @@ class SearchDetailsSeries {
       this.creation,
       this.kinds,
       this.length,
-      this.status);
+      this.ended,
+      this.platforms);
 
   SearchDetailsSeries.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -32,7 +34,8 @@ class SearchDetailsSeries {
         creation = json['creation'],
         kinds = json['genres'],
         length = json['length'],
-        status = json['status'];
+        ended = json['status'] == "Ended",
+        platforms = json['platforms']['svods'] ?? List.empty();
 
   int totalMinutes() => int.parse(episodes) * int.parse(length);
 
