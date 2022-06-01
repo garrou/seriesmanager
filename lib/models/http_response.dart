@@ -5,7 +5,7 @@ class HttpResponse {
   late final dynamic _body;
 
   HttpResponse(Response response) {
-    _body = jsonDecode(response.body);
+    _body = jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   bool success() => _body['status'];

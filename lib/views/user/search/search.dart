@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/searched_series.dart';
-import 'package:seriesmanager/services/series_service.dart';
+import 'package:seriesmanager/models/search_preview_series.dart';
+import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/validator.dart';
+import 'package:seriesmanager/views/error.dart';
+import 'package:seriesmanager/views/user/search/search_details.dart';
 import 'package:seriesmanager/widgets/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -41,16 +44,16 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   final _keyForm = GlobalKey<FormState>();
   final _name = TextEditingController();
-  String name = "";
+  final SearchService _searchService = SearchService();
+  String name = '';
 
-  Future<List<SearchedSeries>> _loadSeries(String name) async {
-    final SeriesService _seriesService = SeriesService();
+  Future<List<SearchPreviewSeries>> _loadSeries(String name) async {
     final HttpResponse response = name.isEmpty
-        ? await _seriesService.discoverSeries()
-        : await _seriesService.searchSeries(name);
+        ? await _searchService.discoverSeries()
+        : await _searchService.searchSeriesByName(name);
 
     if (response.success()) {
-      return createSearchedSeries(response.content()["shows"]);
+      return createSearchPreviewSeries(response.content()["shows"]);
     } else {
       throw Exception();
     }
@@ -74,28 +77,35 @@ class _LayoutState extends State<Layout> {
           mobileLayout: _buildMobileLayout(),
           desktopLayout: _buildDesktopLayout(),
         ),
-        FutureBuilder<List<SearchedSeries>>(
-            future: _loadSeries(name),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                // TODO: app error
-              } else if (snapshot.hasData) {
-                return Expanded(
-                  child: GridView.count(
-                    crossAxisCount: MediaQuery.of(context).size.width < 400
-                        ? 1
-                        : MediaQuery.of(context).size.width < 600
-                            ? 2
-                            : 3,
-                    children: <Widget>[
-                      for (SearchedSeries series in snapshot.data!)
-                        AppSeriesCard(series: series),
-                    ],
-                  ),
-                );
-              }
-              return const AppLoading();
-            })
+        FutureBuilder<List<SearchPreviewSeries>>(
+          future: _loadSeries(name),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const ErrorPage();
+            } else if (snapshot.hasData) {
+              return Expanded(
+                child: GridView.count(
+                  crossAxisCount: MediaQuery.of(context).size.width < 400
+                      ? 1
+                      : MediaQuery.of(context).size.width < 600
+                          ? 2
+                          : 3,
+                  children: <Widget>[
+                    for (SearchPreviewSeries series in snapshot.data!)
+                      AppSeriesCard(
+                        series: series,
+                        onTap: () => push(
+                          context,
+                          SearchDetailsPage(series: series),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            }
+            return const AppLoading();
+          },
+        )
       ],
     );
   }

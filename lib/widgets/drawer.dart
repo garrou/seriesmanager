@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/storage.dart';
+import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/views/user/profile.dart';
-import 'package:seriesmanager/views/user/search.dart';
-import 'package:seriesmanager/views/user/series.dart';
+import 'package:seriesmanager/views/user/search/search.dart';
+import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -48,6 +50,13 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Profil'),
             onTap: () => push(context, const ProfilePage()),
           ),
+          ListTile(
+              leading: const Icon(Icons.logout_outlined),
+              title: const Text('Déconnexion'),
+              onTap: () {
+                Storage.removeToken();
+                pushAndRemove(context, const LoginPage());
+              }),
         ],
       ),
     );

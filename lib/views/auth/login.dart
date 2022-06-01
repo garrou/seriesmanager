@@ -138,7 +138,7 @@ class _LoginFormState extends State<LoginForm> {
         await AuthService().login(_email.text.trim(), _password.text.trim());
 
     if (response.success()) {
-      Storage.setKeyValue('jwt', response.content());
+      Storage.setToken(response.content());
       pushAndRemove(context, const UserHomePage());
     }
   }
