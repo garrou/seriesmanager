@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seriesmanager/models/api_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/search_preview_series.dart';
-import 'package:seriesmanager/models/search_details_series.dart';
-import 'package:seriesmanager/models/user_preview_series.dart';
+import 'package:seriesmanager/models/details_series.dart';
+import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
@@ -12,7 +12,7 @@ import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class SearchDetailsPage extends StatefulWidget {
-  final SearchPreviewSeries series;
+  final ApiSeries series;
   const SearchDetailsPage({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class SearchDetailsPage extends StatefulWidget {
 }
 
 class _SearchDetailsPageState extends State<SearchDetailsPage> {
-  late Future<SearchDetailsSeries> _series;
+  late Future<DetailsSeries> _series;
 
   @override
   void initState() {
@@ -28,12 +28,12 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
     _series = _load();
   }
 
-  Future<SearchDetailsSeries> _load() async {
+  Future<DetailsSeries> _load() async {
     HttpResponse response =
-        await SearchService().getDetailsById(widget.series.id);
+        await SearchService().getSeriesById(widget.series.id);
 
     if (response.success()) {
-      return SearchDetailsSeries.fromJson(response.content()['show']);
+      return DetailsSeries.fromJson(response.content()?['show']);
     } else {
       throw Exception();
     }
@@ -49,7 +49,7 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
           style: textStyle,
         ),
       ),
-      body: FutureBuilder<SearchDetailsSeries>(
+      body: FutureBuilder<DetailsSeries>(
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -68,7 +68,7 @@ class _SearchDetailsPageState extends State<SearchDetailsPage> {
 }
 
 class MobileLayout extends StatelessWidget {
-  final SearchDetailsSeries series;
+  final DetailsSeries series;
   const MobileLayout({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -78,7 +78,7 @@ class MobileLayout extends StatelessWidget {
 }
 
 class DesktopLayout extends StatelessWidget {
-  final SearchDetailsSeries series;
+  final DetailsSeries series;
   const DesktopLayout({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -93,7 +93,7 @@ class DesktopLayout extends StatelessWidget {
 }
 
 class SeriesDetails extends StatelessWidget {
-  final SearchDetailsSeries series;
+  final DetailsSeries series;
   const SeriesDetails({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -157,11 +157,24 @@ class SeriesDetails extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 100,
+            height: MediaQuery.of(context).size.height / 8,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                for (dynamic kind in series.kinds.values) KindCard(kind: kind)
+                for (dynamic kind in series.kinds.values)
+                  CustomCard(value: kind)
+              ],
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 8,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (dynamic season in series.seasons)
+                  CustomCard(
+                      value:
+                          'Saison : ${season['number']}\nEpisodes : ${season['episodes']}')
               ],
             ),
           ),
@@ -181,8 +194,10 @@ class SeriesDetails extends StatelessWidget {
   }
 
   void _addSeries() async {
-    HttpResponse response = await SeriesService().addSeries(
-        UserPreviewSeries(series.id, series.title, series.images['poster']));
+    HttpResponse response = await SeriesService().add(
+      UserSeries(
+          series.id, series.title, series.images['poster'], series.length),
+    );
 
     if (response.success()) {
       // TODO: confirmation
@@ -197,7 +212,7 @@ class ImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -211,14 +226,14 @@ class ImageCard extends StatelessWidget {
   }
 }
 
-class KindCard extends StatelessWidget {
-  final dynamic kind;
-  const KindCard({Key? key, required this.kind}) : super(key: key);
+class CustomCard extends StatelessWidget {
+  final dynamic value;
+  const CustomCard({Key? key, required this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: Container(
         width: MediaQuery.of(context).size.width / 3,
         alignment: Alignment.center,
@@ -227,7 +242,7 @@ class KindCard extends StatelessWidget {
           border: Border.all(color: Colors.black),
         ),
         child: Text(
-          kind,
+          value,
           style: textStyle,
           textAlign: TextAlign.center,
         ),

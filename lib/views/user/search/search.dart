@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/search_preview_series.dart';
+import 'package:seriesmanager/models/api_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
@@ -43,18 +43,17 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
-  final _keyForm = GlobalKey<FormState>();
-  final _name = TextEditingController();
+  final _title = TextEditingController();
   final SearchService _searchService = SearchService();
   String name = '';
 
-  Future<List<SearchPreviewSeries>> _loadSeries(String name) async {
+  Future<List<ApiSeries>> _loadSeries(String name) async {
     final HttpResponse response = name.isEmpty
-        ? await _searchService.discoverSeries()
-        : await _searchService.searchSeriesByName(name);
+        ? await _searchService.discover()
+        : await _searchService.getSeriesByName(name);
 
     if (response.success()) {
-      return createSearchPreviewSeries(response.content()["shows"]);
+      return createApiSeries(response.content()?["shows"]);
     } else {
       throw Exception();
     }
@@ -68,7 +67,7 @@ class _LayoutState extends State<Layout> {
           mobileLayout: _buildMobileLayout(),
           desktopLayout: _buildDesktopLayout(),
         ),
-        FutureBuilder<List<SearchPreviewSeries>>(
+        FutureBuilder<List<ApiSeries>>(
           future: _loadSeries(name),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -82,7 +81,7 @@ class _LayoutState extends State<Layout> {
                           ? 2
                           : 3,
                   children: <Widget>[
-                    for (SearchPreviewSeries series in snapshot.data!)
+                    for (ApiSeries series in snapshot.data!)
                       AppSeriesCard(
                         series: series,
                         onTap: () => push(
@@ -110,25 +109,22 @@ class _LayoutState extends State<Layout> {
         ),
       );
 
-  Form _buildForm() => Form(
-        key: _keyForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppTextField(
-              keyboardType: TextInputType.emailAddress,
-              label: 'Nom de la série',
-              textfieldController: _name,
-              validator: fieldValidator,
-              icon: Icons.search_outlined,
-            ),
-            AppButton(
-              content: 'Chercher',
-              onPressed: () {
-                setState(() => name = _name.text);
-              },
-            )
-          ],
-        ),
+  Widget _buildForm() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          AppTextField(
+            keyboardType: TextInputType.text,
+            label: 'Nom de la série',
+            textfieldController: _title,
+            validator: emptyValidator,
+            icon: Icons.search_outlined,
+          ),
+          AppButton(
+            content: 'Chercher',
+            onPressed: () {
+              setState(() => name = _title.text);
+            },
+          )
+        ],
       );
 }

@@ -10,21 +10,27 @@ class SearchService {
     HttpInterceptor(),
   ]);
 
-  Future<HttpResponse> discoverSeries() async {
+  Future<HttpResponse> discover() async {
     final Response response =
         await client.get(Uri.parse('$endpoint/search/discover'));
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> searchSeriesByName(String name) async {
+  Future<HttpResponse> getSeriesByName(String name) async {
     final Response response =
         await client.get(Uri.parse('$endpoint/search/names/$name'));
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> getDetailsById(int id) async {
+  Future<HttpResponse> getSeriesById(int seriesId) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/search/series/$id'));
+        await client.get(Uri.parse('$endpoint/search/series/$seriesId'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> getSeasonsBySeriesId(int seriesId) async {
+    final Response response = await client
+        .get(Uri.parse('$endpoint/search/series/$seriesId/seasons'));
     return HttpResponse(response);
   }
 }

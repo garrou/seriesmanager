@@ -1,4 +1,4 @@
-class SearchDetailsSeries {
+class DetailsSeries {
   final int id;
   final String title;
   final Map<String, dynamic> images;
@@ -7,24 +7,25 @@ class SearchDetailsSeries {
   final List<dynamic> seasons;
   final String creation;
   final Map<String, dynamic> kinds;
-  final String length;
+  final int length;
   final bool ended;
   final List<dynamic> platforms;
 
-  SearchDetailsSeries(
-      this.id,
-      this.title,
-      this.images,
-      this.description,
-      this.seasons,
-      this.episodes,
-      this.creation,
-      this.kinds,
-      this.length,
-      this.ended,
-      this.platforms);
+  DetailsSeries(
+    this.id,
+    this.title,
+    this.images,
+    this.description,
+    this.seasons,
+    this.episodes,
+    this.creation,
+    this.kinds,
+    this.length,
+    this.ended,
+    this.platforms,
+  );
 
-  SearchDetailsSeries.fromJson(Map<String, dynamic> json)
+  DetailsSeries.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         title = json['title'],
         images = json['images'],
@@ -33,13 +34,7 @@ class SearchDetailsSeries {
         seasons = json['seasons_details'],
         creation = json['creation'],
         kinds = json['genres'],
-        length = json['length'],
+        length = int.tryParse(json['length']) ?? 0,
         ended = json['status'] == "Ended",
         platforms = json['platforms']['svods'] ?? List.empty();
-
-  int totalMinutes() => int.parse(episodes) * int.parse(length);
-
-  double totalHours() => totalMinutes() / 60;
-
-  double totalDays() => totalHours() / 24;
 }

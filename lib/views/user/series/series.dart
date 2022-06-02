@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/user_preview_series.dart';
+import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
@@ -42,29 +42,28 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
-  final _keyForm = GlobalKey<FormState>();
-  final _name = TextEditingController();
-  final SeriesService _seriesService = SeriesService();
-  String name = '';
+  final _seriesService = SeriesService();
+  final _title = TextEditingController();
+  late String title;
 
-  Future<List<UserPreviewSeries>> _loadSeries(String name) async {
+  Future<List<UserSeries>> _loadSeries(String name) async {
     final HttpResponse response = name.isEmpty
-        ? await _seriesService.getUserSeries()
-        : await _seriesService.searchUserSeries(name);
+        ? await _seriesService.getAll()
+        : await _seriesService.getByTitle(title);
 
     if (response.success()) {
-      return createUserPreviewSeries(response.content());
+      return createUserSeries(response.content());
     } else {
       throw Exception();
     }
   }
 
   _LayoutState() {
-    _name.addListener(() {
-      if (_name.text.isEmpty) {
-        setState(() => name = '');
+    _title.addListener(() {
+      if (_title.text.isEmpty) {
+        setState(() => title = '');
       } else {
-        setState(() => name = _name.text);
+        setState(() => title = _title.text);
       }
     });
   }
@@ -77,31 +76,37 @@ class _LayoutState extends State<Layout> {
           mobileLayout: _buildMobileLayout(),
           desktopLayout: _buildDesktopLayout(),
         ),
-        FutureBuilder<List<UserPreviewSeries>>(
-          future: _loadSeries(name),
+        FutureBuilder<List<UserSeries>>(
+          future: _loadSeries(_title.text),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const ErrorPage();
             } else if (snapshot.hasData) {
-              return Expanded(
-                child: GridView.count(
-                  crossAxisCount: MediaQuery.of(context).size.width < 400
-                      ? 1
-                      : MediaQuery.of(context).size.width < 600
-                          ? 2
-                          : 3,
-                  children: <Widget>[
-                    for (UserPreviewSeries series in snapshot.data!)
-                      AppSeriesCard(
-                        series: series,
-                        onTap: () => push(
-                          context,
-                          SeriesDetailsPage(series: series),
-                        ),
+              return snapshot.data!.isEmpty
+                  ? Text(
+                      'Aucune série vue',
+                      style: textStyle,
+                      textAlign: TextAlign.center,
+                    )
+                  : Expanded(
+                      child: GridView.count(
+                        crossAxisCount: MediaQuery.of(context).size.width < 400
+                            ? 1
+                            : MediaQuery.of(context).size.width < 600
+                                ? 2
+                                : 3,
+                        children: <Widget>[
+                          for (UserSeries series in snapshot.data!)
+                            AppSeriesCard(
+                              series: series,
+                              onTap: () => push(
+                                context,
+                                SeriesDetailsPage(series: series),
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
-              );
+                    );
             }
             return const AppLoading();
           },
@@ -119,19 +124,16 @@ class _LayoutState extends State<Layout> {
         ),
       );
 
-  Form _buildForm() => Form(
-        key: _keyForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppTextField(
-              keyboardType: TextInputType.emailAddress,
-              label: 'Nom de la série',
-              textfieldController: _name,
-              validator: fieldValidator,
-              icon: Icons.search_outlined,
-            ),
-          ],
-        ),
+  Widget _buildForm() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          AppTextField(
+            keyboardType: TextInputType.text,
+            label: 'Nom de la série',
+            textfieldController: _title,
+            validator: emptyValidator,
+            icon: Icons.search_outlined,
+          ),
+        ],
       );
 }

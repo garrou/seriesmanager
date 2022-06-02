@@ -17,7 +17,7 @@ class AppButton extends StatelessWidget {
           style: roundedButtonStyle,
         ),
         height: 40,
-        width: 150,
+        width: 200,
       ),
       padding: const EdgeInsets.all(10),
     );

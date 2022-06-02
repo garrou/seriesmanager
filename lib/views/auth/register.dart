@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -104,7 +107,7 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.text,
               label: 'Mot de passe',
               textfieldController: _password,
-              validator: fieldValidator,
+              validator: (value) => passwordValidator(value, 8, 50),
               obscureText: true,
               icon: Icons.password,
             ),
@@ -112,13 +115,18 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.text,
               label: 'Confirmer le mot de passe',
               textfieldController: _confirm,
-              validator: fieldValidator,
+              // ignore: body_might_complete_normally_nullable
+              validator: (value) {
+                if (_password.text != value || value!.isEmpty) {
+                  return 'Mot de passe incorrect';
+                }
+              },
               obscureText: true,
               icon: Icons.password,
             ),
             AppButton(
-              content: 'Connexion',
-              onPressed: () {},
+              content: "S'inscrire",
+              onPressed: _onRegister,
             ),
             AppLink(
               child: Text('Déjà membre ? Se connecter', style: linkTextStyle),
@@ -128,5 +136,23 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
       ),
     );
+  }
+
+  void _onRegister() {
+    if (_keyForm.currentState!.validate()) {
+      _keyForm.currentState!.save();
+      _register();
+    }
+  }
+
+  void _register() async {
+    HttpResponse response = await AuthService().register(
+        _email.text.trim(), _password.text.trim(), _confirm.text.trim());
+
+    if (response.success()) {
+      push(context, const LoginPage());
+    } else {
+      // TODO: error
+    }
   }
 }
