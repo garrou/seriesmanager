@@ -4,12 +4,7 @@ import 'package:seriesmanager/utils/redirects.dart';
 class AppLink extends StatelessWidget {
   final Widget child;
   final Widget destination;
-  final double padding;
-  const AppLink(
-      {Key? key,
-      required this.child,
-      required this.destination,
-      this.padding = 0})
+  const AppLink({Key? key, required this.child, required this.destination})
       : super(key: key);
 
   @override

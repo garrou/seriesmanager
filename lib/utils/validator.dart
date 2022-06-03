@@ -20,5 +20,3 @@ String? fieldValidator(String? value) {
     return 'Saisie invalide';
   }
 }
-
-String? emptyValidator(String? value) {}

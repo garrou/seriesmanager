@@ -2,12 +2,14 @@ import 'package:seriesmanager/models/series.dart';
 
 class UserSeries extends Series {
   final int episodeLength;
+  final String poster;
 
-  UserSeries(int id, String title, String poster, this.episodeLength)
-      : super(id, title, poster);
+  UserSeries(int id, String title, this.poster, this.episodeLength)
+      : super(id, title);
 
   UserSeries.fromJson(Map<String, dynamic> json)
       : episodeLength = json['length'],
+        poster = json['poster'],
         super.fromJson(json);
 
   @override

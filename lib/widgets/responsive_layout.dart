@@ -10,13 +10,12 @@ class AppResponsiveLayout extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth < mobileDimension) {
-        return mobileLayout;
-      } else {
-        return desktopLayout;
-      }
-    });
-  }
+  Widget build(BuildContext context) =>
+      LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < mobileDimension) {
+          return mobileLayout;
+        } else {
+          return desktopLayout;
+        }
+      });
 }

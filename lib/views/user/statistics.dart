@@ -11,13 +11,11 @@ class StatisticsPage extends StatefulWidget {
 
 class _StatisticsPageState extends State<StatisticsPage> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Mes statistiques', style: textStyle),
-      ),
-      drawer: const AppDrawer(),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text('Mes statistiques', style: textStyle),
+        ),
+        drawer: const AppDrawer(),
+      );
 }

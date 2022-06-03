@@ -6,17 +6,15 @@ class ErrorPage extends StatelessWidget {
   const ErrorPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("E R R O R", style: textStyle),
-            SvgPicture.asset('assets/error.svg'),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("E R R O R", style: textStyle),
+              SvgPicture.asset('assets/error.svg'),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

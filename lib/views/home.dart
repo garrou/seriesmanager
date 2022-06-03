@@ -22,41 +22,39 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     Guard.checkAuth(_streamController);
+    super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: AuthGuard(
-        authStream: _streamController.stream,
-        signedIn: const UserHomePage(),
-        signedOut: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SvgPicture.asset(
-                'assets/home_logo.svg',
-                semanticsLabel: 'Logo',
-                height: 200,
-              ),
-              Padding(
-                child: Text('Series Manager', style: titleTextStyle),
-                padding: const EdgeInsets.all(20),
-              ),
-              AppButton(
-                content: 'Découvrir',
-                onPressed: () {},
-              ),
-              AppButton(
-                content: "Se connecter",
-                onPressed: () => push(context, const LoginPage()),
-              )
-            ],
+  Widget build(BuildContext context) => Scaffold(
+        body: AuthGuard(
+          authStream: _streamController.stream,
+          signedIn: const UserHomePage(),
+          signedOut: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SvgPicture.asset(
+                  'assets/home_logo.svg',
+                  semanticsLabel: 'Logo',
+                  height: 200,
+                ),
+                Padding(
+                  child: Text('Series Manager', style: titleTextStyle),
+                  padding: const EdgeInsets.all(20),
+                ),
+                AppButton(
+                  content: 'Découvrir',
+                  onPressed: () {},
+                ),
+                AppButton(
+                  content: "Se connecter",
+                  onPressed: () => push(context, const LoginPage()),
+                )
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

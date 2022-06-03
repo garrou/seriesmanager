@@ -17,19 +17,17 @@ class _UserHomePageState extends State<UserHomePage> {
   final StreamController<bool> _streamController = StreamController();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text('Accueil', style: textStyle),
-        ),
-        drawer: const AppDrawer(),
-        body: AuthGuard(
-          authStream: _streamController.stream,
-          signedOut: const LoginPage(),
-          signedIn: Container(),
-        ));
-  }
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text('Accueil', style: textStyle),
+      ),
+      drawer: const AppDrawer(),
+      body: AuthGuard(
+        authStream: _streamController.stream,
+        signedOut: const LoginPage(),
+        signedIn: Container(),
+      ));
 }
 
 class MobileLayout extends StatelessWidget {

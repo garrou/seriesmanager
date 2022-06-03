@@ -34,43 +34,39 @@ class DesktopLayout extends StatelessWidget {
   const DesktopLayout({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 4,
-      ),
-      child: const MobileLayout(),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 4,
+        ),
+        child: const MobileLayout(),
+      );
 }
 
 class MobileLayout extends StatelessWidget {
   const MobileLayout({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 30),
-      child: ListView(
-        children: <Widget>[
-          SvgPicture.asset(
-            'assets/register_logo.svg',
-            semanticsLabel: 'Logo',
-            height: 150,
-          ),
-          Padding(
-            child: Text(
-              "S'inscrire",
-              style: titleTextStyle,
-              textAlign: TextAlign.center,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: ListView(
+          children: <Widget>[
+            SvgPicture.asset(
+              'assets/register_logo.svg',
+              semanticsLabel: 'Logo',
+              height: 150,
             ),
-            padding: const EdgeInsets.only(top: 10),
-          ),
-          const RegisterForm()
-        ],
-      ),
-    );
-  }
+            Padding(
+              child: Text(
+                "S'inscrire",
+                style: titleTextStyle,
+                textAlign: TextAlign.center,
+              ),
+              padding: const EdgeInsets.only(top: 10),
+            ),
+            const RegisterForm()
+          ],
+        ),
+      );
 }
 
 class RegisterForm extends StatefulWidget {
@@ -88,55 +84,54 @@ class _RegisterFormState extends State<RegisterForm> {
   final _confirm = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-      child: Form(
-        key: _keyForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppTextField(
-              keyboardType: TextInputType.emailAddress,
-              label: 'Email',
-              textfieldController: _email,
-              validator: emailValidator,
-              icon: Icons.alternate_email,
-            ),
-            AppTextField(
-              keyboardType: TextInputType.text,
-              label: 'Mot de passe',
-              textfieldController: _password,
-              validator: (value) => passwordValidator(value, 8, 50),
-              obscureText: true,
-              icon: Icons.password,
-            ),
-            AppTextField(
-              keyboardType: TextInputType.text,
-              label: 'Confirmer le mot de passe',
-              textfieldController: _confirm,
-              // ignore: body_might_complete_normally_nullable
-              validator: (value) {
-                if (_password.text != value || value!.isEmpty) {
-                  return 'Mot de passe incorrect';
-                }
-              },
-              obscureText: true,
-              icon: Icons.password,
-            ),
-            AppButton(
-              content: "S'inscrire",
-              onPressed: _onRegister,
-            ),
-            AppLink(
-              child: Text('Déjà membre ? Se connecter', style: linkTextStyle),
-              destination: const LoginPage(),
-            ),
-          ],
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+        child: Form(
+          key: _keyForm,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AppTextField(
+                keyboardType: TextInputType.emailAddress,
+                label: 'Email',
+                textfieldController: _email,
+                validator: emailValidator,
+                icon: const Icon(Icons.alternate_email_outlined,
+                    color: Colors.black),
+              ),
+              AppTextField(
+                keyboardType: TextInputType.text,
+                label: 'Mot de passe',
+                textfieldController: _password,
+                validator: (value) => passwordValidator(value, 8, 50),
+                obscureText: true,
+                icon: const Icon(Icons.password_outlined, color: Colors.black),
+              ),
+              AppTextField(
+                keyboardType: TextInputType.text,
+                label: 'Confirmer le mot de passe',
+                textfieldController: _confirm,
+                // ignore: body_might_complete_normally_nullable
+                validator: (value) {
+                  if (_password.text != value || value!.isEmpty) {
+                    return 'Mot de passe incorrect';
+                  }
+                },
+                obscureText: true,
+                icon: const Icon(Icons.password_outlined, color: Colors.black),
+              ),
+              AppButton(
+                content: "S'inscrire",
+                onPressed: _onRegister,
+              ),
+              AppLink(
+                child: Text('Déjà membre ? Se connecter', style: linkTextStyle),
+                destination: const LoginPage(),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   void _onRegister() {
     if (_keyForm.currentState!.validate()) {

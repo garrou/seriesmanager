@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/styles/text.dart';
 
@@ -9,40 +8,43 @@ class AppSeriesCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Card(
-            elevation: 5,
-            child: series.poster.isNotEmpty
-                ? Image.network(
-                    series.poster,
-                    semanticLabel: 'Image de la série',
-                    loadingBuilder: (context, child, loadingProgress) {
-                      return loadingProgress == null
-                          ? child
-                          : LinearProgressIndicator(
-                              backgroundColor: Colors.grey,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.black,
-                              ),
-                              value: loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!,
-                            );
-                    },
-                    height: MediaQuery.of(context).size.height / 3,
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Text(series.title, style: textStyle)],
-                  ),
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 10,
+              child: series.poster.isNotEmpty
+                  ? Image.network(
+                      series.poster,
+                      semanticLabel: 'Image de la série',
+                      loadingBuilder: (context, child, loadingProgress) {
+                        return loadingProgress == null
+                            ? child
+                            : Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.grey,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                    Colors.black,
+                                  ),
+                                  value: loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!,
+                                ),
+                              );
+                      },
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text(series.title, style: textStyle)],
+                    ),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

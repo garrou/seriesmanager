@@ -22,57 +22,51 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: AppResponsiveLayout(
-        mobileLayout: MobileLayout(),
-        desktopLayout: DesktopLayout(),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Scaffold(
+        body: AppResponsiveLayout(
+          mobileLayout: MobileLayout(),
+          desktopLayout: DesktopLayout(),
+        ),
+      );
 }
 
 class DesktopLayout extends StatelessWidget {
   const DesktopLayout({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 4,
-      ),
-      child: const MobileLayout(),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 4,
+        ),
+        child: const MobileLayout(),
+      );
 }
 
 class MobileLayout extends StatelessWidget {
   const MobileLayout({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: ListView(
-        children: <Widget>[
-          SvgPicture.asset(
-            'assets/login_logo.svg',
-            semanticsLabel: 'Logo',
-            height: 150,
-          ),
-          Padding(
-            child: Text(
-              'Se connecter',
-              style: titleTextStyle,
-              textAlign: TextAlign.center,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: ListView(
+          children: <Widget>[
+            SvgPicture.asset(
+              'assets/login_logo.svg',
+              semanticsLabel: 'Logo',
+              height: 150,
             ),
-            padding: const EdgeInsets.only(top: 10),
-          ),
-          const LoginForm()
-        ],
-      ),
-    );
-  }
+            Padding(
+              child: Text(
+                'Se connecter',
+                style: titleTextStyle,
+                textAlign: TextAlign.center,
+              ),
+              padding: const EdgeInsets.only(top: 10),
+            ),
+            const LoginForm()
+          ],
+        ),
+      );
 }
 
 class LoginForm extends StatefulWidget {
@@ -89,42 +83,41 @@ class _LoginFormState extends State<LoginForm> {
   final _password = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-      child: Form(
-        key: _keyForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppTextField(
-              keyboardType: TextInputType.emailAddress,
-              label: 'Email',
-              textfieldController: _email,
-              validator: emailValidator,
-              icon: Icons.alternate_email,
-            ),
-            AppTextField(
-              keyboardType: TextInputType.text,
-              label: 'Mot de passe',
-              textfieldController: _password,
-              validator: fieldValidator,
-              obscureText: true,
-              icon: Icons.password,
-            ),
-            AppButton(
-              content: 'Connexion',
-              onPressed: _onLogin,
-            ),
-            AppLink(
-              child: Text('Nouveau ? Créer un compte', style: linkTextStyle),
-              destination: const RegisterPage(),
-            ),
-          ],
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+        child: Form(
+          key: _keyForm,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AppTextField(
+                keyboardType: TextInputType.emailAddress,
+                label: 'Email',
+                textfieldController: _email,
+                validator: emailValidator,
+                icon: const Icon(Icons.alternate_email_outlined,
+                    color: Colors.black),
+              ),
+              AppTextField(
+                keyboardType: TextInputType.text,
+                label: 'Mot de passe',
+                textfieldController: _password,
+                validator: fieldValidator,
+                obscureText: true,
+                icon: const Icon(Icons.password_outlined, color: Colors.black),
+              ),
+              AppButton(
+                content: 'Connexion',
+                onPressed: _onLogin,
+              ),
+              AppLink(
+                child: Text('Nouveau ? Créer un compte', style: linkTextStyle),
+                destination: const RegisterPage(),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   void _onLogin() {
     if (_keyForm.currentState!.validate()) {

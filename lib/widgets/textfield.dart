@@ -6,14 +6,14 @@ class AppTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final String label;
   final bool obscureText;
-  final IconData icon;
+  final Icon icon;
   final int maxLines;
   final bool enabled;
   final TextInputType keyboardType;
   const AppTextField(
       {Key? key,
       required this.textfieldController,
-      required this.validator,
+      this.validator,
       required this.label,
       required this.icon,
       required this.keyboardType,
@@ -32,7 +32,7 @@ class AppTextField extends StatelessWidget {
           controller: textfieldController,
           obscureText: obscureText,
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.black),
+            prefixIcon: icon,
             focusedBorder: textFieldBorder,
             border: textFieldBorder,
             labelText: label,
