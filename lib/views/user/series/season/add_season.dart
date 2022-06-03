@@ -8,7 +8,10 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error.dart';
+import 'package:seriesmanager/views/user/series/series.dart';
+import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/calendar.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -53,17 +56,19 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
             if (snapshot.hasError) {
               return const ErrorPage();
             } else if (snapshot.hasData) {
+              final width = MediaQuery.of(context).size.width;
+
               return GridView.count(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                crossAxisCount: MediaQuery.of(context).size.width < 400
+                crossAxisCount: width < 400
                     ? 1
-                    : MediaQuery.of(context).size.width < 600
+                    : width < 600
                         ? 2
-                        : 3,
+                        : 4,
                 children: <Widget>[
                   for (ApiSeason season in snapshot.data!)
-                    AppSeasonCard(season: season, series: widget.series)
+                    ApiSeasonCard(season: season, series: widget.series)
                 ],
               );
             }
@@ -73,17 +78,17 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
       );
 }
 
-class AppSeasonCard extends StatefulWidget {
+class ApiSeasonCard extends StatefulWidget {
   final Season season;
   final UserSeries series;
-  const AppSeasonCard({Key? key, required this.season, required this.series})
+  const ApiSeasonCard({Key? key, required this.season, required this.series})
       : super(key: key);
 
   @override
-  State<AppSeasonCard> createState() => _AppSeasonCardState();
+  State<ApiSeasonCard> createState() => _ApiSeasonCardState();
 }
 
-class _AppSeasonCardState extends State<AppSeasonCard> {
+class _ApiSeasonCardState extends State<ApiSeasonCard> {
   DateTime _start = DateTime.now();
   DateTime _end = DateTime.now();
 
@@ -143,7 +148,7 @@ class _AppSeasonCardState extends State<AppSeasonCard> {
         ),
       );
 
-  Widget _seasonDialog(BuildContext context, dynamic season) => AlertDialog(
+  Widget _seasonDialog(BuildContext context, Season season) => AlertDialog(
         title: Text('Ajouter la saison ${season.number}'),
         content: SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
@@ -189,17 +194,18 @@ class _AppSeasonCardState extends State<AppSeasonCard> {
   }
 
   void _addSeason() async {
-    if (_start.isBefore(_end)) {
+    if (_start.isAfter(_end)) {
+      // TODO: error
+    } else {
       final season = UserSeason(widget.season.number, widget.season.episodes,
-          widget.season.image, _start, _end, widget.series.id);
+          widget.season.image, _start, _end, widget.series.sid);
+
       final HttpResponse response = await SeasonService().add(season);
 
       if (response.success()) {
-      } else {
-        // TODO: confirm
-      }
-    } else {
-      // TODO: error
+        doublePush(context, const SeriesPage(),
+            SeriesDetailsPage(series: widget.series));
+      } else {}
     }
   }
 }

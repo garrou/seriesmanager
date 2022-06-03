@@ -5,7 +5,7 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error.dart';
-import 'package:seriesmanager/views/user/series/search/search.dart';
+import 'package:seriesmanager/views/user/series/add/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
@@ -88,13 +88,17 @@ class _LayoutState extends State<Layout> {
               if (snapshot.hasError) {
                 return const ErrorPage();
               } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
+
                 return Expanded(
                   child: GridView.count(
-                    crossAxisCount: MediaQuery.of(context).size.width < 400
+                    crossAxisCount: width < 400
                         ? 1
-                        : MediaQuery.of(context).size.width < 600
+                        : width < 600
                             ? 2
-                            : 3,
+                            : width < 900
+                                ? 3
+                                : 4,
                     children: <Widget>[
                       for (UserSeries series in snapshot.data!)
                         AppSeriesCard(

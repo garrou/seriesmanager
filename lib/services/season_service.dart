@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/utils/constants.dart';
@@ -11,15 +13,17 @@ class SeasonService {
     HttpInterceptor(),
   ]);
 
-  Future<HttpResponse> getBySeriesId(int seriesId) async {
+  Future<HttpResponse> getBySid(String sid) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/seasons/series/$seriesId'));
+        await client.get(Uri.parse('$endpoint/seasons/series/$sid'));
     return HttpResponse(response);
   }
 
   Future<HttpResponse> add(UserSeason season) async {
-    final Response response =
-        await client.post(Uri.parse('$endpoint/seasons/'));
+    final Response response = await client.post(
+      Uri.parse('$endpoint/seasons/'),
+      body: jsonEncode(season),
+    );
     return HttpResponse(response);
   }
 }

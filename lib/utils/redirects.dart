@@ -19,3 +19,11 @@ void push(BuildContext context, Widget destination) =>
 void pushAndRemove(BuildContext context, Widget destination) =>
     Navigator.pushAndRemoveUntil(
         context, _animationRightLeft(destination), (route) => false);
+
+void doublePush(BuildContext context, Widget first, Widget second) {
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => first),
+      (route) => false);
+  Navigator.push(context, _animationRightLeft(second));
+}

@@ -6,8 +6,9 @@ import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error.dart';
-import 'package:seriesmanager/views/user/series/add_season.dart';
+import 'package:seriesmanager/views/user/series/season/add_season.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/season_card.dart';
 
 class SeriesDetailsPage extends StatefulWidget {
   final UserSeries series;
@@ -64,11 +65,10 @@ class _UserSeasonsState extends State<UserSeasons> {
   }
 
   Future<List<UserSeason>> _load() async {
-    HttpResponse response =
-        await SeasonService().getBySeriesId(widget.series.id);
+    HttpResponse response = await SeasonService().getBySid(widget.series.sid!);
 
     if (response.success()) {
-      return createUserSeasons(response.content()?['seasons']);
+      return createUserSeasons(response.content());
     } else {
       throw Exception();
     }
@@ -81,16 +81,23 @@ class _UserSeasonsState extends State<UserSeasons> {
           if (snapshot.hasError) {
             return const ErrorPage();
           } else if (snapshot.hasData) {
+            final width = MediaQuery.of(context).size.width;
+
             return GridView.count(
               shrinkWrap: true,
-              crossAxisCount: MediaQuery.of(context).size.width < 400
+              crossAxisCount: width < 400
                   ? 1
-                  : MediaQuery.of(context).size.width < 600
+                  : width < 600
                       ? 2
-                      : 3,
+                      : width < 900
+                          ? 3
+                          : 4,
               children: <Widget>[
                 for (UserSeason season in snapshot.data!)
-                  AppSeasonCard(season: season, series: widget.series)
+                  AppSeasonCard(
+                    season: season,
+                    onTap: () {},
+                  )
               ],
             );
           }
