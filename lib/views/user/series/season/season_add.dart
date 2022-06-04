@@ -9,7 +9,7 @@ import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/views/error.dart';
+import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/calendar.dart';

@@ -5,8 +5,9 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/views/error.dart';
-import 'package:seriesmanager/views/user/series/season/add_season.dart';
+import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/series/season/season_add.dart';
+import 'package:seriesmanager/views/user/series/season/season_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/season_card.dart';
 
@@ -95,8 +96,12 @@ class _UserSeasonsState extends State<UserSeasons> {
               children: <Widget>[
                 for (UserSeason season in snapshot.data!)
                   AppSeasonCard(
+                    series: widget.series,
                     season: season,
-                    onTap: () {},
+                    onTap: () => push(
+                      context,
+                      SeasonDetailsPage(series: widget.series, season: season),
+                    ),
                   )
               ],
             );

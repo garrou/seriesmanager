@@ -1,12 +1,18 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/season.dart';
+import 'package:seriesmanager/models/series.dart';
 import 'package:seriesmanager/styles/text.dart';
 
 class AppSeasonCard extends StatelessWidget {
+  final Series series;
   final Season season;
   final VoidCallback onTap;
-  const AppSeasonCard({Key? key, required this.season, required this.onTap})
+  const AppSeasonCard(
+      {Key? key,
+      required this.series,
+      required this.season,
+      required this.onTap})
       : super(key: key);
 
   @override

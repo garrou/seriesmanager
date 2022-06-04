@@ -7,7 +7,7 @@ import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/views/error.dart';
+import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/loading.dart';
@@ -171,8 +171,9 @@ class SeriesDetails extends StatelessWidget {
                 children: [
                   for (dynamic season in series.seasons)
                     CustomCard(
-                        value:
-                            'Saison : ${season['number']}\nEpisodes : ${season['episodes']}')
+                      value:
+                          'Saison : ${season['number']}\nEpisodes : ${season['episodes']}',
+                    )
                 ],
               ),
             ),
@@ -203,7 +204,7 @@ class SeriesDetails extends StatelessWidget {
 }
 
 class ImageCard extends StatelessWidget {
-  final dynamic image;
+  final String image;
   const ImageCard({Key? key, required this.image}) : super(key: key);
 
   @override
@@ -213,10 +214,12 @@ class ImageCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Image.network(
-            image,
-            width: MediaQuery.of(context).size.width,
-          ),
+          child: image.isEmpty
+              ? Container()
+              : Image.network(
+                  image,
+                  width: MediaQuery.of(context).size.width,
+                ),
         ),
       );
 }

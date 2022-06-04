@@ -26,9 +26,10 @@ class SeriesService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> getByTitle(String title) async {
-    final Response response =
+  Future<List<UserSeries>> getByTitle(String title) async {
+    final Response res =
         await client.get(Uri.parse('$endpoint/series/titles/$title'));
-    return HttpResponse(response);
+    final response = HttpResponse(res);
+    return createUserSeries(response.content());
   }
 }

@@ -4,14 +4,12 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/views/error.dart';
-import 'package:seriesmanager/views/user/series/add/search.dart';
+import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/series/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
-import 'package:seriesmanager/widgets/drawer.dart';
+import 'package:seriesmanager/views/drawer/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
-import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
-import 'package:seriesmanager/widgets/textfield.dart';
 
 class SeriesPage extends StatefulWidget {
   const SeriesPage({Key? key}) : super(key: key);
@@ -24,39 +22,52 @@ class _SeriesPageState extends State<SeriesPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.black,
-            title: Text('Mes séries', style: textStyle),
-            actions: [
-              IconButton(
-                onPressed: () => push(context, const SearchPage()),
-                icon: const Icon(
-                  Icons.add_outlined,
-                  color: Colors.white,
-                  size: 30,
-                ),
+          backgroundColor: Colors.black,
+          title: Text('Mes séries', style: textStyle),
+          actions: [
+            IconButton(
+              onPressed: () =>
+                  showSearch(context: context, delegate: SearchUserSeries()),
+              icon: const Icon(
+                Icons.search_outlined,
+                color: Colors.white,
+                size: 30,
               ),
-            ]),
+            ),
+            IconButton(
+              onPressed: () => push(context, const SearchPage()),
+              icon: const Icon(
+                Icons.add_outlined,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ],
+        ),
         drawer: const AppDrawer(),
-        body: const Layout(),
+        body: const AllUserSeries(),
       );
 }
 
-class Layout extends StatefulWidget {
-  const Layout({Key? key}) : super(key: key);
+class AllUserSeries extends StatefulWidget {
+  const AllUserSeries({Key? key}) : super(key: key);
 
   @override
-  State<Layout> createState() => _LayoutState();
+  State<AllUserSeries> createState() => _AllUserSeriesState();
 }
 
-class _LayoutState extends State<Layout> {
+class _AllUserSeriesState extends State<AllUserSeries> {
   final _seriesService = SeriesService();
-  final _title = TextEditingController();
-  late String title;
+  late Future<List<UserSeries>> _series;
 
-  Future<List<UserSeries>> _loadSeries(String name) async {
-    final HttpResponse response = name.isEmpty
-        ? await _seriesService.getAll()
-        : await _seriesService.getByTitle(title);
+  @override
+  void initState() {
+    _series = _loadSeries();
+    super.initState();
+  }
+
+  Future<List<UserSeries>> _loadSeries() async {
+    final HttpResponse response = await _seriesService.getAll();
 
     if (response.success()) {
       return createUserSeries(response.content());
@@ -65,70 +76,91 @@ class _LayoutState extends State<Layout> {
     }
   }
 
-  _LayoutState() {
-    _title.addListener(() {
-      if (_title.text.isEmpty) {
-        setState(() => title = '');
-      } else {
-        setState(() => title = _title.text);
-      }
-    });
-  }
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<UserSeries>>(
+        future: _series,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            final width = MediaQuery.of(context).size.width;
+
+            return GridView.count(
+              crossAxisCount: width < 400
+                  ? 1
+                  : width < 600
+                      ? 2
+                      : width < 900
+                          ? 3
+                          : 4,
+              children: <Widget>[
+                for (UserSeries series in snapshot.data!)
+                  AppSeriesCard(
+                    series: series,
+                    onTap: () => push(
+                      context,
+                      SeriesDetailsPage(series: series),
+                    ),
+                  ),
+              ],
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
+class SearchUserSeries extends SearchDelegate {
+  final SeriesService _seriesService = SeriesService();
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: <Widget>[
-          AppResponsiveLayout(
-            mobileLayout: _buildMobileLayout(),
-            desktopLayout: _buildDesktopLayout(),
-          ),
-          FutureBuilder<List<UserSeries>>(
-            future: _loadSeries(_title.text),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const ErrorPage();
-              } else if (snapshot.hasData) {
-                final width = MediaQuery.of(context).size.width;
-
-                return Expanded(
-                  child: GridView.count(
-                    crossAxisCount: width < 400
-                        ? 1
-                        : width < 600
-                            ? 2
-                            : width < 900
-                                ? 3
-                                : 4,
-                    children: <Widget>[
-                      for (UserSeries series in snapshot.data!)
-                        AppSeriesCard(
-                          series: series,
-                          onTap: () => push(
-                            context,
-                            SeriesDetailsPage(series: series),
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              }
-              return const AppLoading();
-            },
-          )
-        ],
-      );
-
-  Widget _buildMobileLayout() => AppTextField(
-        keyboardType: TextInputType.text,
-        label: 'Nom de la série',
-        textfieldController: _title,
-        icon: const Icon(Icons.search_outlined, color: Colors.black),
-      );
-
-  Widget _buildDesktopLayout() => Padding(
-        child: _buildMobileLayout(),
-        padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width / 4,
+  List<Widget>? buildActions(BuildContext context) => [
+        IconButton(
+          icon: const Icon(Icons.cancel),
+          onPressed: () => query = "",
         ),
+      ];
+
+  @override
+  Widget? buildLeading(BuildContext context) => IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => close(context, null),
       );
+
+  @override
+  Widget buildResults(BuildContext context) => FutureBuilder<List<UserSeries>>(
+      future: _seriesService.getByTitle(query),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const ErrorPage();
+        } else if (snapshot.hasData) {
+          final width = MediaQuery.of(context).size.width;
+
+          return Expanded(
+            child: GridView.count(
+              crossAxisCount: width < 400
+                  ? 1
+                  : width < 600
+                      ? 2
+                      : width < 900
+                          ? 3
+                          : 4,
+              children: <Widget>[
+                for (UserSeries series in snapshot.data!)
+                  AppSeriesCard(
+                    series: series,
+                    onTap: () => push(
+                      context,
+                      SeriesDetailsPage(series: series),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }
+        return const AppLoading();
+      });
+
+  @override
+  Widget buildSuggestions(BuildContext context) => Container();
 }

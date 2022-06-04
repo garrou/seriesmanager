@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/widgets/drawer.dart';
+import 'package:seriesmanager/views/drawer/drawer.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({Key? key}) : super(key: key);

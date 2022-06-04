@@ -6,6 +6,7 @@ class ApiEpisode {
   final String code;
   final String description;
   final DateTime date;
+  bool isExpanded = false;
 
   ApiEpisode(this.id, this.title, this.season, this.episode, this.code,
       this.description, this.date);
@@ -20,6 +21,6 @@ class ApiEpisode {
         date = DateTime.parse(json['date']);
 }
 
-List<ApiEpisode> createUserSeasons(List<dynamic>? records) => records == null
+List<ApiEpisode> createApiEpisodes(List<dynamic>? records) => records == null
     ? List.empty()
     : records.map((json) => ApiEpisode.fromJson(json)).toList(growable: false);

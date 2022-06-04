@@ -3,9 +3,9 @@ import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/user/home.dart';
-import 'package:seriesmanager/views/user/profile.dart';
+import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
-import 'package:seriesmanager/views/user/statistics.dart';
+import 'package:seriesmanager/views/user/statistics/statistics.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -18,7 +18,6 @@ class AppDrawer extends StatelessWidget {
             DrawerHeader(
               child: Image.network(
                 "https://pictures.betaseries.com/fonds/show/10051_1389097.jpg",
-                semanticLabel: 'Avatar',
                 loadingBuilder: (context, child, loadingProgress) {
                   return loadingProgress == null
                       ? child
