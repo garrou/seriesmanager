@@ -26,4 +26,10 @@ class SeasonService {
     );
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getInfos(int number, String sid) async {
+    final Response response = await client
+        .get(Uri.parse('$endpoint/seasons/$number/series/$sid/infos'));
+    return HttpResponse(response);
+  }
 }

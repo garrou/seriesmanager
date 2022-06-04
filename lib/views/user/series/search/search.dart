@@ -116,26 +116,24 @@ class SearchSeries extends SearchDelegate {
         } else if (snapshot.hasData) {
           final width = MediaQuery.of(context).size.width;
 
-          return Expanded(
-            child: GridView.count(
-              crossAxisCount: width < 400
-                  ? 1
-                  : width < 600
-                      ? 2
-                      : width < 900
-                          ? 3
-                          : 4,
-              children: <Widget>[
-                for (ApiSeries series in snapshot.data!)
-                  AppSeriesCard(
-                    series: series,
-                    onTap: () => push(
-                      context,
-                      SearchDetailsPage(series: series),
-                    ),
+          return GridView.count(
+            crossAxisCount: width < 400
+                ? 1
+                : width < 600
+                    ? 2
+                    : width < 900
+                        ? 3
+                        : 4,
+            children: <Widget>[
+              for (ApiSeries series in snapshot.data!)
+                AppSeriesCard(
+                  series: series,
+                  onTap: () => push(
+                    context,
+                    SearchDetailsPage(series: series),
                   ),
-              ],
-            ),
+                ),
+            ],
           );
         }
         return const AppLoading();

@@ -32,4 +32,10 @@ class SeriesService {
     final response = HttpResponse(res);
     return createUserSeries(response.content());
   }
+
+  Future<HttpResponse> getInfosBySid(String sid) async {
+    final Response response =
+        await client.get(Uri.parse('$endpoint/series/$sid/infos'));
+    return HttpResponse(response);
+  }
 }

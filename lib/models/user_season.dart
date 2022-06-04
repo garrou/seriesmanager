@@ -27,7 +27,7 @@ class UserSeason extends Season {
         'episodes': episodes,
         'image': image,
         'startedAt': startedAt.toUtc().toIso8601String(),
-        'finishedAt': startedAt.toUtc().toIso8601String(),
+        'finishedAt': finishedAt.toUtc().toIso8601String(),
         'id': id,
         'sid': sid
       };

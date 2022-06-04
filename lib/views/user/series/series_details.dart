@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
+import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
+import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/season/season_add.dart';
 import 'package:seriesmanager/views/user/series/season/season_details.dart';
@@ -58,14 +61,16 @@ class UserSeasons extends StatefulWidget {
 
 class _UserSeasonsState extends State<UserSeasons> {
   late Future<List<UserSeason>> _seasons;
+  late Future<UserSeriesInfo> _seriesInfos;
 
   @override
   void initState() {
     super.initState();
-    _seasons = _load();
+    _seasons = _loadSeasons();
+    _seriesInfos = _loadSeriesInfos();
   }
 
-  Future<List<UserSeason>> _load() async {
+  Future<List<UserSeason>> _loadSeasons() async {
     HttpResponse response = await SeasonService().getBySid(widget.series.sid!);
 
     if (response.success()) {
@@ -75,38 +80,91 @@ class _UserSeasonsState extends State<UserSeasons> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) => FutureBuilder<List<UserSeason>>(
-        future: _seasons,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const ErrorPage();
-          } else if (snapshot.hasData) {
-            final width = MediaQuery.of(context).size.width;
+  Future<UserSeriesInfo> _loadSeriesInfos() async {
+    HttpResponse response =
+        await SeriesService().getInfosBySid(widget.series.sid!);
 
-            return GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: width < 400
-                  ? 1
-                  : width < 600
-                      ? 2
-                      : width < 900
-                          ? 3
-                          : 4,
-              children: <Widget>[
-                for (UserSeason season in snapshot.data!)
-                  AppSeasonCard(
-                    series: widget.series,
-                    season: season,
-                    onTap: () => push(
-                      context,
-                      SeasonDetailsPage(series: widget.series, season: season),
-                    ),
-                  )
-              ],
-            );
-          }
-          return const AppLoading();
-        },
+    if (response.success()) {
+      return UserSeriesInfo.fromJson(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => ListView(
+        children: <Widget>[
+          FutureBuilder<UserSeriesInfo>(
+            future: _seriesInfos,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const ErrorPage();
+              } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
+
+                return Card(
+                  child: Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: const Icon(Icons.calendar_month_outlined),
+                        title: Text(
+                            '${snapshot.data!.formatStartedAt()} - ${snapshot.data!.formatFinishedAt()}'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.movie_outlined),
+                        title: Text('Saisons vues : ${snapshot.data!.seasons}'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.list_alt_outlined),
+                        title:
+                            Text('Episodes vus : ${snapshot.data!.episodes}'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.timelapse_outlined),
+                        title: Text(
+                            Time.minsToStringHours(snapshot.data!.duration)),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const AppLoading();
+            },
+          ),
+          FutureBuilder<List<UserSeason>>(
+            future: _seasons,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const ErrorPage();
+              } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
+
+                return GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: width < 400
+                      ? 1
+                      : width < 600
+                          ? 2
+                          : width < 900
+                              ? 3
+                              : 4,
+                  children: <Widget>[
+                    for (UserSeason season in snapshot.data!)
+                      AppSeasonCard(
+                        series: widget.series,
+                        season: season,
+                        onTap: () => push(
+                          context,
+                          SeasonDetailsPage(
+                              series: widget.series, season: season),
+                        ),
+                      )
+                  ],
+                );
+              }
+              return const AppLoading();
+            },
+          )
+        ],
       );
 }
