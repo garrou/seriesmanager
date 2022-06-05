@@ -3,7 +3,7 @@ import 'package:seriesmanager/models/series.dart';
 class UserSeries extends Series {
   final int episodeLength;
   final String poster;
-  final String? sid;
+  final int? sid;
 
   UserSeries(int id, String title, this.poster, this.episodeLength, [this.sid])
       : super(id, title);

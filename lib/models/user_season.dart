@@ -4,19 +4,19 @@ import 'package:seriesmanager/models/season.dart';
 class UserSeason extends Season {
   static DateFormat df = DateFormat('dd/MM/yyyy');
 
-  final String? id;
-  final String? sid;
+  final int? id;
+  final int? seriesId;
   final DateTime startedAt;
   final DateTime finishedAt;
 
   UserSeason(
       int number, int episodes, String image, this.startedAt, this.finishedAt,
-      [this.sid, this.id])
+      [this.seriesId, this.id])
       : super(number, episodes, image);
 
   UserSeason.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        sid = json['sid'],
+        seriesId = json['seriesId'],
         startedAt = DateTime.parse(json['startedAt']),
         finishedAt = DateTime.parse(json['finishedAt']),
         super.fromJson(json);
@@ -29,7 +29,7 @@ class UserSeason extends Season {
         'startedAt': startedAt.toUtc().toIso8601String(),
         'finishedAt': finishedAt.toUtc().toIso8601String(),
         'id': id,
-        'sid': sid
+        'sid': seriesId
       };
 
   String formatStartedAt() => df.format(startedAt);

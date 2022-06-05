@@ -33,15 +33,15 @@ class SeriesService {
     return createUserSeries(response.content());
   }
 
-  Future<HttpResponse> getInfosBySid(String sid) async {
+  Future<HttpResponse> getInfosBySeriesId(int seriesId) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/series/$sid/infos'));
+        await client.get(Uri.parse('$endpoint/series/$seriesId/infos'));
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> deleteBySid(String sid) async {
+  Future<HttpResponse> deleteBySeriesId(int seriesId) async {
     final Response response =
-        await client.delete(Uri.parse('$endpoint/series/$sid'));
+        await client.delete(Uri.parse('$endpoint/series/$seriesId'));
     return HttpResponse(response);
   }
 }

@@ -36,7 +36,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
 
   Future<List<ApiSeason>> _load() async {
     HttpResponse response =
-        await SearchService().getSeasonsBySeriesId(widget.series.id);
+        await SearchService().getSeasonsBySid(widget.series.sid!);
 
     if (response.success()) {
       return createApiSeasons(response.content()?['seasons']);
@@ -200,7 +200,7 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
           Colors.red);
     } else {
       final season = UserSeason(widget.season.number, widget.season.episodes,
-          widget.season.image, _start, _end, widget.series.sid);
+          widget.season.image, _start, _end, widget.series.id);
 
       final HttpResponse response = await SeasonService().add(season);
 

@@ -7,6 +7,7 @@ import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -16,23 +17,10 @@ class AppDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              child: Image.network(
-                "https://pictures.betaseries.com/fonds/show/10051_1389097.jpg",
-                loadingBuilder: (context, child, loadingProgress) {
-                  return loadingProgress == null
-                      ? child
-                      : Center(
-                          child: CircularProgressIndicator(
-                            backgroundColor: Colors.grey,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.black,
-                            ),
-                            value: loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!,
-                          ),
-                        );
-                },
+            const DrawerHeader(
+              child: AppNetworkImage(
+                image:
+                    "https://pictures.betaseries.com/fonds/original/10051_1147314.jpg",
               ),
             ),
             ListTile(
@@ -41,12 +29,12 @@ class AppDrawer extends StatelessWidget {
               onTap: () => push(context, const UserHomePage()),
             ),
             ListTile(
-              leading: const Icon(Icons.all_inbox_outlined),
+              leading: const Icon(Icons.video_library_outlined),
               title: const Text('Mes séries'),
               onTap: () => push(context, const SeriesPage()),
             ),
             ListTile(
-              leading: const Icon(Icons.add_outlined),
+              leading: const Icon(Icons.library_add_outlined),
               title: const Text('Ajouter une série'),
               onTap: () => push(context, const SearchPage()),
             ),

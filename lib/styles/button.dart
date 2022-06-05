@@ -12,3 +12,5 @@ ButtonStyle roundedButtonStyle = ButtonStyle(
 );
 
 TextStyle buttonTextStyle = GoogleFonts.roboto(fontSize: 20);
+
+const double iconSize = 25;

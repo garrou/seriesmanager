@@ -6,6 +6,7 @@ import 'package:seriesmanager/models/user_season_info.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
+import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
@@ -29,7 +30,7 @@ class SeasonDetailsPage extends StatelessWidget {
             onPressed: () {
               // TODO: edit
             },
-            icon: const Icon(Icons.edit_outlined),
+            icon: const Icon(Icons.edit_outlined, size: iconSize),
           ),
         ],
       ),
@@ -88,7 +89,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
 
   Future<List<UserSeasonInfo>> _loadInfos() async {
     HttpResponse response = await SeasonService()
-        .getInfos(widget.season.number, widget.series.sid!);
+        .getInfosByNumberBySeriesId(widget.season.number, widget.series.id);
 
     if (response.success()) {
       return createUserSeasonInfo(response.content());
@@ -165,7 +166,7 @@ class _EpisodesListState extends State<EpisodesList> {
 
   Future<List<ApiEpisode>> _load() async {
     HttpResponse response = await SearchService()
-        .getEpisodesBySeriesIdBySeason(widget.series.id, widget.season.number);
+        .getEpisodesBySidBySeason(widget.series.sid!, widget.season.number);
 
     if (response.success()) {
       return createApiEpisodes(response.content()?['episodes']);

@@ -4,8 +4,10 @@ import 'package:seriesmanager/models/details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
+import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -22,7 +24,7 @@ class SearchDetailsPage extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () => _addSeries(context),
-              icon: const Icon(Icons.add_outlined),
+              icon: const Icon(Icons.add_outlined, size: iconSize),
             ),
           ],
         ),
@@ -40,6 +42,8 @@ class SearchDetailsPage extends StatelessWidget {
 
     if (response.success()) {
       pushAndRemove(context, const SeriesPage());
+    } else {
+      snackBar(context, response.message(), Colors.red);
     }
   }
 }
@@ -115,7 +119,7 @@ class _DetailsState extends State<Details> {
                     title: RatingBarIndicator(
                       rating: widget.series.mean,
                       itemCount: 5,
-                      itemSize: 30.0,
+                      itemSize: iconSize,
                       itemBuilder: (context, _) => const Icon(
                         Icons.star,
                         color: Colors.amber,

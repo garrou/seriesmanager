@@ -5,6 +5,7 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
+import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/dialog.dart';
 import 'package:seriesmanager/utils/redirects.dart';
@@ -40,15 +41,11 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                 context,
                 AddSeasonPage(series: widget.series),
               ),
-              icon: const Icon(
-                Icons.list_outlined,
-                color: Colors.white,
-                size: 30,
-              ),
+              icon: const Icon(Icons.video_library_outlined, size: iconSize),
             ),
             IconButton(
               onPressed: () => alertDialog(context, _delete),
-              icon: const Icon(Icons.delete_outlined),
+              icon: const Icon(Icons.delete_outlined, size: iconSize),
             )
           ],
         ),
@@ -57,13 +54,13 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
   void _delete() async {
     final HttpResponse response =
-        await SeriesService().deleteBySid(widget.series.sid!);
+        await SeriesService().deleteBySeriesId(widget.series.id);
 
     if (response.success()) {
       pushAndRemove(context, const SeriesPage());
       snackBar(context, 'Série supprimée', Colors.black);
     } else {
-      snackBar(context, response.content(), Colors.red);
+      snackBar(context, response.message(), Colors.red);
     }
   }
 }
@@ -88,7 +85,8 @@ class _UserSeasonsState extends State<UserSeasons> {
   }
 
   Future<List<UserSeason>> _loadSeasons() async {
-    HttpResponse response = await SeasonService().getBySid(widget.series.sid!);
+    HttpResponse response =
+        await SeasonService().getBySeriesId(widget.series.id);
 
     if (response.success()) {
       return createUserSeasons(response.content());
@@ -99,7 +97,7 @@ class _UserSeasonsState extends State<UserSeasons> {
 
   Future<UserSeriesInfo> _loadSeriesInfos() async {
     HttpResponse response =
-        await SeriesService().getInfosBySid(widget.series.sid!);
+        await SeriesService().getInfosBySeriesId(widget.series.id);
 
     if (response.success()) {
       return UserSeriesInfo.fromJson(response.content());
@@ -129,7 +127,7 @@ class _UserSeasonsState extends State<UserSeasons> {
                           ),
                         ),
                       ListTile(
-                        leading: const Icon(Icons.movie_outlined),
+                        leading: const Icon(Icons.video_library_outlined),
                         title: Text('Saisons vues : ${snapshot.data!.seasons}'),
                       ),
                       ListTile(
@@ -140,7 +138,8 @@ class _UserSeasonsState extends State<UserSeasons> {
                       ListTile(
                         leading: const Icon(Icons.timelapse_outlined),
                         title: Text(
-                            Time.minsToStringHours(snapshot.data!.duration)),
+                          Time.minsToStringHours(snapshot.data!.duration),
+                        ),
                       ),
                     ],
                   ),

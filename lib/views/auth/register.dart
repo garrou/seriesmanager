@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
@@ -54,7 +55,7 @@ class MobileLayout extends StatelessWidget {
             SvgPicture.asset(
               'assets/register.svg',
               semanticsLabel: 'Logo',
-              height: 150,
+              height: 200,
             ),
             Padding(
               child: Text(
@@ -81,6 +82,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _keyForm = GlobalKey<FormState>();
 
   final _email = TextEditingController();
+  final _username = TextEditingController();
   final _password = TextEditingController();
   final _confirm = TextEditingController();
 
@@ -97,14 +99,23 @@ class _RegisterFormState extends State<RegisterForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(Icons.alternate_email_outlined,
-                    color: Colors.black),
+                icon: const Icon(
+                  Icons.alternate_email_outlined,
+                  color: Colors.black,
+                ),
+              ),
+              AppTextField(
+                keyboardType: TextInputType.text,
+                label: "Nom d'utilisateur",
+                textfieldController: _username,
+                validator: (value) => lengthValidator(value, 3, 50),
+                icon: const Icon(Icons.person_outline, color: Colors.black),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,
                 label: 'Mot de passe',
                 textfieldController: _password,
-                validator: (value) => passwordValidator(value, 8, 50),
+                validator: (value) => lengthValidator(value, 8, 50),
                 obscureText: true,
                 icon: const Icon(Icons.password_outlined, color: Colors.black),
               ),
@@ -142,8 +153,8 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _register() async {
-    HttpResponse response = await AuthService().register(
-        _email.text.trim(), _password.text.trim(), _confirm.text.trim());
+    HttpResponse response = await AuthService().register(UserRegister(
+        _email.text, _username.text, _password.text, _confirm.text));
 
     if (response.success()) {
       push(context, const LoginPage());

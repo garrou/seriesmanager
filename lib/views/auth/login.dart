@@ -54,7 +54,7 @@ class MobileLayout extends StatelessWidget {
             SvgPicture.asset(
               'assets/login.svg',
               semanticsLabel: 'Logo',
-              height: 150,
+              height: 200,
             ),
             Padding(
               child: Text(
@@ -96,8 +96,10 @@ class _LoginFormState extends State<LoginForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(Icons.alternate_email_outlined,
-                    color: Colors.black),
+                icon: const Icon(
+                  Icons.alternate_email_outlined,
+                  color: Colors.black,
+                ),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,

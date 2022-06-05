@@ -13,9 +13,9 @@ class SeasonService {
     HttpInterceptor(),
   ]);
 
-  Future<HttpResponse> getBySid(String sid) async {
+  Future<HttpResponse> getBySeriesId(int seriesId) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/seasons/series/$sid'));
+        await client.get(Uri.parse('$endpoint/seasons/series/$seriesId'));
     return HttpResponse(response);
   }
 
@@ -27,9 +27,10 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> getInfos(int number, String sid) async {
+  Future<HttpResponse> getInfosByNumberBySeriesId(
+      int number, int seriesId) async {
     final Response response = await client
-        .get(Uri.parse('$endpoint/seasons/$number/series/$sid/infos'));
+        .get(Uri.parse('$endpoint/seasons/$number/series/$seriesId/infos'));
     return HttpResponse(response);
   }
 }

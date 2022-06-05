@@ -24,16 +24,16 @@ class SearchService {
     return createDetailsSeries(response.content()?["shows"]);
   }
 
-  Future<HttpResponse> getSeasonsBySeriesId(int seriesId) async {
-    final Response response = await client
-        .get(Uri.parse('$endpoint/search/series/$seriesId/seasons'));
+  Future<HttpResponse> getSeasonsBySid(int sid) async {
+    final Response response =
+        await client.get(Uri.parse('$endpoint/search/series/$sid/seasons'));
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> getEpisodesBySeriesIdBySeason(
-      int seriesId, int seasonNumber) async {
+  Future<HttpResponse> getEpisodesBySidBySeason(
+      int sid, int seasonNumber) async {
     final Response response = await client.get(Uri.parse(
-        '$endpoint/search/series/$seriesId/seasons/$seasonNumber/episodes'));
+        '$endpoint/search/series/$sid/seasons/$seasonNumber/episodes'));
     return HttpResponse(response);
   }
 }

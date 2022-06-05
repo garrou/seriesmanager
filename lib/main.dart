@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       color: Colors.black,
       home: const HomePage(),
       scrollBehavior: CustomScrollBehavior(),
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.black,
         textSelectionTheme: const TextSelectionThemeData(

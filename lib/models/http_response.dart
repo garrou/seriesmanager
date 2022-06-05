@@ -14,7 +14,7 @@ class HttpResponse {
 
   bool success() => _success;
 
-  String message() => _body?['message'];
+  String? message() => _body?['message'];
 
   dynamic content() => _body?['data'];
 }

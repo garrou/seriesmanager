@@ -14,4 +14,10 @@ class UserService {
     final Response response = await client.get(Uri.parse('$endpoint/user'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getProfile() async {
+    final Response response =
+        await client.get(Uri.parse('$endpoint/user/profile'));
+    return HttpResponse(response);
+  }
 }

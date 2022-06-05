@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/utils/constants.dart';
 
 class AuthService {
@@ -17,18 +18,13 @@ class AuthService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> register(
-      String email, String password, String confirm) async {
+  Future<HttpResponse> register(UserRegister userRegister) async {
     final Response response = await http.post(
       Uri.parse('$endpoint/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8'
       },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-        'confirm': confirm
-      }),
+      body: jsonEncode(userRegister),
     );
     return HttpResponse(response);
   }

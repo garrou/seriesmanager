@@ -9,7 +9,7 @@ class AppLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 5),
+        padding: const EdgeInsets.only(top: 10),
         child: TextButton(
           child: child,
           onPressed: () => push(context, destination),
