@@ -131,8 +131,8 @@ class _SeasonInfosState extends State<SeasonInfos> {
                   ),
                 ListTile(
                   leading: const Icon(Icons.timelapse, size: 30),
-                  title: Text(
-                      '${snapshot.data!.first.duration} mins - ${Time.minsToStringHours(snapshot.data!.first.duration * snapshot.data!.length)}'),
+                  title: Text(Time.minsToStringHours(
+                      snapshot.data!.first.duration * snapshot.data!.length)),
                 )
               ],
             );

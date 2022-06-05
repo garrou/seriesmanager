@@ -9,6 +9,7 @@ import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
@@ -195,7 +196,8 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
 
   void _addSeason() async {
     if (_start.isAfter(_end)) {
-      // TODO: error
+      snackBar(context, 'La date de début doit être inférieure à celle de fin',
+          Colors.red);
     } else {
       final season = UserSeason(widget.season.number, widget.season.episodes,
           widget.season.image, _start, _end, widget.series.sid);
@@ -205,7 +207,9 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
       if (response.success()) {
         doublePush(context, const SeriesPage(),
             SeriesDetailsPage(series: widget.series));
-      } else {}
+      } else {
+        snackBar(context, response.message(), Colors.red);
+      }
     }
   }
 }

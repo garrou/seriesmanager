@@ -22,4 +22,7 @@ class UserSeriesInfo {
   String formatStartedAt() => df.format(startedAt);
 
   String formatFinishedAt() => df.format(finishedAt);
+
+  bool hasValidDate() =>
+      startedAt.isAfter(DateTime.utc(1)) && finishedAt.isAfter(DateTime.utc(1));
 }

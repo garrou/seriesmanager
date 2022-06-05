@@ -16,7 +16,13 @@ class MyApp extends StatelessWidget {
       color: Colors.black,
       home: const HomePage(),
       scrollBehavior: CustomScrollBehavior(),
-      theme: ThemeData(primaryColor: Colors.black),
+      theme: ThemeData(
+        primaryColor: Colors.black,
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionHandleColor: Colors.black, // Change bubble to red
+          cursorColor: Colors.black,
+        ),
+      ),
     );
   }
 }

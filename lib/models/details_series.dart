@@ -10,6 +10,7 @@ class DetailsSeries {
   final int length;
   final bool ended;
   final List<dynamic> platforms;
+  final double mean;
 
   DetailsSeries(
     this.id,
@@ -23,6 +24,7 @@ class DetailsSeries {
     this.length,
     this.ended,
     this.platforms,
+    this.mean,
   );
 
   DetailsSeries.fromJson(Map<String, dynamic> json)
@@ -36,5 +38,13 @@ class DetailsSeries {
         kinds = json['genres'],
         length = int.tryParse(json['length']) ?? 0,
         ended = json['status'] == "Ended",
-        platforms = json['platforms']['svods'] ?? List.empty();
+        platforms = json['platforms']['svods'] ?? List.empty(),
+        mean = json['notes']?['mean'].toDouble();
 }
+
+List<DetailsSeries> createDetailsSeries(List<dynamic>? records) =>
+    records == null
+        ? List.empty()
+        : records
+            .map((json) => DetailsSeries.fromJson(json))
+            .toList(growable: false);

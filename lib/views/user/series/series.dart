@@ -5,7 +5,7 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/series/search/search.dart';
+import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/views/drawer/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
@@ -95,11 +95,52 @@ class _AllUserSeriesState extends State<AllUserSeries> {
                           : 4,
               children: <Widget>[
                 for (UserSeries series in snapshot.data!)
-                  AppSeriesCard(
-                    series: series,
+                  GestureDetector(
                     onTap: () => push(
                       context,
                       SeriesDetailsPage(series: series),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: 10,
+                          child: series.poster.isNotEmpty
+                              ? Image.network(
+                                  series.poster,
+                                  semanticLabel: 'Image de la série',
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    return loadingProgress == null
+                                        ? child
+                                        : Center(
+                                            child: CircularProgressIndicator(
+                                              backgroundColor: Colors.grey,
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                      Color>(
+                                                Colors.black,
+                                              ),
+                                              value: loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!,
+                                            ),
+                                          );
+                                  },
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(series.title, style: textStyle)
+                                  ],
+                                ),
+                        ),
+                      ),
                     ),
                   ),
               ],
@@ -148,11 +189,12 @@ class SearchUserSeries extends SearchDelegate {
               for (UserSeries series in snapshot.data!)
                 AppSeriesCard(
                   series: series,
+                  image: series.poster,
                   onTap: () => push(
                     context,
                     SeriesDetailsPage(series: series),
                   ),
-                ),
+                )
             ],
           );
         }

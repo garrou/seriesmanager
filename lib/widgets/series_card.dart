@@ -3,8 +3,13 @@ import 'package:seriesmanager/styles/text.dart';
 
 class AppSeriesCard extends StatelessWidget {
   final dynamic series;
+  final String image;
   final VoidCallback onTap;
-  const AppSeriesCard({Key? key, required this.series, required this.onTap})
+  const AppSeriesCard(
+      {Key? key,
+      required this.series,
+      required this.image,
+      required this.onTap})
       : super(key: key);
 
   @override
@@ -19,9 +24,9 @@ class AppSeriesCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               elevation: 10,
-              child: series.poster.isNotEmpty
+              child: image.isNotEmpty
                   ? Image.network(
-                      series.poster,
+                      image,
                       semanticLabel: 'Image de la série',
                       loadingBuilder: (context, child, loadingProgress) {
                         return loadingProgress == null

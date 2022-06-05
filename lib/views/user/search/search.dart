@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/models/api_series.dart';
+import 'package:seriesmanager/models/details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/series/search/search_details.dart';
+import 'package:seriesmanager/views/user/search/search_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
 
@@ -18,7 +18,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final SearchService _searchService = SearchService();
-  late Future<List<ApiSeries>> _discoverSeries;
+  late Future<List<DetailsSeries>> _discoverSeries;
 
   @override
   void initState() {
@@ -26,11 +26,11 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
-  Future<List<ApiSeries>> _loadDiscover() async {
+  Future<List<DetailsSeries>> _loadDiscover() async {
     final HttpResponse response = await _searchService.discover();
 
     if (response.success()) {
-      return createApiSeries(response.content()?["shows"]);
+      return createDetailsSeries(response.content()?["shows"]);
     } else {
       throw Exception();
     }
@@ -54,7 +54,7 @@ class _SearchPageState extends State<SearchPage> {
             )
           ],
         ),
-        body: FutureBuilder<List<ApiSeries>>(
+        body: FutureBuilder<List<DetailsSeries>>(
           future: _discoverSeries,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -71,8 +71,9 @@ class _SearchPageState extends State<SearchPage> {
                             ? 3
                             : 4,
                 children: <Widget>[
-                  for (ApiSeries series in snapshot.data!)
+                  for (DetailsSeries series in snapshot.data!)
                     AppSeriesCard(
+                      image: series.images['poster'],
                       series: series,
                       onTap: () => push(
                         context,
@@ -94,6 +95,9 @@ class SearchSeries extends SearchDelegate {
   SearchSeries({required this.searchService});
 
   @override
+  String get searchFieldLabel => 'Nom de la série';
+
+  @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
           icon: const Icon(Icons.cancel),
@@ -108,36 +112,38 @@ class SearchSeries extends SearchDelegate {
       );
 
   @override
-  Widget buildResults(BuildContext context) => FutureBuilder<List<ApiSeries>>(
-      future: searchService.getSeriesByName(query),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const ErrorPage();
-        } else if (snapshot.hasData) {
-          final width = MediaQuery.of(context).size.width;
+  Widget buildResults(BuildContext context) =>
+      FutureBuilder<List<DetailsSeries>>(
+          future: searchService.getSeriesByName(query),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const ErrorPage();
+            } else if (snapshot.hasData) {
+              final width = MediaQuery.of(context).size.width;
 
-          return GridView.count(
-            crossAxisCount: width < 400
-                ? 1
-                : width < 600
-                    ? 2
-                    : width < 900
-                        ? 3
-                        : 4,
-            children: <Widget>[
-              for (ApiSeries series in snapshot.data!)
-                AppSeriesCard(
-                  series: series,
-                  onTap: () => push(
-                    context,
-                    SearchDetailsPage(series: series),
-                  ),
-                ),
-            ],
-          );
-        }
-        return const AppLoading();
-      });
+              return GridView.count(
+                crossAxisCount: width < 400
+                    ? 1
+                    : width < 600
+                        ? 2
+                        : width < 900
+                            ? 3
+                            : 4,
+                children: <Widget>[
+                  for (DetailsSeries series in snapshot.data!)
+                    AppSeriesCard(
+                      series: series,
+                      image: series.images['poster'],
+                      onTap: () => push(
+                        context,
+                        SearchDetailsPage(series: series),
+                      ),
+                    ),
+                ],
+              );
+            }
+            return const AppLoading();
+          });
 
   @override
   Widget buildSuggestions(BuildContext context) => Container();

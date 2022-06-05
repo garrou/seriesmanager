@@ -38,4 +38,10 @@ class SeriesService {
         await client.get(Uri.parse('$endpoint/series/$sid/infos'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> deleteBySid(String sid) async {
+    final Response response =
+        await client.delete(Uri.parse('$endpoint/series/$sid'));
+    return HttpResponse(response);
+  }
 }

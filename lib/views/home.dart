@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SvgPicture.asset(
-                  'assets/home_logo.svg',
+                  'assets/home.svg',
                   semanticsLabel: 'Logo',
                   height: 200,
                 ),

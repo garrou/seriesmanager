@@ -4,6 +4,7 @@ import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
+import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
 
@@ -43,6 +44,11 @@ class AppDrawer extends StatelessWidget {
               leading: const Icon(Icons.all_inbox_outlined),
               title: const Text('Mes séries'),
               onTap: () => push(context, const SeriesPage()),
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_outlined),
+              title: const Text('Ajouter une série'),
+              onTap: () => push(context, const SearchPage()),
             ),
             ListTile(
               leading: const Icon(Icons.bar_chart_outlined),

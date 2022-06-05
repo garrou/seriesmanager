@@ -4,6 +4,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -51,7 +52,7 @@ class MobileLayout extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             SvgPicture.asset(
-              'assets/register_logo.svg',
+              'assets/register.svg',
               semanticsLabel: 'Logo',
               height: 150,
             ),
@@ -147,7 +148,7 @@ class _RegisterFormState extends State<RegisterForm> {
     if (response.success()) {
       push(context, const LoginPage());
     } else {
-      // TODO: error
+      snackBar(context, response.message(), Colors.red);
     }
   }
 }
