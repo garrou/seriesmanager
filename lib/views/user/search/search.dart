@@ -18,7 +18,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final SearchService _searchService = SearchService();
   late Future<List<DetailsSeries>> _discoverSeries;
 
   @override
@@ -28,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<DetailsSeries>> _loadDiscover() async {
-    final HttpResponse response = await _searchService.discover();
+    final HttpResponse response = await SearchService().discover();
 
     if (response.success()) {
       return createDetailsSeries(response.content()?["shows"]);
@@ -47,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
               icon: const Icon(Icons.search_outlined, size: iconSize),
               onPressed: () => showSearch(
                 context: context,
-                delegate: SearchSeries(searchService: _searchService),
+                delegate: SearchSeries(),
               ),
             )
           ],
@@ -88,9 +87,7 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class SearchSeries extends SearchDelegate {
-  final SearchService searchService;
-
-  SearchSeries({required this.searchService});
+  final SearchService _searchService = SearchService();
 
   @override
   String get searchFieldLabel => 'Nom de la série';
@@ -112,7 +109,7 @@ class SearchSeries extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) =>
       FutureBuilder<List<DetailsSeries>>(
-          future: searchService.getSeriesByName(query),
+          future: _searchService.getSeriesByName(query),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const ErrorPage();

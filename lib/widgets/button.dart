@@ -8,9 +8,12 @@ class AppButton extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) => ElevatedButton(
-        onPressed: onPressed,
-        child: Text(content, style: buttonTextStyle),
-        style: roundedButtonStyle,
+  Widget build(BuildContext context) => Padding(
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Text(content, style: buttonTextStyle),
+          style: roundedButtonStyle,
+        ),
+        padding: const EdgeInsets.all(5),
       );
 }

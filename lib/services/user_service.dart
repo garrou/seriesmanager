@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/utils/constants.dart';
 import 'package:seriesmanager/models/interceptor.dart';
@@ -18,6 +20,14 @@ class UserService {
   Future<HttpResponse> getProfile() async {
     final Response response =
         await client.get(Uri.parse('$endpoint/user/profile'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> setBanner(String banner) async {
+    final Response response = await client.patch(
+      Uri.parse('$endpoint/user/profile/banner'),
+      body: jsonEncode(<String, String>{'banner': banner}),
+    );
     return HttpResponse(response);
   }
 }

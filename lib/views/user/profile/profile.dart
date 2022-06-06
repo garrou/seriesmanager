@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/views/drawer/drawer.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/widgets/loading.dart';
-import 'package:seriesmanager/widgets/network_image.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -22,12 +21,6 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Mon profil', style: textStyle),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.edit_outlined, size: iconSize),
-            ),
-          ],
         ),
         drawer: const AppDrawer(),
         body: ListView(children: const <Widget>[
@@ -66,44 +59,63 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   @override
-  Widget build(BuildContext context) => Card(
-        elevation: 10,
-        child: FutureBuilder<UserProfile>(
-          future: _profile,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const ErrorPage();
-            } else if (snapshot.hasData) {
-              return Column(
-                children: <Widget>[
-                  if (snapshot.data!.banner.isNotEmpty)
-                    AppNetworkImage(image: snapshot.data!.banner),
-                  ListTile(
-                    leading: const Icon(Icons.person_outlined),
-                    title: Text(
-                      "Nom d'utilisateur : ${snapshot.data!.username}",
-                      style: textStyle,
+  Widget build(BuildContext context) => FutureBuilder<UserProfile>(
+        future: _profile,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Column(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.image_outlined),
+                  title: Text('Bannière', style: textStyle),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () => showSearch(
+                      context: context,
+                      delegate: SearchBanner(),
                     ),
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.email_outlined),
-                    title: Text(
-                      snapshot.data!.email,
-                      style: textStyle,
-                    ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person_outlined),
+                  title: Text("Nom d'utilisateur", style: textStyle),
+                  subtitle: Text(snapshot.data!.username, style: minTextStyle),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () {},
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.timelapse_outlined),
-                    title: Text(
-                      'Membre depuis le ${snapshot.data!.formatJoinedAt()}',
-                      style: textStyle,
-                    ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.email_outlined),
+                  title: Text('Email', style: textStyle),
+                  subtitle: Text(snapshot.data!.email, style: minTextStyle),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () {},
                   ),
-                ],
-              );
-            }
-            return const AppLoading();
-          },
-        ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.password_outlined),
+                  title: Text('Mot de passe', style: textStyle),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () {},
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.timelapse_outlined),
+                  title: Text('Membre depuis le', style: textStyle),
+                  subtitle: Text(
+                    snapshot.data!.formatJoinedAt(),
+                    style: minTextStyle,
+                  ),
+                ),
+              ],
+            );
+          }
+          return const AppLoading();
+        },
       );
 }

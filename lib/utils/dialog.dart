@@ -15,19 +15,13 @@ Future<void> alertDialog(BuildContext context, VoidCallback onTap) =>
             actions: <Widget>[
               Padding(
                 child: InkWell(
-                  child: Text(
-                    'Non',
-                    style: textStyle,
-                  ),
+                  child: Text('Non', style: textStyle),
                   onTap: () => Navigator.of(context).pop(),
                 ),
                 padding: const EdgeInsets.only(right: 20),
               ),
               InkWell(
-                child: Text(
-                  'Oui',
-                  style: textStyle,
-                ),
+                child: Text('Oui', style: textStyle),
                 onTap: onTap,
               )
             ],

@@ -36,4 +36,11 @@ class SearchService {
         '$endpoint/search/series/$sid/seasons/$seasonNumber/episodes'));
     return HttpResponse(response);
   }
+
+  Future<List<String>> getSeriesImagesByName(String name) async {
+    final Response res =
+        await client.get(Uri.parse('$endpoint/search/names/$name/images'));
+    final response = HttpResponse(res);
+    return List<String>.from(response.content());
+  }
 }

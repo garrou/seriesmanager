@@ -1,26 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/user_profile.dart';
+import 'package:seriesmanager/services/user_service.dart';
+import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
+import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
+import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({Key? key}) : super(key: key);
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  late Future<UserProfile> _profile;
+
+  @override
+  void initState() {
+    _profile = _loadProfile();
+    super.initState();
+  }
+
+  Future<UserProfile> _loadProfile() async {
+    HttpResponse response = await UserService().getProfile();
+
+    if (response.success()) {
+      return UserProfile.fromJson(response.content());
+    } else {
+      throw Exception();
+    }
+  }
 
   @override
   Widget build(BuildContext context) => Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              child: AppNetworkImage(
-                image:
-                    "https://pictures.betaseries.com/fonds/original/10051_1147314.jpg",
+            DrawerHeader(
+              child: FutureBuilder<UserProfile>(
+                future: _profile,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const ErrorPage();
+                  } else if (snapshot.hasData) {
+                    return AppNetworkImage(image: snapshot.data!.banner);
+                  }
+                  return const AppLoading();
+                },
               ),
             ),
             ListTile(

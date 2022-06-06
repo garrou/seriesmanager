@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seriesmanager/styles/text.dart';
 
 class AppNetworkImage extends StatelessWidget {
   final String image;
@@ -21,5 +22,10 @@ class AppNetworkImage extends StatelessWidget {
                   ),
                 );
         },
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace? stackTrace) =>
+                Center(
+          child: Text('Image non disponible', style: textStyle),
+        ),
       );
 }
