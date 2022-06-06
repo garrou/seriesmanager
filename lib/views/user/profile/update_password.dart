@@ -34,13 +34,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           )
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          AppResponsiveLayout(
-            mobileLayout: mobileLayout(),
-            desktopLayout: desktopLayout(),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: AppResponsiveLayout(
+          mobileLayout: mobileLayout(),
+          desktopLayout: desktopLayout(),
+        ),
       ),
     );
   }

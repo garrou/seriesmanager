@@ -28,13 +28,11 @@ class SearchDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          AppResponsiveLayout(
-            mobileLayout: MobileLayout(series: series),
-            desktopLayout: DesktopLayout(series: series),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: AppResponsiveLayout(
+          mobileLayout: MobileLayout(series: series),
+          desktopLayout: DesktopLayout(series: series),
+        ),
       ));
 
   void _addSeries(BuildContext context) async {

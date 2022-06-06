@@ -7,7 +7,7 @@ import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/drawer/drawer.dart';
+import 'package:seriesmanager/views/user/drawer/drawer.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({Key? key}) : super(key: key);

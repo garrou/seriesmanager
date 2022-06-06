@@ -8,7 +8,7 @@ import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
-import 'package:seriesmanager/views/drawer/drawer.dart';
+import 'package:seriesmanager/views/user/drawer/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
 
@@ -163,7 +163,7 @@ class SearchUserSeries extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) => FutureBuilder<List<UserSeries>>(
-      future: _seriesService.getByTitle(query),
+      future: _seriesService.getByName(query),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const ErrorPage();

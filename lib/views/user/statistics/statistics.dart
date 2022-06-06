@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/views/drawer/drawer.dart';
+import 'package:seriesmanager/views/user/drawer/drawer.dart';
 
 class StatisticsPage extends StatefulWidget {
   const StatisticsPage({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('Mes statistiques', style: textStyle),
+          title: Text('Statistiques', style: textStyle),
         ),
         drawer: const AppDrawer(),
       );

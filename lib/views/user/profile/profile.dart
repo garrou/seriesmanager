@@ -4,8 +4,8 @@ import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/views/drawer/drawer.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/drawer/drawer.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/views/user/profile/update_password.dart';
 import 'package:seriesmanager/views/user/profile/update_profile.dart';
@@ -53,13 +53,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         drawer: const AppDrawer(),
-        body: ListView(
-          children: <Widget>[
-            AppResponsiveLayout(
-              mobileLayout: mobileLayout(),
-              desktopLayout: desktopLayout(),
-            ),
-          ],
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: mobileLayout(),
+            desktopLayout: desktopLayout(),
+          ),
         ),
       );
 
