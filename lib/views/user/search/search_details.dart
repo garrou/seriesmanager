@@ -18,21 +18,24 @@ class SearchDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(series.title, style: textStyle),
-          actions: [
-            IconButton(
-              onPressed: () => _addSeries(context),
-              icon: const Icon(Icons.add_outlined, size: iconSize),
-            ),
-          ],
-        ),
-        body: AppResponsiveLayout(
-          mobileLayout: MobileLayout(series: series),
-          desktopLayout: DesktopLayout(series: series),
-        ),
-      );
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text(series.title, style: textStyle),
+        actions: [
+          IconButton(
+            onPressed: () => _addSeries(context),
+            icon: const Icon(Icons.add_outlined, size: iconSize),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          AppResponsiveLayout(
+            mobileLayout: MobileLayout(series: series),
+            desktopLayout: DesktopLayout(series: series),
+          ),
+        ],
+      ));
 
   void _addSeries(BuildContext context) async {
     HttpResponse response = await SeriesService().add(
@@ -48,14 +51,6 @@ class SearchDetailsPage extends StatelessWidget {
   }
 }
 
-class MobileLayout extends StatelessWidget {
-  final DetailsSeries series;
-  const MobileLayout({Key? key, required this.series}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Details(series: series);
-}
-
 class DesktopLayout extends StatelessWidget {
   final DetailsSeries series;
   const DesktopLayout({Key? key, required this.series}) : super(key: key);
@@ -69,34 +64,36 @@ class DesktopLayout extends StatelessWidget {
       );
 }
 
-class Details extends StatefulWidget {
+class MobileLayout extends StatefulWidget {
   final DetailsSeries series;
-  const Details({Key? key, required this.series}) : super(key: key);
+  const MobileLayout({Key? key, required this.series}) : super(key: key);
 
   @override
-  State<Details> createState() => _DetailsState();
+  State<MobileLayout> createState() => _MobileLayoutState();
 }
 
-class _DetailsState extends State<Details> {
+class _MobileLayoutState extends State<MobileLayout> {
   bool _isVisibleKind = false;
   bool _isVisibleSeasons = false;
 
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(10),
-        child: ListView(
+        child: Column(
           children: <Widget>[
-            ImageCard(image: widget.series.images['show']),
             Card(
               elevation: 10,
-              child: Padding(
-                child: Text(
-                  widget.series.description,
-                  style: textStyle,
-                  textAlign: TextAlign.start,
+              child: Column(children: [
+                ImageContainer(image: widget.series.images['show']),
+                Padding(
+                  child: Text(
+                    widget.series.description,
+                    style: textStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                  padding: const EdgeInsets.all(10),
                 ),
-                padding: const EdgeInsets.all(10),
-              ),
+              ]),
             ),
             Card(
               elevation: 10,
@@ -235,9 +232,9 @@ class _DetailsState extends State<Details> {
       );
 }
 
-class ImageCard extends StatelessWidget {
+class ImageContainer extends StatelessWidget {
   final String image;
-  const ImageCard({Key? key, required this.image}) : super(key: key);
+  const ImageContainer({Key? key, required this.image}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Padding(

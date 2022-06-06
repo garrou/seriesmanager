@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
@@ -7,7 +8,6 @@ import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/dialog.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
@@ -52,13 +52,39 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         body: UserSeasons(series: widget.series),
       );
 
+  Future<void> alertDialog(BuildContext context, VoidCallback onTap) =>
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Supprimer cette série ?', style: textStyle),
+              content: SvgPicture.asset(
+                'assets/delete.svg',
+                height: MediaQuery.of(context).size.height / 3,
+              ),
+              actions: <Widget>[
+                Padding(
+                  child: InkWell(
+                    child: Text('Non', style: textStyle),
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
+                  padding: const EdgeInsets.only(right: 20),
+                ),
+                InkWell(
+                  child: Text('Oui', style: textStyle),
+                  onTap: onTap,
+                )
+              ],
+            );
+          });
+
   void _delete() async {
     final HttpResponse response =
         await SeriesService().deleteBySeriesId(widget.series.id);
 
     if (response.success()) {
       pushAndRemove(context, const SeriesPage());
-      snackBar(context, 'Série supprimée', Colors.black);
+      snackBar(context, 'Série supprimée');
     } else {
       snackBar(context, response.message(), Colors.red);
     }

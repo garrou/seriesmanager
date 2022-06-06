@@ -3,10 +3,14 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/drawer/drawer.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
+import 'package:seriesmanager/views/user/profile/update_password.dart';
+import 'package:seriesmanager/views/user/profile/update_profile.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -16,37 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text('Mon profil', style: textStyle),
-        ),
-        drawer: const AppDrawer(),
-        body: ListView(children: const <Widget>[
-          ProfileCard(),
-        ]),
-        // TODO: update username
-        // TODO: update banner
-        // TODO: delete account
-      );
-}
-
-class ProfileCard extends StatefulWidget {
-  const ProfileCard({Key? key}) : super(key: key);
-
-  @override
-  State<ProfileCard> createState() => _ProfileCardState();
-}
-
-class _ProfileCardState extends State<ProfileCard> {
   late Future<UserProfile> _profile;
-
-  @override
-  void initState() {
-    _profile = _loadProfile();
-    super.initState();
-  }
 
   Future<UserProfile> _loadProfile() async {
     HttpResponse response = await UserService().getProfile();
@@ -59,7 +33,43 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<UserProfile>(
+  void initState() {
+    _profile = _loadProfile();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text('Mon profil', style: textStyle),
+          actions: [
+            IconButton(
+              onPressed: () {
+                // TODO: delete
+              },
+              icon: const Icon(Icons.delete_outline_outlined),
+            ),
+          ],
+        ),
+        drawer: const AppDrawer(),
+        body: ListView(
+          children: <Widget>[
+            AppResponsiveLayout(
+              mobileLayout: mobileLayout(),
+              desktopLayout: desktopLayout(),
+            ),
+          ],
+        ),
+      );
+
+  Widget desktopLayout() => Padding(
+        child: mobileLayout(),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width / 8),
+      );
+
+  Widget mobileLayout() => FutureBuilder<UserProfile>(
         future: _profile,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -79,21 +89,30 @@ class _ProfileCardState extends State<ProfileCard> {
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.person_outlined),
-                  title: Text("Nom d'utilisateur", style: textStyle),
-                  subtitle: Text(snapshot.data!.username, style: minTextStyle),
+                  leading: const Icon(Icons.list_alt_outlined),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () {},
+                    onPressed: () => push(
+                      context,
+                      UpdateProfile(profile: snapshot.data!),
+                    ),
                   ),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.email_outlined),
-                  title: Text('Email', style: textStyle),
-                  subtitle: Text(snapshot.data!.email, style: minTextStyle),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    onPressed: () {},
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListTile(
+                    leading: const Icon(Icons.person_outlined),
+                    title: Text("Nom d'utilisateur", style: textStyle),
+                    subtitle:
+                        Text(snapshot.data!.username, style: minTextStyle),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListTile(
+                    leading: const Icon(Icons.email_outlined),
+                    title: Text('Email', style: textStyle),
+                    subtitle: Text(snapshot.data!.email, style: minTextStyle),
                   ),
                 ),
                 ListTile(
@@ -101,7 +120,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   title: Text('Mot de passe', style: textStyle),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () {},
+                    onPressed: () => push(context, const UpdatePassword()),
                   ),
                 ),
                 ListTile(

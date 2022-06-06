@@ -6,7 +6,6 @@ import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/home.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
@@ -67,10 +66,11 @@ class SearchBanner extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) => Container();
 
   void _addImage(BuildContext context, String banner) async {
-    HttpResponse response = await UserService().setBanner(banner);
+    HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
       push(context, const ProfilePage());
+      snackBar(context, response.message());
     } else {
       snackBar(context, response.message(), Colors.red);
     }

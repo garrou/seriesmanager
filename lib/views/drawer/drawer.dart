@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';

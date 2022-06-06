@@ -41,6 +41,6 @@ class SearchService {
     final Response res =
         await client.get(Uri.parse('$endpoint/search/names/$name/images'));
     final response = HttpResponse(res);
-    return List<String>.from(response.content());
+    return List<String>.from(response.content() ?? List.empty());
   }
 }
