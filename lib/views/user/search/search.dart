@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/models/details_series.dart';
+import 'package:seriesmanager/models/api_details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/button.dart';
@@ -18,7 +18,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late Future<List<DetailsSeries>> _discoverSeries;
+  late Future<List<ApiDetailsSeries>> _discoverSeries;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
-  Future<List<DetailsSeries>> _loadDiscover() async {
+  Future<List<ApiDetailsSeries>> _loadDiscover() async {
     final HttpResponse response = await SearchService().discover();
 
     if (response.success()) {
@@ -51,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
             )
           ],
         ),
-        body: FutureBuilder<List<DetailsSeries>>(
+        body: FutureBuilder<List<ApiDetailsSeries>>(
           future: _discoverSeries,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
                             ? 3
                             : 4,
                 children: <Widget>[
-                  for (DetailsSeries series in snapshot.data!)
+                  for (ApiDetailsSeries series in snapshot.data!)
                     AppSeriesCard(
                       image: series.images['poster'],
                       series: series,
@@ -108,7 +108,7 @@ class SearchSeries extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) =>
-      FutureBuilder<List<DetailsSeries>>(
+      FutureBuilder<List<ApiDetailsSeries>>(
           future: _searchService.getSeriesByName(query),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -125,7 +125,7 @@ class SearchSeries extends SearchDelegate {
                             ? 3
                             : 4,
                 children: <Widget>[
-                  for (DetailsSeries series in snapshot.data!)
+                  for (ApiDetailsSeries series in snapshot.data!)
                     AppSeriesCard(
                       series: series,
                       image: series.images['poster'],

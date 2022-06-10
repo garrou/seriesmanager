@@ -13,42 +13,39 @@ class AppSeriesCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 10,
-              child: image.isNotEmpty
-                  ? Image.network(
-                      image,
-                      semanticLabel: 'Image de la série',
-                      loadingBuilder: (context, child, loadingProgress) {
-                        return loadingProgress == null
-                            ? child
-                            : Center(
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.grey,
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                    Colors.black,
-                                  ),
-                                  value: loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(5),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 10,
+          child: InkWell(
+            onTap: onTap,
+            onLongPress: () {},
+            child: image.isNotEmpty
+                ? Image.network(
+                    image,
+                    semanticLabel: 'Image de la série',
+                    loadingBuilder: (context, child, loadingProgress) {
+                      return loadingProgress == null
+                          ? child
+                          : Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Colors.black,
                                 ),
-                              );
-                      },
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(series.title, style: textStyle)],
-                    ),
-            ),
+                                value: loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!,
+                              ),
+                            );
+                    },
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text(series.title, style: textStyle)],
+                  ),
           ),
         ),
       );

@@ -1,4 +1,4 @@
-class DetailsSeries {
+class ApiDetailsSeries {
   final int id;
   final String title;
   final Map<String, dynamic> images;
@@ -12,7 +12,7 @@ class DetailsSeries {
   final List<dynamic> platforms;
   final double mean;
 
-  DetailsSeries(
+  ApiDetailsSeries(
     this.id,
     this.title,
     this.images,
@@ -27,7 +27,7 @@ class DetailsSeries {
     this.mean,
   );
 
-  DetailsSeries.fromJson(Map<String, dynamic> json)
+  ApiDetailsSeries.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         title = json['title'],
         images = json['images'],
@@ -42,9 +42,9 @@ class DetailsSeries {
         mean = json['notes']?['mean'].toDouble();
 }
 
-List<DetailsSeries> createDetailsSeries(List<dynamic>? records) =>
+List<ApiDetailsSeries> createDetailsSeries(List<dynamic>? records) =>
     records == null
         ? List.empty()
         : records
-            .map((json) => DetailsSeries.fromJson(json))
+            .map((json) => ApiDetailsSeries.fromJson(json))
             .toList(growable: false);

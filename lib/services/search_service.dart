@@ -1,4 +1,4 @@
-import 'package:seriesmanager/models/details_series.dart';
+import 'package:seriesmanager/models/api_details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/utils/constants.dart';
 import 'package:seriesmanager/models/interceptor.dart';
@@ -17,7 +17,7 @@ class SearchService {
     return HttpResponse(response);
   }
 
-  Future<List<DetailsSeries>> getSeriesByName(String name) async {
+  Future<List<ApiDetailsSeries>> getSeriesByName(String name) async {
     final Response res =
         await client.get(Uri.parse('$endpoint/search/names/$name'));
     final response = HttpResponse(res);

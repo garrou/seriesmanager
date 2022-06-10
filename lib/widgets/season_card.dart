@@ -16,54 +16,50 @@ class AppSeasonCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Padding(
-          child: MouseRegion(
-            child: Badge(
-              position: BadgePosition.topEnd(end: 15),
-              badgeColor: Colors.black,
-              padding: const EdgeInsets.all(5),
-              badgeContent: Text(
-                '${season.number}',
-                style: const TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 10,
-                child: season.image.isNotEmpty
-                    ? Image.network(
-                        season.image,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          return loadingProgress == null
-                              ? child
-                              : Center(
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Colors.grey,
-                                    valueColor:
-                                        const AlwaysStoppedAnimation<Color>(
-                                      Colors.black,
-                                    ),
-                                    value:
-                                        loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!,
-                                  ),
-                                );
-                        },
-                      )
-                    : Center(
-                        child: Text(
-                          'Episodes : ${season.episodes}',
-                          style: textStyle,
-                        ),
-                      ),
-              ),
-            ),
-            cursor: SystemMouseCursors.click,
+  Widget build(BuildContext context) => Padding(
+        child: Badge(
+          position: BadgePosition.topEnd(end: 15),
+          badgeColor: Colors.black,
+          padding: const EdgeInsets.all(5),
+          badgeContent: Text(
+            '${season.number}',
+            style: const TextStyle(color: Colors.white, fontSize: 20),
           ),
-          padding: const EdgeInsets.all(10),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 10,
+            child: InkWell(
+              onTap: onTap,
+              child: season.image.isNotEmpty
+                  ? Image.network(
+                      season.image,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        return loadingProgress == null
+                            ? child
+                            : Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.grey,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                    Colors.black,
+                                  ),
+                                  value: loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!,
+                                ),
+                              );
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        'Episodes : ${season.episodes}',
+                        style: textStyle,
+                      ),
+                    ),
+            ),
+          ),
         ),
+        padding: const EdgeInsets.all(10),
       );
 }

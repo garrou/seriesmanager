@@ -22,22 +22,25 @@ class SeasonDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Saison ${season.number}', style: textStyle),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // TODO: edit
-            },
-            icon: const Icon(Icons.edit_outlined, size: iconSize),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text('Saison ${season.number}', style: textStyle),
+          actions: [
+            IconButton(
+              onPressed: () {
+                // TODO: edit
+              },
+              icon: const Icon(Icons.edit_outlined, size: iconSize),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: MobileLayout(series: series, season: season),
+            desktopLayout: DesktopLayout(series: series, season: season),
           ),
-        ],
-      ),
-      body: AppResponsiveLayout(
-        mobileLayout: MobileLayout(series: series, season: season),
-        desktopLayout: DesktopLayout(series: series, season: season),
-      ));
+        ),
+      );
 }
 
 class MobileLayout extends StatelessWidget {
@@ -48,7 +51,7 @@ class MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
         SeasonInfos(series: series, season: season),
         EpisodesList(series: series, season: season),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:seriesmanager/models/details_series.dart';
+import 'package:seriesmanager/models/api_details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
@@ -13,7 +13,7 @@ import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class SearchDetailsPage extends StatelessWidget {
-  final DetailsSeries series;
+  final ApiDetailsSeries series;
   const SearchDetailsPage({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class SearchDetailsPage extends StatelessWidget {
 }
 
 class DesktopLayout extends StatelessWidget {
-  final DetailsSeries series;
+  final ApiDetailsSeries series;
   const DesktopLayout({Key? key, required this.series}) : super(key: key);
 
   @override
@@ -63,7 +63,7 @@ class DesktopLayout extends StatelessWidget {
 }
 
 class MobileLayout extends StatefulWidget {
-  final DetailsSeries series;
+  final ApiDetailsSeries series;
   const MobileLayout({Key? key, required this.series}) : super(key: key);
 
   @override
