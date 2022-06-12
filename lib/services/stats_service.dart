@@ -21,4 +21,21 @@ class StatsService {
         await client.get(Uri.parse('$endpoint/stats/seasons/time'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getTotalSeries() async {
+    Response response =
+        await client.get(Uri.parse('$endpoint/stats/series/count'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> getTotalTime() async {
+    Response response = await client.get(Uri.parse('$endpoint/stats/time'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> getTimeCurrentWeek() async {
+    Response response =
+        await client.get(Uri.parse('$endpoint/stats/time/week'));
+    return HttpResponse(response);
+  }
 }

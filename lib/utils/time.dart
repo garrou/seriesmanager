@@ -1,4 +1,11 @@
 class Time {
+  static const int minsInHour = 60;
+
+  static const int minsInDay = 1440;
+
   static String minsToStringHours(int mins) =>
-      '${mins ~/ 60} h ${mins % 60} mins';
+      '${mins ~/ minsInHour} h ${mins % minsInHour} mins';
+
+  static String minsToStringDays(int mins) =>
+      '${(mins / minsInDay).toStringAsFixed(2)} jours';
 }

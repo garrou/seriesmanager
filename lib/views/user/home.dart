@@ -66,7 +66,6 @@ class _MobileLayoutState extends State<MobileLayout> {
     HttpResponse response = await UserService().getProfile();
 
     if (response.success()) {
-      print(response.content());
       return UserProfile.fromJson(response.content());
     } else {
       throw Exception();
