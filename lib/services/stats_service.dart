@@ -16,6 +16,12 @@ class StatsService {
     return HttpResponse(response);
   }
 
+  Future<HttpResponse> getNbEpisodesByYear() async {
+    Response response =
+        await client.get(Uri.parse('$endpoint/stats/episodes/years'));
+    return HttpResponse(response);
+  }
+
   Future<HttpResponse> getTimeSeasonsByYear() async {
     Response response =
         await client.get(Uri.parse('$endpoint/stats/seasons/time'));

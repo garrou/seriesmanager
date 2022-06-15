@@ -25,16 +25,9 @@ class SeasonDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Saison ${season.number}', style: textStyle),
-          actions: [
-            IconButton(
-              onPressed: () {
-                // TODO: edit
-              },
-              icon: const Icon(Icons.edit_outlined, size: iconSize),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
+          controller: ScrollController(),
           child: AppResponsiveLayout(
             mobileLayout: MobileLayout(series: series, season: season),
             desktopLayout: DesktopLayout(series: series, season: season),
@@ -199,6 +192,7 @@ class _EpisodesListState extends State<EpisodesList> {
                 return const ErrorPage();
               } else if (snapshot.hasData) {
                 return SingleChildScrollView(
+                  controller: ScrollController(),
                   child: ExpansionPanelList(
                     expansionCallback: (int index, bool isExpanded) {
                       setState(() {

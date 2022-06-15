@@ -5,7 +5,7 @@ import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
-import 'package:seriesmanager/views/user/profile/profile.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
@@ -35,6 +35,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         ],
       ),
       body: SingleChildScrollView(
+        controller: ScrollController(),
         child: AppResponsiveLayout(
           mobileLayout: mobileLayout(),
           desktopLayout: desktopLayout(),
@@ -100,7 +101,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         _current.text.trim(), _password.text.trim(), _confirm.text.trim());
 
     if (response.success()) {
-      push(context, const ProfilePage());
+      push(context, const UserNav(initial: 4));
     }
     snackBar(
       context,

@@ -60,6 +60,7 @@ class _SearchPageState extends State<SearchPage> {
               final width = MediaQuery.of(context).size.width;
 
               return GridView.count(
+                controller: ScrollController(),
                 crossAxisCount: width < 400
                     ? 1
                     : width < 600
@@ -117,6 +118,7 @@ class SearchSeries extends SearchDelegate {
               final width = MediaQuery.of(context).size.width;
 
               return GridView.count(
+                controller: ScrollController(),
                 crossAxisCount: width < 400
                     ? 1
                     : width < 600

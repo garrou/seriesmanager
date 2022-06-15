@@ -11,6 +11,7 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/calendar.dart';
@@ -60,6 +61,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
               final width = MediaQuery.of(context).size.width;
 
               return GridView.count(
+                controller: ScrollController(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 crossAxisCount: width < 400
@@ -155,6 +157,7 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
           height: MediaQuery.of(context).size.height * 0.8,
           width: MediaQuery.of(context).size.width * 0.8,
           child: ListView(
+            controller: ScrollController(),
             children: [
               Card(
                 elevation: 10,
@@ -205,7 +208,7 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
       final HttpResponse response = await SeasonService().add(season);
 
       if (response.success()) {
-        doublePush(context, const SeriesPage(),
+        doublePush(context, const UserNav(initial: 1),
             SeriesDetailsPage(series: widget.series));
       } else {
         snackBar(context, response.message(), Colors.red);

@@ -2,12 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
+import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/user/drawer/drawer.dart';
+import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
+import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({Key? key}) : super(key: key);
@@ -17,19 +22,18 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
-  final StreamController<bool> _streamController = StreamController();
-
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Accueil', style: textStyle),
         ),
-        drawer: const AppDrawer(),
-        body: AuthGuard(
-          authStream: _streamController.stream,
-          signedOut: const LoginPage(),
-          signedIn: const MobileLayout(),
+        body: SingleChildScrollView(
+          controller: ScrollController(),
+          child: const AppResponsiveLayout(
+            mobileLayout: MobileLayout(),
+            desktopLayout: DesktopLayout(),
+          ),
         ),
       );
 }
@@ -73,7 +77,21 @@ class _MobileLayoutState extends State<MobileLayout> {
   }
 
   @override
-  Widget build(BuildContext context) => const Card(
-        child: Text('coucou'),
+  Widget build(BuildContext context) => FutureBuilder<UserProfile>(
+        future: _profile,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            Storage.removeToken();
+            pushAndRemove(context, const LoginPage());
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: Column(
+                children: <Widget>[],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
       );
 }

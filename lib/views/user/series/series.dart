@@ -6,9 +6,8 @@ import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/search/search.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
-import 'package:seriesmanager/views/user/drawer/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
 
@@ -32,12 +31,11 @@ class _SeriesPageState extends State<SeriesPage> {
               icon: const Icon(Icons.search_outlined, size: iconSize),
             ),
             IconButton(
-              onPressed: () => push(context, const SearchPage()),
+              onPressed: () => push(context, const UserNav(initial: 2)),
               icon: const Icon(Icons.add_outlined, size: iconSize),
             ),
           ],
         ),
-        drawer: const AppDrawer(),
         body: const AllUserSeries(),
       );
 }
@@ -79,6 +77,7 @@ class _AllUserSeriesState extends State<AllUserSeries> {
             final width = MediaQuery.of(context).size.width;
 
             return GridView.count(
+              controller: ScrollController(),
               crossAxisCount: width < 400
                   ? 1
                   : width < 600
@@ -171,6 +170,7 @@ class SearchUserSeries extends SearchDelegate {
           final width = MediaQuery.of(context).size.width;
 
           return GridView.count(
+            controller: ScrollController(),
             crossAxisCount: width < 400
                 ? 1
                 : width < 600

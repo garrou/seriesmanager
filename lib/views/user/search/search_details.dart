@@ -9,7 +9,7 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
-import 'package:seriesmanager/views/user/series/series.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class SearchDetailsPage extends StatelessWidget {
@@ -29,6 +29,7 @@ class SearchDetailsPage extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+        controller: ScrollController(),
         child: AppResponsiveLayout(
           mobileLayout: MobileLayout(series: series),
           desktopLayout: DesktopLayout(series: series),
@@ -42,7 +43,7 @@ class SearchDetailsPage extends StatelessWidget {
     );
 
     if (response.success()) {
-      pushAndRemove(context, const SeriesPage());
+      push(context, const UserNav(initial: 1));
     } else {
       snackBar(context, response.message(), Colors.red);
     }
@@ -218,6 +219,7 @@ class _MobileLayoutState extends State<MobileLayout> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 4,
               child: ListView(
+                controller: ScrollController(),
                 scrollDirection: Axis.horizontal,
                 children: [
                   for (dynamic platform in widget.series.platforms)

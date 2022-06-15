@@ -33,4 +33,10 @@ class SeasonService {
         .get(Uri.parse('$endpoint/seasons/$number/series/$seriesId/infos'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getDetailsSeasonsViewed(int seriesId) async {
+    final Response response = await client
+        .get(Uri.parse('$endpoint/seasons/series/$seriesId/viewed'));
+    return HttpResponse(response);
+  }
 }

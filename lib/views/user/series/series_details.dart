@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/season.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
@@ -12,11 +13,13 @@ import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/views/user/series/season/season_add.dart';
 import 'package:seriesmanager/views/user/series/season/season_details.dart';
-import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/season_card.dart';
+
+final SeasonService _seasonService = SeasonService();
 
 class SeriesDetailsPage extends StatefulWidget {
   final UserSeries series;
@@ -49,7 +52,14 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
             )
           ],
         ),
-        body: UserSeasons(series: widget.series),
+        body: ListView(
+          controller: ScrollController(),
+          children: <Widget>[
+            SeasonsInfos(series: widget.series),
+            SeasonsDetailsViewed(series: widget.series),
+            Seasons(series: widget.series),
+          ],
+        ),
       );
 
   Future<void> alertDialog(BuildContext context, VoidCallback onTap) =>
@@ -83,7 +93,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         await SeriesService().deleteBySeriesId(widget.series.id);
 
     if (response.success()) {
-      pushAndRemove(context, const SeriesPage());
+      pushAndRemove(context, const UserNav(initial: 1));
       snackBar(context, 'Série supprimée');
     } else {
       snackBar(context, response.message(), Colors.red);
@@ -91,34 +101,21 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
   }
 }
 
-class UserSeasons extends StatefulWidget {
+class SeasonsInfos extends StatefulWidget {
   final UserSeries series;
-  const UserSeasons({Key? key, required this.series}) : super(key: key);
+  const SeasonsInfos({Key? key, required this.series}) : super(key: key);
 
   @override
-  State<UserSeasons> createState() => _UserSeasonsState();
+  State<SeasonsInfos> createState() => _SeasonsInfosState();
 }
 
-class _UserSeasonsState extends State<UserSeasons> {
-  late Future<List<UserSeason>> _seasons;
+class _SeasonsInfosState extends State<SeasonsInfos> {
   late Future<UserSeriesInfo> _seriesInfos;
 
   @override
   void initState() {
     super.initState();
-    _seasons = _loadSeasons();
     _seriesInfos = _loadSeriesInfos();
-  }
-
-  Future<List<UserSeason>> _loadSeasons() async {
-    HttpResponse response =
-        await SeasonService().getBySeriesId(widget.series.id);
-
-    if (response.success()) {
-      return createUserSeasons(response.content());
-    } else {
-      throw Exception();
-    }
   }
 
   Future<UserSeriesInfo> _loadSeriesInfos() async {
@@ -133,81 +130,203 @@ class _UserSeasonsState extends State<UserSeasons> {
   }
 
   @override
-  Widget build(BuildContext context) => ListView(
-        children: <Widget>[
-          FutureBuilder<UserSeriesInfo>(
-            future: _seriesInfos,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const ErrorPage();
-              } else if (snapshot.hasData) {
-                return Card(
-                  elevation: 10,
-                  child: Column(
-                    children: <Widget>[
-                      if (snapshot.data!.hasValidDate())
-                        ListTile(
-                          leading: const Icon(Icons.calendar_month_outlined),
-                          title: Text(
-                            '${snapshot.data!.formatStartedAt()} - ${snapshot.data!.formatFinishedAt()}',
-                          ),
-                        ),
-                      ListTile(
-                        leading: const Icon(Icons.video_library_outlined),
-                        title: Text('Saisons vues : ${snapshot.data!.seasons}'),
+  Widget build(BuildContext context) => FutureBuilder<UserSeriesInfo>(
+        future: _seriesInfos,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: Column(
+                children: <Widget>[
+                  if (snapshot.data!.hasValidDate())
+                    ListTile(
+                      leading: const Icon(Icons.calendar_month_outlined),
+                      title: Text(
+                        '${snapshot.data!.formatStartedAt()} - ${snapshot.data!.formatFinishedAt()}',
                       ),
-                      ListTile(
-                        leading: const Icon(Icons.list_alt_outlined),
-                        title:
-                            Text('Episodes vus : ${snapshot.data!.episodes}'),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.timelapse_outlined),
-                        title: Text(
-                          Time.minsToStringHours(snapshot.data!.duration),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ListTile(
+                    leading: const Icon(Icons.video_library_outlined),
+                    title: Text('Saisons vues : ${snapshot.data!.seasons}'),
                   ),
-                );
-              }
-              return const AppLoading();
-            },
-          ),
-          FutureBuilder<List<UserSeason>>(
-            future: _seasons,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const ErrorPage();
-              } else if (snapshot.hasData) {
-                final width = MediaQuery.of(context).size.width;
-
-                return GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: width < 400
-                      ? 1
-                      : width < 600
-                          ? 2
-                          : width < 900
-                              ? 3
-                              : 4,
-                  children: <Widget>[
-                    for (UserSeason season in snapshot.data!)
-                      AppSeasonCard(
-                        series: widget.series,
-                        season: season,
-                        onTap: () => push(
-                          context,
-                          SeasonDetailsPage(
-                              series: widget.series, season: season),
-                        ),
-                      )
-                  ],
-                );
-              }
-              return const AppLoading();
-            },
-          )
-        ],
+                  ListTile(
+                    leading: const Icon(Icons.list_alt_outlined),
+                    title: Text('Episodes vus : ${snapshot.data!.episodes}'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.timelapse_outlined),
+                    title: Text(
+                      Time.minsToStringHours(snapshot.data!.duration),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
       );
 }
+
+class SeasonsDetailsViewed extends StatefulWidget {
+  final UserSeries series;
+  const SeasonsDetailsViewed({Key? key, required this.series})
+      : super(key: key);
+
+  @override
+  State<SeasonsDetailsViewed> createState() => _SeasonsDetailsViewedState();
+}
+
+class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
+  late Future<List<SeasonDetailsViewed>> _details;
+  bool _isVisible = false;
+
+  @override
+  void initState() {
+    _details = _loadDetails();
+    super.initState();
+  }
+
+  Future<List<SeasonDetailsViewed>> _loadDetails() async {
+    HttpResponse response =
+        await _seasonService.getDetailsSeasonsViewed(widget.series.id);
+
+    if (response.success()) {
+      return createDetails(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<SeasonDetailsViewed>>(
+        future: _details,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() => _isVisible = !_isVisible);
+                    },
+                    child: ListTile(
+                      leading: const Icon(Icons.movie_outlined),
+                      title: const Text('Détails de visionnage'),
+                      trailing: _isVisible
+                          ? const Icon(Icons.arrow_upward_outlined)
+                          : const Icon(Icons.arrow_downward_outlined),
+                    ),
+                  ),
+                  Visibility(
+                    visible: _isVisible,
+                    child: Column(
+                      children: <Widget>[
+                        for (SeasonDetailsViewed details in snapshot.data!)
+                          ListTile(
+                            title: Text(
+                              'Saison ${details.number}',
+                              style: smallBoldTextStyle,
+                            ),
+                            subtitle: Text('Vue ${details.total} fois'),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
+class Seasons extends StatefulWidget {
+  final UserSeries series;
+  const Seasons({Key? key, required this.series}) : super(key: key);
+
+  @override
+  State<Seasons> createState() => _SeasonsState();
+}
+
+class _SeasonsState extends State<Seasons> {
+  late Future<List<UserSeason>> _seasons;
+
+  @override
+  void initState() {
+    super.initState();
+    _seasons = _loadSeasons();
+  }
+
+  Future<List<UserSeason>> _loadSeasons() async {
+    HttpResponse response =
+        await _seasonService.getBySeriesId(widget.series.id);
+
+    if (response.success()) {
+      return createUserSeasons(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<UserSeason>>(
+        future: _seasons,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            final width = MediaQuery.of(context).size.width;
+
+            return GridView.count(
+              controller: ScrollController(),
+              shrinkWrap: true,
+              crossAxisCount: width < 400
+                  ? 1
+                  : width < 600
+                      ? 2
+                      : width < 900
+                          ? 3
+                          : 4,
+              children: <Widget>[
+                for (UserSeason season in snapshot.data!)
+                  AppSeasonCard(
+                    series: widget.series,
+                    season: season,
+                    onTap: () => push(
+                      context,
+                      SeasonDetailsPage(series: widget.series, season: season),
+                    ),
+                  )
+              ],
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
+class SeasonDetailsViewed {
+  final int number;
+  final int total;
+
+  SeasonDetailsViewed(this.number, this.total);
+
+  SeasonDetailsViewed.fromJson(Map<String, dynamic> json)
+      : number = json['number'],
+        total = json['total'];
+}
+
+List<SeasonDetailsViewed> createDetails(List<dynamic>? records) =>
+    records == null
+        ? List.empty()
+        : records
+            .map((json) => SeasonDetailsViewed.fromJson(json))
+            .toList(growable: false);
