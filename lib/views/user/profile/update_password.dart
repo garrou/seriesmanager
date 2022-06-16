@@ -101,7 +101,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         _current.text.trim(), _password.text.trim(), _confirm.text.trim());
 
     if (response.success()) {
-      push(context, const UserNav(initial: 4));
+      pushAndRemove(context, const UserNav(initial: 3));
     }
     snackBar(
       context,

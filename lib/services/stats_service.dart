@@ -44,4 +44,10 @@ class StatsService {
         await client.get(Uri.parse('$endpoint/stats/time/week'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getAddedSeriesByYears() async {
+    Response response =
+        await client.get(Uri.parse('$endpoint/stats/series/years'));
+    return HttpResponse(response);
+  }
 }

@@ -5,8 +5,9 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/storage.dart';
+import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
@@ -29,11 +30,7 @@ class _SeriesPageState extends State<SeriesPage> {
               onPressed: () =>
                   showSearch(context: context, delegate: SearchUserSeries()),
               icon: const Icon(Icons.search_outlined, size: iconSize),
-            ),
-            IconButton(
-              onPressed: () => push(context, const UserNav(initial: 2)),
-              icon: const Icon(Icons.add_outlined, size: iconSize),
-            ),
+            )
           ],
         ),
         body: const AllUserSeries(),
@@ -72,7 +69,8 @@ class _AllUserSeriesState extends State<AllUserSeries> {
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            Storage.removeToken();
+            pushAndRemove(context, const LoginPage());
           } else if (snapshot.hasData) {
             final width = MediaQuery.of(context).size.width;
 

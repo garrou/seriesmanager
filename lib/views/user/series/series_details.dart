@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/season.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
@@ -93,7 +92,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         await SeriesService().deleteBySeriesId(widget.series.id);
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 1));
+      pushAndRemove(context, const UserNav(initial: 0));
       snackBar(context, 'Série supprimée');
     } else {
       snackBar(context, response.message(), Colors.red);

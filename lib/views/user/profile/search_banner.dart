@@ -70,7 +70,7 @@ class SearchBanner extends SearchDelegate {
     HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
-      push(context, const UserNav(initial: 4));
+      pushAndRemove(context, const UserNav(initial: 3));
       snackBar(context, response.message());
     } else {
       snackBar(context, response.message(), Colors.red);

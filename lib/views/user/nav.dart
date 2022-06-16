@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
@@ -16,7 +15,6 @@ class UserNav extends StatefulWidget {
 class _UserNavState extends State<UserNav> {
   late int _current;
   final _screens = [
-    const UserHomePage(),
     const SeriesPage(),
     const SearchPage(),
     const StatisticsPage(),
@@ -43,10 +41,6 @@ class _UserNavState extends State<UserNav> {
           selectedItemColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Accueil',
-            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.video_library_outlined),
               label: 'Mes séries',

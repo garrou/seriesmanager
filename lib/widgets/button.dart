@@ -9,10 +9,14 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(content, style: buttonTextStyle),
-          style: roundedButtonStyle,
+        child: SizedBox(
+          height: 50,
+          width: 200,
+          child: ElevatedButton(
+            onPressed: onPressed,
+            child: Text(content, style: buttonTextStyle),
+            style: roundedButtonStyle,
+          ),
         ),
         padding: const EdgeInsets.all(5),
       );

@@ -43,7 +43,7 @@ class SearchDetailsPage extends StatelessWidget {
     );
 
     if (response.success()) {
-      push(context, const UserNav(initial: 1));
+      pushAndRemove(context, const UserNav(initial: 0));
     } else {
       snackBar(context, response.message(), Colors.red);
     }
