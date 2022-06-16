@@ -10,4 +10,6 @@ class Time {
 
   static String minsToStringDays(int mins) =>
       '${(mins / minsInDay).toStringAsFixed(2)} jours';
+
+  static String dateToString(DateTime date) => date.toUtc().toIso8601String();
 }

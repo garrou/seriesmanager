@@ -24,6 +24,14 @@ class SeasonDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Saison ${season.number}', style: textStyle),
+          actions: [
+            IconButton(
+              onPressed: () {
+                // TODO : edit season
+              },
+              icon: const Icon(Icons.edit_outlined),
+            )
+          ],
         ),
         body: SingleChildScrollView(
           controller: ScrollController(),
@@ -204,6 +212,7 @@ class _EpisodesListState extends State<EpisodesList> {
                           headerBuilder: (context, isExpanded) {
                             return ListTile(
                               title: Text(episode.title, style: textStyle),
+                              subtitle: Text(episode.formatDate()),
                             );
                           },
                           body: ListTile(
