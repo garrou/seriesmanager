@@ -8,8 +8,8 @@ import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
-import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
@@ -135,7 +135,7 @@ class _LoginFormState extends State<LoginForm> {
 
     if (response.success()) {
       Storage.setToken(response.content());
-      pushAndRemove(context, const UserHomePage());
+      pushAndRemove(context, const UserNav(initial: 0));
     } else {
       snackBar(context, response.message(), Colors.red);
     }

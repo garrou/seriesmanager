@@ -5,11 +5,11 @@ import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/drawer/drawer.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/views/user/profile/update_password.dart';
 import 'package:seriesmanager/views/user/profile/update_profile.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -52,8 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        drawer: const AppDrawer(),
         body: SingleChildScrollView(
+          controller: ScrollController(),
           child: AppResponsiveLayout(
             mobileLayout: mobileLayout(),
             desktopLayout: desktopLayout(),
@@ -75,6 +75,10 @@ class _ProfilePageState extends State<ProfilePage> {
           } else if (snapshot.hasData) {
             return Column(
               children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: AppNetworkImage(image: snapshot.data!.banner),
+                ),
                 ListTile(
                   leading: const Icon(Icons.image_outlined),
                   title: Text('Bannière', style: textStyle),

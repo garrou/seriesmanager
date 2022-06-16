@@ -6,7 +6,7 @@ import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/profile/profile.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 
@@ -40,6 +40,7 @@ class SearchBanner extends SearchDelegate {
           final width = MediaQuery.of(context).size.width;
 
           return GridView.count(
+            controller: ScrollController(),
             crossAxisCount: width < 400
                 ? 1
                 : width < 600
@@ -69,7 +70,7 @@ class SearchBanner extends SearchDelegate {
     HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
-      push(context, const ProfilePage());
+      pushAndRemove(context, const UserNav(initial: 3));
       snackBar(context, response.message());
     } else {
       snackBar(context, response.message(), Colors.red);

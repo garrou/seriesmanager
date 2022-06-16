@@ -6,7 +6,6 @@ import 'package:seriesmanager/models/user_season_info.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
-import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
@@ -25,16 +24,9 @@ class SeasonDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Saison ${season.number}', style: textStyle),
-          actions: [
-            IconButton(
-              onPressed: () {
-                // TODO: edit
-              },
-              icon: const Icon(Icons.edit_outlined, size: iconSize),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
+          controller: ScrollController(),
           child: AppResponsiveLayout(
             mobileLayout: MobileLayout(series: series, season: season),
             desktopLayout: DesktopLayout(series: series, season: season),
@@ -199,6 +191,7 @@ class _EpisodesListState extends State<EpisodesList> {
                 return const ErrorPage();
               } else if (snapshot.hasData) {
                 return SingleChildScrollView(
+                  controller: ScrollController(),
                   child: ExpansionPanelList(
                     expansionCallback: (int index, bool isExpanded) {
                       setState(() {

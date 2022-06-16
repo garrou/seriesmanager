@@ -7,7 +7,7 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/user/home.dart';
+import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/button.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => Scaffold(
         body: AuthGuard(
           authStream: _streamController.stream,
-          signedIn: const UserHomePage(),
+          signedIn: const UserNav(initial: 0),
           signedOut: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

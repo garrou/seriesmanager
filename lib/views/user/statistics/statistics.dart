@@ -4,7 +4,6 @@ import 'package:seriesmanager/services/stats_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/drawer/drawer.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -27,9 +26,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
         backgroundColor: Colors.black,
         title: Text('Statistiques', style: textStyle),
       ),
-      drawer: const AppDrawer(),
       body: GridView.count(
-        crossAxisCount: width < 500
+        controller: ScrollController(),
+        crossAxisCount: width < 600
             ? 1
             : width < 900
                 ? 2
@@ -37,7 +36,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
         children: const <Widget>[
           TotalStats(),
           CurrentStats(),
+          SeriesAddedYears(),
           NbSeasonsByYear(),
+          NbEpisodesByYear(),
           TimeSeasonsByYear(),
         ],
       ),
@@ -188,6 +189,62 @@ class _CurrentStatsState extends State<CurrentStats> {
       );
 }
 
+class SeriesAddedYears extends StatefulWidget {
+  const SeriesAddedYears({Key? key}) : super(key: key);
+
+  @override
+  State<SeriesAddedYears> createState() => _SeriesAddedYearsState();
+}
+
+class _SeriesAddedYearsState extends State<SeriesAddedYears> {
+  late Future<List<SeriesStat>> _series;
+
+  Future<List<SeriesStat>> _loadAddedSeries() async {
+    HttpResponse response = await _statsService.getAddedSeriesByYears();
+
+    if (response.success()) {
+      return createSeriesStats(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  void initState() {
+    _series = _loadAddedSeries();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<SeriesStat>>(
+        future: _series,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: SfCircularChart(
+                title: ChartTitle(text: 'Séries ajoutées par années'),
+                legend: Legend(
+                    isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                series: <CircularSeries<dynamic, String>>[
+                  PieSeries<SeriesStat, String>(
+                    dataSource: snapshot.data!,
+                    xValueMapper: (SeriesStat stat, _) => stat.added,
+                    yValueMapper: (SeriesStat stat, _) => stat.total,
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
+                    enableTooltip: true,
+                  )
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
 class NbSeasonsByYear extends StatefulWidget {
   const NbSeasonsByYear({Key? key}) : super(key: key);
 
@@ -215,35 +272,84 @@ class _NbSeasonsByYearState extends State<NbSeasonsByYear> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: FutureBuilder<List<SeasonStat>>(
-          future: _stats,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const ErrorPage();
-            } else if (snapshot.hasData) {
-              return Card(
-                elevation: 10,
-                child: SfCartesianChart(
-                  title: ChartTitle(text: 'Saisons par années'),
-                  primaryXAxis: CategoryAxis(),
-                  series: <ChartSeries<SeasonStat, int>>[
-                    BarSeries<SeasonStat, int>(
-                      onPointTap: (chart) {
-                        // TODO: details
-                      },
-                      color: Colors.red,
-                      dataSource: snapshot.data!,
-                      xValueMapper: (SeasonStat stat, _) => stat.started,
-                      yValueMapper: (SeasonStat stat, _) => stat.number,
-                    )
-                  ],
-                ),
-              );
-            }
-            return const AppLoading();
-          },
-        ),
+  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+        future: _stats,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: SfCartesianChart(
+                title: ChartTitle(text: 'Saisons par années'),
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries<SeasonStat, int>>[
+                  BarSeries<SeasonStat, int>(
+                    color: Colors.red,
+                    dataSource: snapshot.data!,
+                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    yValueMapper: (SeasonStat stat, _) => stat.number,
+                  )
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
+class NbEpisodesByYear extends StatefulWidget {
+  const NbEpisodesByYear({Key? key}) : super(key: key);
+
+  @override
+  State<NbEpisodesByYear> createState() => _NbEpisodesByYearState();
+}
+
+class _NbEpisodesByYearState extends State<NbEpisodesByYear> {
+  late Future<List<SeasonStat>> _stats;
+
+  Future<List<SeasonStat>> _load() async {
+    final HttpResponse response = await _statsService.getNbEpisodesByYear();
+
+    if (response.success()) {
+      return createSeasonStats(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  void initState() {
+    _stats = _load();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+        future: _stats,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: SfCartesianChart(
+                title: ChartTitle(text: 'Episodes par années'),
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries<SeasonStat, int>>[
+                  AreaSeries<SeasonStat, int>(
+                    color: Colors.green,
+                    dataSource: snapshot.data!,
+                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    yValueMapper: (SeasonStat stat, _) => stat.number,
+                  )
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
       );
 }
 
@@ -274,34 +380,32 @@ class _TimeSeasonsByYearState extends State<TimeSeasonsByYear> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: FutureBuilder<List<SeasonStat>>(
-          future: _stats,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const ErrorPage();
-            } else if (snapshot.hasData) {
-              return Card(
-                elevation: 10,
-                child: SfCartesianChart(
-                  title: ChartTitle(text: 'Minutes par années'),
-                  primaryXAxis: CategoryAxis(),
-                  series: <ChartSeries<SeasonStat, int>>[
-                    LineSeries<SeasonStat, int>(
-                      color: Colors.orange,
-                      dataSource: snapshot.data!,
-                      xValueMapper: (SeasonStat stat, _) => stat.started,
-                      yValueMapper: (SeasonStat stat, _) => stat.number,
-                      width: 2,
-                      markerSettings: const MarkerSettings(isVisible: true),
-                    )
-                  ],
-                ),
-              );
-            }
-            return const AppLoading();
-          },
-        ),
+  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+        future: _stats,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: SfCartesianChart(
+                title: ChartTitle(text: 'Heures par années'),
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries<SeasonStat, int>>[
+                  AreaSeries<SeasonStat, int>(
+                    color: Colors.orange,
+                    dataSource: snapshot.data!,
+                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    yValueMapper: (SeasonStat stat, _) =>
+                        Time.minsToHours(stat.number),
+                    markerSettings: const MarkerSettings(isVisible: true),
+                  )
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
       );
 }
 
@@ -342,3 +446,16 @@ class SeasonStat {
 List<SeasonStat> createSeasonStats(List<dynamic>? records) => records == null
     ? List.empty()
     : records.map((json) => SeasonStat.fromJson(json)).toList(growable: false);
+
+class SeriesStat {
+  final String added;
+  final int total;
+
+  SeriesStat.fromJson(Map<String, dynamic> json)
+      : added = json['added'].toString(),
+        total = json['total'];
+}
+
+List<SeriesStat> createSeriesStats(List<dynamic>? records) => records == null
+    ? List.empty()
+    : records.map((json) => SeriesStat.fromJson(json)).toList(growable: false);
