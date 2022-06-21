@@ -42,15 +42,14 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> addAllSeasons(int seriesId, List<ApiSeason> seasons,
-      DateTime start, DateTime end) async {
+  Future<HttpResponse> addAllSeasons(
+      int seriesId, List<ApiSeason> seasons, DateTime viewedAt) async {
     final Response response = await client.post(
       Uri.parse('$endpoint/seasons/series/$seriesId/all'),
       body: jsonEncode(
         <String, dynamic>{
           'seasons': seasons,
-          'start': Time.dateToString(start),
-          'end': Time.dateToString(end),
+          'viewedAt': Time.dateToString(viewedAt),
         },
       ),
     );

@@ -28,6 +28,8 @@ class SeasonDetailsPage extends StatelessWidget {
             IconButton(
               onPressed: () {
                 // TODO : edit season
+                // TODO: delete season
+                // TODO: refresh
               },
               icon: const Icon(Icons.edit_outlined),
             )
@@ -127,12 +129,6 @@ class _SeasonInfosState extends State<SeasonInfos> {
                       style: boldTextStyle, textAlign: TextAlign.center),
                   padding: const EdgeInsets.only(top: 10),
                 ),
-                for (UserSeasonInfo seasonInfo in snapshot.data!)
-                  ListTile(
-                    leading: const Icon(Icons.calendar_month_outlined),
-                    title: Text(
-                        '${seasonInfo.formatStartedAt()} - ${seasonInfo.formatFinishedAt()}'),
-                  ),
                 ListTile(
                   leading: const Icon(Icons.timelapse, size: 30),
                   title: Text(Time.minsToStringHours(

@@ -40,10 +40,10 @@ dependencies:
   shared_preferences: ^2.0.15
   flutter_guards: ^0.0.2
   badges: ^2.0.2
-  syncfusion_flutter_calendar: ^19.4.56
   intl: ^0.17.0
   syncfusion_flutter_charts: ^19.4.56
   flutter_rating_bar: ^4.0.1
+  flutter_datetime_picker: ^1.5.1
 
 flutter_icons:
   ios: true

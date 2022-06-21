@@ -10,9 +10,15 @@ class StatsService {
     HttpInterceptor(),
   ]);
 
-  Future<HttpResponse> getNbSeasonsByYear() async {
+  Future<HttpResponse> getNbSeasonsByYears() async {
     Response response =
         await client.get(Uri.parse('$endpoint/stats/seasons/years'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> getNbSeasonsByMonths() async {
+    Response response =
+        await client.get(Uri.parse('$endpoint/stats/seasons/months'));
     return HttpResponse(response);
   }
 
@@ -41,7 +47,7 @@ class StatsService {
 
   Future<HttpResponse> getTimeCurrentWeek() async {
     Response response =
-        await client.get(Uri.parse('$endpoint/stats/time/week'));
+        await client.get(Uri.parse('$endpoint/stats/time/month'));
     return HttpResponse(response);
   }
 

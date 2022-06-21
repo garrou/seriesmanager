@@ -139,13 +139,6 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
               elevation: 10,
               child: Column(
                 children: <Widget>[
-                  if (snapshot.data!.hasValidDate())
-                    ListTile(
-                      leading: const Icon(Icons.calendar_month_outlined),
-                      title: Text(
-                        '${snapshot.data!.formatStartedAt()} - ${snapshot.data!.formatFinishedAt()}',
-                      ),
-                    ),
                   ListTile(
                     leading: const Icon(Icons.video_library_outlined),
                     title: Text('Saisons vues : ${snapshot.data!.seasons}'),
@@ -158,6 +151,12 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
                     leading: const Icon(Icons.timelapse_outlined),
                     title: Text(
                       Time.minsToStringHours(snapshot.data!.duration),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.timelapse_outlined),
+                    title: Text(
+                      Time.minsToStringDays(snapshot.data!.duration),
                     ),
                   ),
                 ],

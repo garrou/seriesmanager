@@ -6,19 +6,16 @@ class UserSeason extends Season {
 
   final int? id;
   final int? seriesId;
-  final DateTime startedAt;
-  final DateTime finishedAt;
+  final DateTime viewedAt;
 
-  UserSeason(
-      int number, int episodes, String image, this.startedAt, this.finishedAt,
+  UserSeason(int number, int episodes, String image, this.viewedAt,
       [this.seriesId, this.id])
       : super(number, episodes, image);
 
   UserSeason.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         seriesId = json['seriesId'],
-        startedAt = DateTime.parse(json['startedAt']),
-        finishedAt = DateTime.parse(json['finishedAt']),
+        viewedAt = DateTime.parse(json['viewedAt']),
         super.fromJson(json);
 
   @override
@@ -26,15 +23,12 @@ class UserSeason extends Season {
         'number': number,
         'episodes': episodes,
         'image': image,
-        'startedAt': startedAt.toUtc().toIso8601String(),
-        'finishedAt': finishedAt.toUtc().toIso8601String(),
+        'viewedAt': viewedAt.toUtc().toIso8601String(),
         'id': id,
         'sid': seriesId
       };
 
-  String formatStartedAt() => df.format(startedAt);
-
-  String formatFinishedAt() => df.format(finishedAt);
+  String formatViewedAt() => df.format(viewedAt);
 }
 
 List<UserSeason> createUserSeasons(List<dynamic>? records) => records == null

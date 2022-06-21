@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_guards/flutter_guards.dart';
+import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
@@ -20,6 +24,14 @@ class SeriesPage extends StatefulWidget {
 }
 
 class _SeriesPageState extends State<SeriesPage> {
+  final StreamController<bool> _streamController = StreamController();
+
+  @override
+  void initState() {
+    Guard.checkAuth(_streamController);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -30,10 +42,18 @@ class _SeriesPageState extends State<SeriesPage> {
               onPressed: () =>
                   showSearch(context: context, delegate: SearchUserSeries()),
               icon: const Icon(Icons.search_outlined, size: iconSize),
-            )
+            ),
+            IconButton(
+              onPressed: () => push(context, const SearchPage()),
+              icon: const Icon(Icons.add_outlined, size: iconSize),
+            ),
           ],
         ),
-        body: const AllUserSeries(),
+        body: AuthGuard(
+          authStream: _streamController.stream,
+          signedIn: const AllUserSeries(),
+          signedOut: const LoginPage(),
+        ),
       );
 }
 
@@ -69,8 +89,7 @@ class _AllUserSeriesState extends State<AllUserSeries> {
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            Storage.removeToken();
-            pushAndRemove(context, const LoginPage());
+            return const ErrorPage();
           } else if (snapshot.hasData) {
             final width = MediaQuery.of(context).size.width;
 
