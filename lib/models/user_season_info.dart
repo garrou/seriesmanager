@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class UserSeasonInfo {
-  static DateFormat df = DateFormat('dd/MM/yyyy');
+  static DateFormat df = DateFormat('MM/yyyy');
 
   final DateTime viewedAt;
   final int duration;

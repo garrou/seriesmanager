@@ -129,8 +129,13 @@ class _SeasonInfosState extends State<SeasonInfos> {
                       style: boldTextStyle, textAlign: TextAlign.center),
                   padding: const EdgeInsets.only(top: 10),
                 ),
+                for (UserSeasonInfo userSeasonInfo in snapshot.data!)
+                  ListTile(
+                    leading: const Icon(Icons.calendar_month_outlined),
+                    title: Text(userSeasonInfo.formatViewedAt()),
+                  ),
                 ListTile(
-                  leading: const Icon(Icons.timelapse, size: 30),
+                  leading: const Icon(Icons.timelapse_outlined),
                   title: Text(Time.minsToStringHours(
                       snapshot.data!.first.duration * snapshot.data!.length)),
                 )

@@ -43,11 +43,12 @@ class _SeriesPageState extends State<SeriesPage> {
                   showSearch(context: context, delegate: SearchUserSeries()),
               icon: const Icon(Icons.search_outlined, size: iconSize),
             ),
-            IconButton(
-              onPressed: () => push(context, const SearchPage()),
-              icon: const Icon(Icons.add_outlined, size: iconSize),
-            ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => push(context, const SearchPage()),
+          child: const Icon(Icons.add_outlined),
+          backgroundColor: Colors.black,
         ),
         body: AuthGuard(
           authStream: _streamController.stream,

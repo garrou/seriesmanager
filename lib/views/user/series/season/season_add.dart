@@ -53,21 +53,44 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              onPressed: () => DatePicker.showPicker(
-                context,
-                pickerModel: CustomMonthPicker(
-                  currentTime: DateTime.now(),
-                  minTime: DateTime(2000),
-                  maxTime: DateTime.now(),
-                  locale: LocaleType.fr,
-                ),
-                onConfirm: (datetime) => _addAllSeasons(
-                  DateTime(datetime.year, datetime.month),
-                ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Aide pour ajouter une ou plusieurs série(s)',
+                        style: textStyle),
+                    content: Text(
+                      'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.',
+                      style: textStyle,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Compris', style: textStyle),
+                      )
+                    ],
+                  );
+                },
               ),
-              icon: const Icon(Icons.add_to_photos_outlined),
-            )
+              icon: const Icon(Icons.help_outline_outlined),
+            ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => DatePicker.showPicker(
+            context,
+            pickerModel: CustomMonthPicker(
+              currentTime: DateTime.now(),
+              minTime: DateTime(2000),
+              maxTime: DateTime.now(),
+              locale: LocaleType.fr,
+            ),
+            onConfirm: (datetime) => _addAllSeasons(
+              DateTime(datetime.year, datetime.month),
+            ),
+          ),
+          child: const Icon(Icons.add_outlined),
+          backgroundColor: Colors.black,
         ),
         body: FutureBuilder<List<ApiSeason>>(
           future: _seasons,

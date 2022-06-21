@@ -106,7 +106,7 @@ class _TotalState extends State<Total> {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.library_books_outlined),
-                  title: Text('Total', style: textStyle),
+                  title: Text('Total des séries', style: textStyle),
                 ),
                 ListTile(
                   title: Text('Séries vues', style: textStyle),
