@@ -22,4 +22,6 @@ class UserSeriesInfo {
   String formatBeginAt() => df.format(beginAt);
 
   String formatEndAt() => df.format(endAt);
+
+  bool isValidDates() => beginAt.year > 1 && endAt.year > 1;
 }

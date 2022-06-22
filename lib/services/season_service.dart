@@ -55,4 +55,10 @@ class SeasonService {
     );
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> getSeriesToContinue() async {
+    final Response response =
+        await client.get(Uri.parse('$endpoint/seasons/continue'));
+    return HttpResponse(response);
+  }
 }

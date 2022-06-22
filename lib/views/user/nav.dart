@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
+import 'package:seriesmanager/views/user/watch/watch.dart';
 
 class UserNav extends StatefulWidget {
   final int initial;
@@ -15,6 +16,7 @@ class _UserNavState extends State<UserNav> {
   late int _current;
   final _screens = [
     const SeriesPage(),
+    const WatchPage(),
     const StatisticsPage(),
     const ProfilePage()
   ];
@@ -42,6 +44,10 @@ class _UserNavState extends State<UserNav> {
             BottomNavigationBarItem(
               icon: Icon(Icons.video_library_outlined),
               label: 'Mes séries',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.play_arrow_outlined),
+              label: 'En cours',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
