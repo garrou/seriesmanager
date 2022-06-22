@@ -1,11 +1,15 @@
+import 'package:intl/intl.dart';
+
 class ApiEpisode {
+  static DateFormat df = DateFormat('dd/MM/yyyy');
+
   final int id;
   final String title;
   final int season;
   final int episode;
   final String code;
   final String description;
-  final DateTime date;
+  final DateTime? date;
   bool isExpanded = false;
 
   ApiEpisode(this.id, this.title, this.season, this.episode, this.code,
@@ -18,7 +22,9 @@ class ApiEpisode {
         episode = json['episode'],
         code = json['code'],
         description = json['description'],
-        date = DateTime.parse(json['date']);
+        date = json['date'].isEmpty ? null : DateTime.parse(json['date']);
+
+  String formatDate() => date == null ? '' : df.format(date!);
 }
 
 List<ApiEpisode> createApiEpisodes(List<dynamic>? records) => records == null

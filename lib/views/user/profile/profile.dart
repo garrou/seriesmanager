@@ -4,6 +4,8 @@ import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/storage.dart';
+import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/views/user/profile/update_password.dart';
@@ -46,9 +48,10 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             IconButton(
               onPressed: () {
-                // TODO: delete
+                Storage.removeToken();
+                pushAndRemove(context, const LoginPage());
               },
-              icon: const Icon(Icons.delete_outline_outlined),
+              icon: const Icon(Icons.logout_outlined),
             ),
           ],
         ),

@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       scrollBehavior: CustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        backgroundColor: Colors.white,
         primaryColor: Colors.black,
         textSelectionTheme: const TextSelectionThemeData(
           selectionHandleColor: Colors.black, // Change bubble to red

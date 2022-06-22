@@ -34,26 +34,27 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 ? 2
                 : 3,
         children: const <Widget>[
-          TotalStats(),
-          CurrentStats(),
+          Total(),
+          CurrentMonth(),
           SeriesAddedYears(),
-          NbSeasonsByYear(),
-          NbEpisodesByYear(),
-          TimeSeasonsByYear(),
+          NbSeasonsByYears(),
+          NbEpisodesByYears(),
+          NbSeasonsByMonths(),
+          TimeSeasonsByYears(),
         ],
       ),
     );
   }
 }
 
-class TotalStats extends StatefulWidget {
-  const TotalStats({Key? key}) : super(key: key);
+class Total extends StatefulWidget {
+  const Total({Key? key}) : super(key: key);
 
   @override
-  State<TotalStats> createState() => _TotalStatsState();
+  State<Total> createState() => _TotalState();
 }
 
-class _TotalStatsState extends State<TotalStats> {
+class _TotalState extends State<Total> {
   late Future<int> _series;
   late Future<dynamic> _time;
 
@@ -105,7 +106,7 @@ class _TotalStatsState extends State<TotalStats> {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.library_books_outlined),
-                  title: Text('Total', style: textStyle),
+                  title: Text('Total des séries', style: textStyle),
                 ),
                 ListTile(
                   title: Text('Séries vues', style: textStyle),
@@ -132,14 +133,14 @@ class _TotalStatsState extends State<TotalStats> {
       );
 }
 
-class CurrentStats extends StatefulWidget {
-  const CurrentStats({Key? key}) : super(key: key);
+class CurrentMonth extends StatefulWidget {
+  const CurrentMonth({Key? key}) : super(key: key);
 
   @override
-  State<CurrentStats> createState() => _CurrentStatsState();
+  State<CurrentMonth> createState() => _CurrentMonthState();
 }
 
-class _CurrentStatsState extends State<CurrentStats> {
+class _CurrentMonthState extends State<CurrentMonth> {
   late Future<dynamic> _timeWeek;
 
   Future<dynamic> _loadTimeWeek() async {
@@ -177,8 +178,8 @@ class _CurrentStatsState extends State<CurrentStats> {
             return Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.weekend_outlined),
-                  title: Text('Cette semaine', style: textStyle),
+                  leading: const Icon(Icons.calendar_month_outlined),
+                  title: Text('Ce mois', style: textStyle),
                 ),
                 CardTime(mins: mins),
               ],
@@ -245,18 +246,18 @@ class _SeriesAddedYearsState extends State<SeriesAddedYears> {
       );
 }
 
-class NbSeasonsByYear extends StatefulWidget {
-  const NbSeasonsByYear({Key? key}) : super(key: key);
+class NbSeasonsByYears extends StatefulWidget {
+  const NbSeasonsByYears({Key? key}) : super(key: key);
 
   @override
-  State<NbSeasonsByYear> createState() => _NbSeasonsByYearState();
+  State<NbSeasonsByYears> createState() => _NbSeasonsByYearsState();
 }
 
-class _NbSeasonsByYearState extends State<NbSeasonsByYear> {
+class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
   late Future<List<SeasonStat>> _stats;
 
   Future<List<SeasonStat>> _load() async {
-    final HttpResponse response = await _statsService.getNbSeasonsByYear();
+    final HttpResponse response = await _statsService.getNbSeasonsByYears();
 
     if (response.success()) {
       return createSeasonStats(response.content());
@@ -287,7 +288,7 @@ class _NbSeasonsByYearState extends State<NbSeasonsByYear> {
                   BarSeries<SeasonStat, int>(
                     color: Colors.red,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
                     yValueMapper: (SeasonStat stat, _) => stat.number,
                   )
                 ],
@@ -299,14 +300,14 @@ class _NbSeasonsByYearState extends State<NbSeasonsByYear> {
       );
 }
 
-class NbEpisodesByYear extends StatefulWidget {
-  const NbEpisodesByYear({Key? key}) : super(key: key);
+class NbEpisodesByYears extends StatefulWidget {
+  const NbEpisodesByYears({Key? key}) : super(key: key);
 
   @override
-  State<NbEpisodesByYear> createState() => _NbEpisodesByYearState();
+  State<NbEpisodesByYears> createState() => _NbEpisodesByYearsState();
 }
 
-class _NbEpisodesByYearState extends State<NbEpisodesByYear> {
+class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
   late Future<List<SeasonStat>> _stats;
 
   Future<List<SeasonStat>> _load() async {
@@ -338,10 +339,10 @@ class _NbEpisodesByYearState extends State<NbEpisodesByYear> {
                 title: ChartTitle(text: 'Episodes par années'),
                 primaryXAxis: CategoryAxis(),
                 series: <ChartSeries<SeasonStat, int>>[
-                  AreaSeries<SeasonStat, int>(
+                  BarSeries<SeasonStat, int>(
                     color: Colors.green,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
                     yValueMapper: (SeasonStat stat, _) => stat.number,
                   )
                 ],
@@ -353,14 +354,14 @@ class _NbEpisodesByYearState extends State<NbEpisodesByYear> {
       );
 }
 
-class TimeSeasonsByYear extends StatefulWidget {
-  const TimeSeasonsByYear({Key? key}) : super(key: key);
+class TimeSeasonsByYears extends StatefulWidget {
+  const TimeSeasonsByYears({Key? key}) : super(key: key);
 
   @override
-  State<TimeSeasonsByYear> createState() => _TimeSeasonsByYearState();
+  State<TimeSeasonsByYears> createState() => _TimeSeasonsByYearsState();
 }
 
-class _TimeSeasonsByYearState extends State<TimeSeasonsByYear> {
+class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
   late Future<List<SeasonStat>> _stats;
 
   Future<List<SeasonStat>> _load() async {
@@ -395,7 +396,7 @@ class _TimeSeasonsByYearState extends State<TimeSeasonsByYear> {
                   AreaSeries<SeasonStat, int>(
                     color: Colors.orange,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.started,
+                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
                     yValueMapper: (SeasonStat stat, _) =>
                         Time.minsToHours(stat.number),
                     markerSettings: const MarkerSettings(isVisible: true),
@@ -432,20 +433,88 @@ class CardTime extends StatelessWidget {
       );
 }
 
+class NbSeasonsByMonths extends StatefulWidget {
+  const NbSeasonsByMonths({Key? key}) : super(key: key);
+
+  @override
+  State<NbSeasonsByMonths> createState() => _NbSeasonsByMonthsState();
+}
+
+class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
+  late Future<List<SeasonMonthStat>> _stats;
+
+  Future<List<SeasonMonthStat>> _load() async {
+    final HttpResponse response = await _statsService.getNbSeasonsByMonths();
+
+    if (response.success()) {
+      return createSeasonMonthStats(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  @override
+  void initState() {
+    _stats = _load();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<SeasonMonthStat>>(
+        future: _stats,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const ErrorPage();
+          } else if (snapshot.hasData) {
+            return Card(
+              elevation: 10,
+              child: SfCartesianChart(
+                title: ChartTitle(text: 'Saisons par mois'),
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries<SeasonMonthStat, String>>[
+                  BarSeries<SeasonMonthStat, String>(
+                    color: Colors.purple,
+                    dataSource: snapshot.data!,
+                    xValueMapper: (SeasonMonthStat stat, _) => stat.month,
+                    yValueMapper: (SeasonMonthStat stat, _) => stat.number,
+                  )
+                ],
+              ),
+            );
+          }
+          return const AppLoading();
+        },
+      );
+}
+
 class SeasonStat {
-  final int started;
-  final int finished;
+  final int viewedAt;
   final int number;
 
   SeasonStat.fromJson(Map<String, dynamic> json)
-      : started = json['started'],
-        finished = json['finished'],
+      : viewedAt = json['viewedAt'],
         number = json['num'];
 }
 
 List<SeasonStat> createSeasonStats(List<dynamic>? records) => records == null
     ? List.empty()
     : records.map((json) => SeasonStat.fromJson(json)).toList(growable: false);
+
+class SeasonMonthStat {
+  final String month;
+  final int number;
+
+  SeasonMonthStat.fromJson(Map<String, dynamic> json)
+      : month = json['month'],
+        number = json['num'];
+}
+
+List<SeasonMonthStat> createSeasonMonthStats(List<dynamic>? records) =>
+    records == null
+        ? List.empty()
+        : records
+            .map((json) => SeasonMonthStat.fromJson(json))
+            .toList(growable: false);
 
 class SeriesStat {
   final String added;

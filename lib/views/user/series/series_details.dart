@@ -39,17 +39,18 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () => push(
-                context,
-                AddSeasonPage(series: widget.series),
-              ),
-              icon: const Icon(Icons.video_library_outlined, size: iconSize),
-            ),
-            IconButton(
               onPressed: () => alertDialog(context, _delete),
               icon: const Icon(Icons.delete_outlined, size: iconSize),
             )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => push(
+            context,
+            AddSeasonPage(series: widget.series),
+          ),
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.add_outlined),
         ),
         body: ListView(
           controller: ScrollController(),
@@ -139,12 +140,11 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
               elevation: 10,
               child: Column(
                 children: <Widget>[
-                  if (snapshot.data!.hasValidDate())
+                  if (snapshot.data!.isValidDates())
                     ListTile(
                       leading: const Icon(Icons.calendar_month_outlined),
                       title: Text(
-                        '${snapshot.data!.formatStartedAt()} - ${snapshot.data!.formatFinishedAt()}',
-                      ),
+                          '${snapshot.data!.formatBeginAt()} - ${snapshot.data!.formatEndAt()}'),
                     ),
                   ListTile(
                     leading: const Icon(Icons.video_library_outlined),
@@ -158,6 +158,12 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
                     leading: const Icon(Icons.timelapse_outlined),
                     title: Text(
                       Time.minsToStringHours(snapshot.data!.duration),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.timelapse_outlined),
+                    title: Text(
+                      Time.minsToStringDays(snapshot.data!.duration),
                     ),
                   ),
                 ],

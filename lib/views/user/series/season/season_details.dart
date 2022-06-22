@@ -24,6 +24,16 @@ class SeasonDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text('Saison ${season.number}', style: textStyle),
+          actions: [
+            IconButton(
+              onPressed: () {
+                // TODO : edit season
+                // TODO: delete season
+                // TODO: refresh
+              },
+              icon: const Icon(Icons.edit_outlined),
+            )
+          ],
         ),
         body: SingleChildScrollView(
           controller: ScrollController(),
@@ -119,14 +129,13 @@ class _SeasonInfosState extends State<SeasonInfos> {
                       style: boldTextStyle, textAlign: TextAlign.center),
                   padding: const EdgeInsets.only(top: 10),
                 ),
-                for (UserSeasonInfo seasonInfo in snapshot.data!)
+                for (UserSeasonInfo userSeasonInfo in snapshot.data!)
                   ListTile(
                     leading: const Icon(Icons.calendar_month_outlined),
-                    title: Text(
-                        '${seasonInfo.formatStartedAt()} - ${seasonInfo.formatFinishedAt()}'),
+                    title: Text(userSeasonInfo.formatViewedAt()),
                   ),
                 ListTile(
-                  leading: const Icon(Icons.timelapse, size: 30),
+                  leading: const Icon(Icons.timelapse_outlined),
                   title: Text(Time.minsToStringHours(
                       snapshot.data!.first.duration * snapshot.data!.length)),
                 )
@@ -204,6 +213,7 @@ class _EpisodesListState extends State<EpisodesList> {
                           headerBuilder: (context, isExpanded) {
                             return ListTile(
                               title: Text(episode.title, style: textStyle),
+                              subtitle: Text(episode.formatDate()),
                             );
                           },
                           body: ListTile(
