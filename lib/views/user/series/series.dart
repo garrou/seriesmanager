@@ -11,7 +11,7 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/search/search.dart';
+import 'package:seriesmanager/views/user/series/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
@@ -51,6 +51,7 @@ class _SeriesPageState extends State<SeriesPage> {
           backgroundColor: Colors.black,
         ),
         body: AuthGuard(
+          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedIn: const AllUserSeries(),
           signedOut: const LoginPage(),

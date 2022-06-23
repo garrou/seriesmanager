@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/stat.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
@@ -185,7 +186,7 @@ class SeasonsDetailsViewed extends StatefulWidget {
 }
 
 class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
-  late Future<List<SeasonDetailsViewed>> _details;
+  late Future<List<Stat>> _details;
   bool _isVisible = false;
 
   @override
@@ -194,20 +195,19 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
     super.initState();
   }
 
-  Future<List<SeasonDetailsViewed>> _loadDetails() async {
+  Future<List<Stat>> _loadDetails() async {
     HttpResponse response =
         await _seasonService.getDetailsSeasonsViewed(widget.series.id);
 
     if (response.success()) {
-      return createDetails(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
   }
 
   @override
-  Widget build(BuildContext context) =>
-      FutureBuilder<List<SeasonDetailsViewed>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _details,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -233,13 +233,13 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
                     visible: _isVisible,
                     child: Column(
                       children: <Widget>[
-                        for (SeasonDetailsViewed details in snapshot.data!)
+                        for (Stat details in snapshot.data!)
                           ListTile(
                             title: Text(
-                              'Saison ${details.number}',
+                              'Saison ${details.label}',
                               style: smallBoldTextStyle,
                             ),
-                            subtitle: Text('Vue ${details.total} fois'),
+                            subtitle: Text('Vue ${details.value} fois'),
                           ),
                       ],
                     ),
@@ -317,21 +317,3 @@ class _SeasonsState extends State<Seasons> {
         },
       );
 }
-
-class SeasonDetailsViewed {
-  final int number;
-  final int total;
-
-  SeasonDetailsViewed(this.number, this.total);
-
-  SeasonDetailsViewed.fromJson(Map<String, dynamic> json)
-      : number = json['number'],
-        total = json['total'];
-}
-
-List<SeasonDetailsViewed> createDetails(List<dynamic>? records) =>
-    records == null
-        ? List.empty()
-        : records
-            .map((json) => SeasonDetailsViewed.fromJson(json))
-            .toList(growable: false);

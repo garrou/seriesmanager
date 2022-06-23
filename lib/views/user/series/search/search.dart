@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_guards/flutter_guards.dart';
 import 'package:seriesmanager/models/api_details_series.dart';
+import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/search/search_details.dart';
+import 'package:seriesmanager/views/user/series/search/search_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
 
@@ -19,9 +24,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late Future<List<ApiDetailsSeries>> _discoverSeries;
+  final StreamController<bool> _streamController = StreamController();
 
   @override
   void initState() {
+    Guard.checkAuth(_streamController);
     _discoverSeries = _loadDiscover();
     super.initState();
   }
@@ -51,38 +58,42 @@ class _SearchPageState extends State<SearchPage> {
             )
           ],
         ),
-        body: FutureBuilder<List<ApiDetailsSeries>>(
-          future: _discoverSeries,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const ErrorPage();
-            } else if (snapshot.hasData) {
-              final width = MediaQuery.of(context).size.width;
+        body: AuthGuard(
+          authStream: _streamController.stream,
+          signedOut: const LoginPage(),
+          signedIn: FutureBuilder<List<ApiDetailsSeries>>(
+            future: _discoverSeries,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const ErrorPage();
+              } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
 
-              return GridView.count(
-                controller: ScrollController(),
-                crossAxisCount: width < 400
-                    ? 1
-                    : width < 600
-                        ? 2
-                        : width < 900
-                            ? 3
-                            : 4,
-                children: <Widget>[
-                  for (ApiDetailsSeries series in snapshot.data!)
-                    AppSeriesCard(
-                      image: series.images['poster'],
-                      series: series,
-                      onTap: () => push(
-                        context,
-                        SearchDetailsPage(series: series),
+                return GridView.count(
+                  controller: ScrollController(),
+                  crossAxisCount: width < 400
+                      ? 1
+                      : width < 600
+                          ? 2
+                          : width < 900
+                              ? 3
+                              : 4,
+                  children: <Widget>[
+                    for (ApiDetailsSeries series in snapshot.data!)
+                      AppSeriesCard(
+                        image: series.images['poster'],
+                        series: series,
+                        onTap: () => push(
+                          context,
+                          SearchDetailsPage(series: series),
+                        ),
                       ),
-                    ),
-                ],
-              );
-            }
-            return const AppLoading();
-          },
+                  ],
+                );
+              }
+              return const AppLoading();
+            },
+          ),
         ),
       );
 }

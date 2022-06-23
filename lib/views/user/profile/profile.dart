@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_guards/flutter_guards.dart';
+import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
@@ -23,6 +27,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> _profile;
+  final StreamController<bool> _streamController = StreamController();
 
   Future<UserProfile> _loadProfile() async {
     HttpResponse response = await UserService().getProfile();
@@ -36,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    Guard.checkAuth(_streamController);
     _profile = _loadProfile();
     super.initState();
   }
@@ -55,11 +61,16 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          controller: ScrollController(),
-          child: AppResponsiveLayout(
-            mobileLayout: mobileLayout(),
-            desktopLayout: desktopLayout(),
+        body: AuthGuard(
+          loading: const AppLoading(),
+          authStream: _streamController.stream,
+          signedOut: const LoginPage(),
+          signedIn: SingleChildScrollView(
+            controller: ScrollController(),
+            child: AppResponsiveLayout(
+              mobileLayout: mobileLayout(),
+              desktopLayout: desktopLayout(),
+            ),
           ),
         ),
       );
