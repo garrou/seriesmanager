@@ -41,6 +41,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         title: Text('Statistiques', style: textStyle),
       ),
       body: AuthGuard(
+        loading: const AppLoading(),
         authStream: _streamController.stream,
         signedOut: const LoginPage(),
         signedIn: SingleChildScrollView(

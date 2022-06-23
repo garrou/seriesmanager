@@ -62,6 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         body: AuthGuard(
+          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedOut: const LoginPage(),
           signedIn: SingleChildScrollView(

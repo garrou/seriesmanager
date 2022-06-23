@@ -35,6 +35,7 @@ class _ContinuePageState extends State<ContinuePage> {
           backgroundColor: Colors.black,
         ),
         body: AuthGuard(
+          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedOut: const LoginPage(),
           signedIn: SingleChildScrollView(

@@ -51,6 +51,7 @@ class _SeriesPageState extends State<SeriesPage> {
           backgroundColor: Colors.black,
         ),
         body: AuthGuard(
+          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedIn: const AllUserSeries(),
           signedOut: const LoginPage(),
