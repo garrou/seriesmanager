@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seriesmanager/views/user/continue/continue.dart';
 import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
-import 'package:seriesmanager/views/user/watch/watch.dart';
 
 class UserNav extends StatefulWidget {
   final int initial;
@@ -16,7 +16,7 @@ class _UserNavState extends State<UserNav> {
   late int _current;
   final _screens = [
     const SeriesPage(),
-    const WatchPage(),
+    const ContinuePage(),
     const StatisticsPage(),
     const ProfilePage()
   ];

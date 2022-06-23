@@ -57,11 +57,10 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text('Aide pour ajouter une ou plusieurs série(s)',
-                        style: textStyle),
+                    title: Text('Aide', style: textStyle),
                     content: Text(
                       'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.',
-                      style: textStyle,
+                      style: minTextStyle,
                     ),
                     actions: [
                       TextButton(

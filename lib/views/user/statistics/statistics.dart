@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_guards/flutter_guards.dart';
+import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/stat.dart';
 import 'package:seriesmanager/services/stats_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
+import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -17,6 +23,14 @@ class StatisticsPage extends StatefulWidget {
 }
 
 class _StatisticsPageState extends State<StatisticsPage> {
+  final StreamController<bool> _streamController = StreamController();
+
+  @override
+  void initState() {
+    Guard.checkAuth(_streamController);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -26,22 +40,29 @@ class _StatisticsPageState extends State<StatisticsPage> {
         backgroundColor: Colors.black,
         title: Text('Statistiques', style: textStyle),
       ),
-      body: GridView.count(
-        controller: ScrollController(),
-        crossAxisCount: width < 600
-            ? 1
-            : width < 900
-                ? 2
-                : 3,
-        children: const <Widget>[
-          Total(),
-          CurrentMonth(),
-          SeriesAddedYears(),
-          NbSeasonsByYears(),
-          NbEpisodesByYears(),
-          NbSeasonsByMonths(),
-          TimeSeasonsByYears(),
-        ],
+      body: AuthGuard(
+        authStream: _streamController.stream,
+        signedOut: const LoginPage(),
+        signedIn: SingleChildScrollView(
+          child: GridView.count(
+            shrinkWrap: true,
+            controller: ScrollController(),
+            crossAxisCount: width < 600
+                ? 1
+                : width < 900
+                    ? 2
+                    : 3,
+            children: const <Widget>[
+              Total(),
+              CurrentMonth(),
+              SeriesAddedYears(),
+              NbSeasonsByYears(),
+              NbEpisodesByYears(),
+              NbSeasonsByMonths(),
+              TimeSeasonsByYears(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -198,13 +219,13 @@ class SeriesAddedYears extends StatefulWidget {
 }
 
 class _SeriesAddedYearsState extends State<SeriesAddedYears> {
-  late Future<List<SeriesStat>> _series;
+  late Future<List<Stat>> _series;
 
-  Future<List<SeriesStat>> _loadAddedSeries() async {
+  Future<List<Stat>> _loadAddedSeries() async {
     HttpResponse response = await _statsService.getAddedSeriesByYears();
 
     if (response.success()) {
-      return createSeriesStats(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
@@ -217,7 +238,7 @@ class _SeriesAddedYearsState extends State<SeriesAddedYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeriesStat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -229,11 +250,11 @@ class _SeriesAddedYearsState extends State<SeriesAddedYears> {
                 title: ChartTitle(text: 'Séries ajoutées par années'),
                 legend: Legend(
                     isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-                series: <CircularSeries<dynamic, String>>[
-                  PieSeries<SeriesStat, String>(
+                series: <CircularSeries<Stat, dynamic>>[
+                  PieSeries<Stat, dynamic>(
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeriesStat stat, _) => stat.added,
-                    yValueMapper: (SeriesStat stat, _) => stat.total,
+                    xValueMapper: (Stat stat, _) => stat.label,
+                    yValueMapper: (Stat stat, _) => stat.value,
                     dataLabelSettings: const DataLabelSettings(isVisible: true),
                     enableTooltip: true,
                   )
@@ -254,13 +275,13 @@ class NbSeasonsByYears extends StatefulWidget {
 }
 
 class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
-  late Future<List<SeasonStat>> _stats;
+  late Future<List<Stat>> _stats;
 
-  Future<List<SeasonStat>> _load() async {
+  Future<List<Stat>> _load() async {
     final HttpResponse response = await _statsService.getNbSeasonsByYears();
 
     if (response.success()) {
-      return createSeasonStats(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
@@ -273,7 +294,7 @@ class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -284,12 +305,12 @@ class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Saisons par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<SeasonStat, int>>[
-                  BarSeries<SeasonStat, int>(
+                series: <ChartSeries<Stat, dynamic>>[
+                  BarSeries<Stat, dynamic>(
                     color: Colors.red,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
-                    yValueMapper: (SeasonStat stat, _) => stat.number,
+                    xValueMapper: (Stat stat, _) => stat.label,
+                    yValueMapper: (Stat stat, _) => stat.value,
                   )
                 ],
               ),
@@ -308,13 +329,13 @@ class NbEpisodesByYears extends StatefulWidget {
 }
 
 class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
-  late Future<List<SeasonStat>> _stats;
+  late Future<List<Stat>> _stats;
 
-  Future<List<SeasonStat>> _load() async {
+  Future<List<Stat>> _load() async {
     final HttpResponse response = await _statsService.getNbEpisodesByYear();
 
     if (response.success()) {
-      return createSeasonStats(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
@@ -327,7 +348,7 @@ class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -338,12 +359,12 @@ class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Episodes par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<SeasonStat, int>>[
-                  BarSeries<SeasonStat, int>(
+                series: <ChartSeries<Stat, dynamic>>[
+                  BarSeries<Stat, dynamic>(
                     color: Colors.green,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
-                    yValueMapper: (SeasonStat stat, _) => stat.number,
+                    xValueMapper: (Stat stat, _) => stat.label,
+                    yValueMapper: (Stat stat, _) => stat.value,
                   )
                 ],
               ),
@@ -362,13 +383,13 @@ class TimeSeasonsByYears extends StatefulWidget {
 }
 
 class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
-  late Future<List<SeasonStat>> _stats;
+  late Future<List<Stat>> _stats;
 
-  Future<List<SeasonStat>> _load() async {
+  Future<List<Stat>> _load() async {
     final HttpResponse response = await _statsService.getTimeSeasonsByYear();
 
     if (response.success()) {
-      return createSeasonStats(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
@@ -381,7 +402,7 @@ class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeasonStat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -392,13 +413,13 @@ class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Heures par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<SeasonStat, int>>[
-                  AreaSeries<SeasonStat, int>(
+                series: <ChartSeries<Stat, dynamic>>[
+                  AreaSeries<Stat, dynamic>(
                     color: Colors.orange,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonStat stat, _) => stat.viewedAt,
-                    yValueMapper: (SeasonStat stat, _) =>
-                        Time.minsToHours(stat.number),
+                    xValueMapper: (Stat stat, _) => stat.label,
+                    yValueMapper: (Stat stat, _) =>
+                        Time.minsToHours(stat.value),
                     markerSettings: const MarkerSettings(isVisible: true),
                   )
                 ],
@@ -441,13 +462,13 @@ class NbSeasonsByMonths extends StatefulWidget {
 }
 
 class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
-  late Future<List<SeasonMonthStat>> _stats;
+  late Future<List<Stat>> _stats;
 
-  Future<List<SeasonMonthStat>> _load() async {
+  Future<List<Stat>> _load() async {
     final HttpResponse response = await _statsService.getNbSeasonsByMonths();
 
     if (response.success()) {
-      return createSeasonMonthStats(response.content());
+      return createStats(response.content());
     } else {
       throw Exception();
     }
@@ -460,7 +481,7 @@ class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeasonMonthStat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -471,12 +492,12 @@ class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Saisons par mois'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<SeasonMonthStat, String>>[
-                  BarSeries<SeasonMonthStat, String>(
+                series: <ChartSeries<Stat, dynamic>>[
+                  BarSeries<Stat, dynamic>(
                     color: Colors.purple,
                     dataSource: snapshot.data!,
-                    xValueMapper: (SeasonMonthStat stat, _) => stat.month,
-                    yValueMapper: (SeasonMonthStat stat, _) => stat.number,
+                    xValueMapper: (Stat stat, _) => stat.label,
+                    yValueMapper: (Stat stat, _) => stat.value,
                   )
                 ],
               ),
@@ -486,45 +507,3 @@ class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
         },
       );
 }
-
-class SeasonStat {
-  final int viewedAt;
-  final int number;
-
-  SeasonStat.fromJson(Map<String, dynamic> json)
-      : viewedAt = json['viewedAt'],
-        number = json['num'];
-}
-
-List<SeasonStat> createSeasonStats(List<dynamic>? records) => records == null
-    ? List.empty()
-    : records.map((json) => SeasonStat.fromJson(json)).toList(growable: false);
-
-class SeasonMonthStat {
-  final String month;
-  final int number;
-
-  SeasonMonthStat.fromJson(Map<String, dynamic> json)
-      : month = json['month'],
-        number = json['num'];
-}
-
-List<SeasonMonthStat> createSeasonMonthStats(List<dynamic>? records) =>
-    records == null
-        ? List.empty()
-        : records
-            .map((json) => SeasonMonthStat.fromJson(json))
-            .toList(growable: false);
-
-class SeriesStat {
-  final String added;
-  final int total;
-
-  SeriesStat.fromJson(Map<String, dynamic> json)
-      : added = json['added'].toString(),
-        total = json['total'];
-}
-
-List<SeriesStat> createSeriesStats(List<dynamic>? records) => records == null
-    ? List.empty()
-    : records.map((json) => SeriesStat.fromJson(json)).toList(growable: false);
