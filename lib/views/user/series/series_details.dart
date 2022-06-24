@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/stat.dart';
+import 'package:seriesmanager/models/user_stat.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
@@ -186,7 +186,7 @@ class SeasonsDetailsViewed extends StatefulWidget {
 }
 
 class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
-  late Future<List<Stat>> _details;
+  late Future<List<UserStat>> _details;
   bool _isVisible = false;
 
   @override
@@ -195,7 +195,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
     super.initState();
   }
 
-  Future<List<Stat>> _loadDetails() async {
+  Future<List<UserStat>> _loadDetails() async {
     HttpResponse response =
         await _seasonService.getDetailsSeasonsViewed(widget.series.id);
 
@@ -207,7 +207,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _details,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -233,7 +233,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
                     visible: _isVisible,
                     child: Column(
                       children: <Widget>[
-                        for (Stat details in snapshot.data!)
+                        for (UserStat details in snapshot.data!)
                           ListTile(
                             title: Text(
                               'Saison ${details.label}',

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
@@ -27,12 +26,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        actions: [
-          IconButton(
-            onPressed: _onUpdatePassword,
-            icon: const Icon(Icons.save_outlined, size: iconSize),
-          )
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onUpdatePassword,
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.save_outlined),
       ),
       body: SingleChildScrollView(
         controller: ScrollController(),
@@ -59,6 +57,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               label: 'Mot de passe actuel',
               textfieldController: _current,
               icon: const Icon(Icons.password_outlined, color: Colors.black),
+              validator: fieldValidator,
               obscureText: true,
             ),
             AppTextField(

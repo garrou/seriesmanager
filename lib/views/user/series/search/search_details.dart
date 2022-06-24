@@ -21,12 +21,11 @@ class SearchDetailsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(series.title, style: textStyle),
-        actions: [
-          IconButton(
-            onPressed: () => _addSeries(context),
-            icon: const Icon(Icons.add_outlined, size: iconSize),
-          ),
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addSeries(context),
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add_outlined),
       ),
       body: SingleChildScrollView(
         controller: ScrollController(),
