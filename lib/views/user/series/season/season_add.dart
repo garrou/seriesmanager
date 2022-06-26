@@ -8,6 +8,7 @@ import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
@@ -104,11 +105,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
                 controller: ScrollController(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                crossAxisCount: width < 400
-                    ? 1
-                    : width < 600
-                        ? 2
-                        : 4,
+                crossAxisCount: getNbEltExpandedByWidth(width),
                 children: <Widget>[
                   for (ApiSeason season in _seasonsLoaded)
                     ApiSeasonCard(season: season, series: widget.series)

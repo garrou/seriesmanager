@@ -7,6 +7,7 @@ import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -71,13 +72,7 @@ class _SearchPageState extends State<SearchPage> {
 
                 return GridView.count(
                   controller: ScrollController(),
-                  crossAxisCount: width < 400
-                      ? 1
-                      : width < 600
-                          ? 2
-                          : width < 900
-                              ? 3
-                              : 4,
+                  crossAxisCount: getNbEltExpandedByWidth(width),
                   children: <Widget>[
                     for (ApiDetailsSeries series in snapshot.data!)
                       AppSeriesCard(
@@ -130,13 +125,7 @@ class SearchSeries extends SearchDelegate {
 
               return GridView.count(
                 controller: ScrollController(),
-                crossAxisCount: width < 400
-                    ? 1
-                    : width < 600
-                        ? 2
-                        : width < 900
-                            ? 3
-                            : 4,
+                crossAxisCount: getNbEltExpandedByWidth(width),
                 children: <Widget>[
                   for (ApiDetailsSeries series in snapshot.data!)
                     AppSeriesCard(

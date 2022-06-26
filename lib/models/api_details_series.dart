@@ -35,7 +35,7 @@ class ApiDetailsSeries {
         episodes = json['episodes'],
         seasons = json['seasons_details'],
         creation = json['creation'],
-        kinds = json['genres'],
+        kinds = json['genres'].runtimeType == List ? {} : json['genres'],
         length = int.tryParse(json['length']) ?? 0,
         ended = json['status'] == "Ended",
         platforms = json['platforms']['svods'] ?? List.empty(),

@@ -6,6 +6,7 @@ import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_stat.dart';
 import 'package:seriesmanager/services/stats_service.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -48,11 +49,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           child: GridView.count(
             shrinkWrap: true,
             controller: ScrollController(),
-            crossAxisCount: width < 600
-                ? 1
-                : width < 900
-                    ? 2
-                    : 3,
+            crossAxisCount: getNbEltByWidth(width),
             children: const <Widget>[
               Total(),
               CurrentMonth(),

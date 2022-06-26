@@ -8,6 +8,7 @@ import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
@@ -293,13 +294,7 @@ class _SeasonsState extends State<Seasons> {
             return GridView.count(
               controller: ScrollController(),
               shrinkWrap: true,
-              crossAxisCount: width < 400
-                  ? 1
-                  : width < 600
-                      ? 2
-                      : width < 900
-                          ? 3
-                          : 4,
+              crossAxisCount: getNbEltExpandedByWidth(width),
               children: <Widget>[
                 for (UserSeason season in snapshot.data!)
                   AppSeasonCard(

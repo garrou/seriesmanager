@@ -7,6 +7,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -97,13 +98,7 @@ class _AllUserSeriesState extends State<AllUserSeries> {
 
             return GridView.count(
               controller: ScrollController(),
-              crossAxisCount: width < 400
-                  ? 1
-                  : width < 600
-                      ? 2
-                      : width < 900
-                          ? 3
-                          : 4,
+              crossAxisCount: getNbEltExpandedByWidth(width),
               children: <Widget>[
                 for (UserSeries series in snapshot.data!)
                   GestureDetector(
@@ -190,13 +185,7 @@ class SearchUserSeries extends SearchDelegate {
 
           return GridView.count(
             controller: ScrollController(),
-            crossAxisCount: width < 400
-                ? 1
-                : width < 600
-                    ? 2
-                    : width < 900
-                        ? 3
-                        : 4,
+            crossAxisCount: getNbEltExpandedByWidth(width),
             children: <Widget>[
               for (UserSeries series in snapshot.data!)
                 AppSeriesCard(
