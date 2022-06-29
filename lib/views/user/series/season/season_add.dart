@@ -86,7 +86,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
               locale: LocaleType.fr,
             ),
             onConfirm: (datetime) => _addAllSeasons(
-              DateTime(datetime.year, datetime.month),
+              DateTime(datetime.year, datetime.month, 10),
             ),
           ),
           child: const Icon(Icons.add_outlined),
@@ -152,7 +152,7 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
             locale: LocaleType.fr,
           ),
           onConfirm: (datetime) => _addSeason(
-            DateTime(datetime.year, datetime.month),
+            DateTime(datetime.year, datetime.month, 10),
           ),
         ),
         onLongPress: () {
