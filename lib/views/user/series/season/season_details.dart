@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:seriesmanager/models/api_episode.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_season_info.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/nav.dart';
+import 'package:seriesmanager/views/user/series/series_details.dart';
+import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
+final _seasonService = SeasonService();
+
 class SeasonDetailsPage extends StatelessWidget {
   final UserSeries series;
-  final UserSeason season;
+  final int season;
   const SeasonDetailsPage(
       {Key? key, required this.series, required this.season})
       : super(key: key);
@@ -23,17 +30,7 @@ class SeasonDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('Saison ${season.number}', style: textStyle),
-          actions: [
-            IconButton(
-              onPressed: () {
-                // TODO : edit season
-                // TODO: delete season
-                // TODO: refresh
-              },
-              icon: const Icon(Icons.edit_outlined),
-            )
-          ],
+          title: Text('Saison $season', style: textStyle),
         ),
         body: SingleChildScrollView(
           controller: ScrollController(),
@@ -47,41 +44,37 @@ class SeasonDetailsPage extends StatelessWidget {
 
 class MobileLayout extends StatelessWidget {
   final UserSeries series;
-  final UserSeason season;
+  final int season;
   const MobileLayout({Key? key, required this.series, required this.season})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SeasonInfos(series: series, season: season),
-        EpisodesList(series: series, season: season),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+        children: [
+          SeasonInfos(series: series, season: season),
+          EpisodesList(series: series, season: season),
+        ],
+      );
 }
 
 class DesktopLayout extends StatelessWidget {
   final UserSeries series;
-  final UserSeason season;
+  final int season;
   const DesktopLayout({Key? key, required this.series, required this.season})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      child: MobileLayout(series: series, season: season),
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 8,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+        child: MobileLayout(series: series, season: season),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 8,
+        ),
+      );
 }
 
 class SeasonInfos extends StatefulWidget {
   final UserSeries series;
-  final UserSeason season;
+  final int season;
   const SeasonInfos({Key? key, required this.series, required this.season})
       : super(key: key);
 
@@ -93,8 +86,8 @@ class _SeasonInfosState extends State<SeasonInfos> {
   late Future<List<UserSeasonInfo>> _infos;
 
   Future<List<UserSeasonInfo>> _loadInfos() async {
-    HttpResponse response = await SeasonService()
-        .getInfosByNumberBySeriesId(widget.season.number, widget.series.id);
+    HttpResponse response = await _seasonService.getInfosByNumberBySeriesId(
+        widget.season, widget.series.id);
 
     if (response.success()) {
       return createUserSeasonInfo(response.content());
@@ -110,48 +103,102 @@ class _SeasonInfosState extends State<SeasonInfos> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      child: FutureBuilder<List<UserSeasonInfo>>(
-        future: _infos,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const ErrorPage();
-          } else if (snapshot.hasData) {
-            final int nb = snapshot.data!.length;
-            final String s = nb > 1 ? 's' : '';
+  Widget build(BuildContext context) => Card(
+        elevation: 10,
+        child: FutureBuilder<List<UserSeasonInfo>>(
+          future: _infos,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const ErrorPage();
+            } else if (snapshot.hasData) {
+              final int nb = snapshot.data!.length;
+              final String s = nb > 1 ? 's' : '';
 
-            return Column(
-              children: <Widget>[
-                Padding(
-                  child: Text('$nb visionnage$s',
-                      style: boldTextStyle, textAlign: TextAlign.center),
-                  padding: const EdgeInsets.only(top: 10),
-                ),
-                for (UserSeasonInfo userSeasonInfo in snapshot.data!)
-                  ListTile(
-                    leading: const Icon(Icons.calendar_month_outlined),
-                    title: Text(userSeasonInfo.formatViewedAt()),
+              return Column(
+                children: <Widget>[
+                  Padding(
+                    child: Text('$nb visionnage$s',
+                        style: boldTextStyle, textAlign: TextAlign.center),
+                    padding: const EdgeInsets.only(top: 10),
                   ),
-                ListTile(
-                  leading: const Icon(Icons.timelapse_outlined),
-                  title: Text(Time.minsToStringHours(
-                      snapshot.data!.first.duration * snapshot.data!.length)),
-                )
-              ],
-            );
-          }
-          return const AppLoading();
-        },
-      ),
+                  for (UserSeasonInfo userSeasonInfo in snapshot.data!)
+                    ListTile(
+                      leading: const Icon(Icons.calendar_month_outlined),
+                      title: Text(userSeasonInfo.formatViewedAt()),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () => DatePicker.showPicker(
+                              context,
+                              pickerModel: CustomMonthPicker(
+                                currentTime: userSeasonInfo.viewedAt,
+                                minTime: DateTime(2000),
+                                maxTime: DateTime.now(),
+                                locale: LocaleType.fr,
+                              ),
+                              onConfirm: (date) {
+                                _update(
+                                  userSeasonInfo.id,
+                                  DateTime(date.year, date.month, 3),
+                                );
+                                setState(() => userSeasonInfo.viewedAt = date);
+                              },
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            onPressed: () => _delete(userSeasonInfo.id),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ListTile(
+                    leading: const Icon(Icons.timelapse_outlined),
+                    title: Text(
+                      Time.minsToStringHours(snapshot.data!.first.duration *
+                          snapshot.data!.length),
+                    ),
+                  )
+                ],
+              );
+            }
+            return const AppLoading();
+          },
+        ),
+      );
+
+  void _update(int seasonId, DateTime viewedAt) async {
+    HttpResponse response =
+        await _seasonService.updateSeason(seasonId, viewedAt);
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
+  }
+
+  void _delete(int seasonId) async {
+    HttpResponse response = await _seasonService.deleteSeason(seasonId);
+
+    if (response.success()) {
+      doublePush(context, const UserNav(initial: 0),
+          SeriesDetailsPage(series: widget.series));
+    }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
     );
   }
 }
 
 class EpisodesList extends StatefulWidget {
   final UserSeries series;
-  final UserSeason season;
+  final int season;
   const EpisodesList({Key? key, required this.series, required this.season})
       : super(key: key);
 
@@ -170,7 +217,7 @@ class _EpisodesListState extends State<EpisodesList> {
 
   Future<List<ApiEpisode>> _load() async {
     HttpResponse response = await SearchService()
-        .getEpisodesBySidBySeason(widget.series.sid!, widget.season.number);
+        .getEpisodesBySidBySeason(widget.series.sid!, widget.season);
 
     if (response.success()) {
       return createApiEpisodes(response.content()?['episodes']);

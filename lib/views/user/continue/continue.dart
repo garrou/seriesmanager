@@ -137,6 +137,7 @@ class _MobileLayoutState extends State<MobileLayout> {
                                     series.title,
                                     series.poster,
                                     series.episodeLength,
+                                    series.isWatching,
                                     series.sid),
                               ),
                             ),

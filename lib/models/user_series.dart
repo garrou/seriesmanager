@@ -4,14 +4,18 @@ class UserSeries extends Series {
   final int episodeLength;
   final String poster;
   final int? sid;
+  bool isWatching;
 
-  UserSeries(int id, String title, this.poster, this.episodeLength, [this.sid])
+  UserSeries(
+      int id, String title, this.poster, this.episodeLength, this.isWatching,
+      [this.sid])
       : super(id, title);
 
   UserSeries.fromJson(Map<String, dynamic> json)
       : episodeLength = json['length'],
         poster = json['poster'],
         sid = json['sid'],
+        isWatching = true, // TODO: dto
         super.fromJson(json);
 
   @override
@@ -20,7 +24,8 @@ class UserSeries extends Series {
         'title': title,
         'poster': poster,
         'length': episodeLength,
-        'sid': sid
+        'sid': sid,
+        'isWatching': isWatching
       };
 }
 

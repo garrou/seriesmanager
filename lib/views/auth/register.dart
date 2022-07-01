@@ -22,14 +22,12 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: AppResponsiveLayout(
-        mobileLayout: MobileLayout(),
-        desktopLayout: DesktopLayout(),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Scaffold(
+        body: AppResponsiveLayout(
+          mobileLayout: MobileLayout(),
+          desktopLayout: DesktopLayout(),
+        ),
+      );
 }
 
 class DesktopLayout extends StatelessWidget {

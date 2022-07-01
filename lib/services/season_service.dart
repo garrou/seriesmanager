@@ -45,11 +45,12 @@ class SeasonService {
   Future<HttpResponse> addAllSeasons(
       int seriesId, List<ApiSeason> seasons, DateTime viewedAt) async {
     final Response response = await client.post(
-      Uri.parse('$endpoint/seasons/series/$seriesId/all'),
+      Uri.parse('$endpoint/seasons/series/all'),
       body: jsonEncode(
         <String, dynamic>{
           'seasons': seasons,
           'viewedAt': Time.dateToString(viewedAt),
+          'seriesId': seriesId,
         },
       ),
     );
@@ -59,6 +60,26 @@ class SeasonService {
   Future<HttpResponse> getSeriesToContinue() async {
     final Response response =
         await client.get(Uri.parse('$endpoint/seasons/continue'));
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> updateSeason(int seasonId, DateTime viewedAt) async {
+    final Response response = await client.patch(
+      Uri.parse('$endpoint/seasons/$seasonId'),
+      body: jsonEncode(
+        <String, dynamic>{
+          'id': seasonId,
+          'viewedAt': Time.dateToString(viewedAt)
+        },
+      ),
+    );
+    return HttpResponse(response);
+  }
+
+  Future<HttpResponse> deleteSeason(int seasonId) async {
+    final Response response = await client.delete(
+      Uri.parse('$endpoint/seasons/$seasonId'),
+    );
     return HttpResponse(response);
   }
 }

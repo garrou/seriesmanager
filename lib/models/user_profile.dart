@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class UserProfile {
-  static DateFormat df = DateFormat('dd/MM/yyyy');
+  final DateFormat _df = DateFormat('dd/MM/yyyy');
 
   final String username;
   final String email;
@@ -16,5 +16,5 @@ class UserProfile {
         joinedAt = DateTime.parse(json['joinedAt']),
         banner = json['banner'];
 
-  String formatJoinedAt() => df.format(joinedAt);
+  String formatJoinedAt() => _df.format(joinedAt);
 }

@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class UserSeriesInfo {
-  static DateFormat df = DateFormat('MM/yyyy');
+  final DateFormat _df = DateFormat('MM/yyyy');
 
   final int duration;
   final int seasons;
@@ -19,9 +19,9 @@ class UserSeriesInfo {
         beginAt = DateTime.parse(json['beginAt']),
         endAt = DateTime.parse(json['endAt']);
 
-  String formatBeginAt() => df.format(beginAt);
+  String formatBeginAt() => _df.format(beginAt);
 
-  String formatEndAt() => df.format(endAt);
+  String formatEndAt() => _df.format(endAt);
 
   bool isValidDates() => beginAt.year > 1 && endAt.year > 1;
 }

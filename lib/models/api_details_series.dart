@@ -40,6 +40,9 @@ class ApiDetailsSeries {
         ended = json['status'] == "Ended",
         platforms = json['platforms']['svods'] ?? List.empty(),
         mean = json['notes']?['mean'].toDouble();
+
+  String getImage() =>
+      images['poster'].isEmpty ? images['show'] : images['poster'];
 }
 
 List<ApiDetailsSeries> createDetailsSeries(List<dynamic>? records) =>

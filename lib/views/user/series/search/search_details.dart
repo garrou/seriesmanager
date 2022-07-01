@@ -38,14 +38,18 @@ class SearchDetailsPage extends StatelessWidget {
   void _addSeries(BuildContext context) async {
     HttpResponse response = await SeriesService().add(
       UserSeries(
-          series.id, series.title, series.images['poster'], series.length),
+          series.id, series.title, series.getImage(), series.length, true),
     );
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 0));
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }
 
