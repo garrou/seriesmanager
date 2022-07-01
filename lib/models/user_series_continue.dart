@@ -4,7 +4,7 @@ class UserSeriesToContinue extends UserSeries {
   final int nbMissing;
 
   UserSeriesToContinue(this.nbMissing, int id, String title, String poster,
-      int episodeLength, int sid)
+      int episodeLength, int sid, bool isWatching)
       : super(id, title, poster, episodeLength, sid);
 
   UserSeriesToContinue.fromJson(Map<String, dynamic> json)

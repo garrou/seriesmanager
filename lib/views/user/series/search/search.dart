@@ -76,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: <Widget>[
                     for (ApiDetailsSeries series in snapshot.data!)
                       AppSeriesCard(
-                        image: series.images['poster'],
+                        image: series.getImage(),
                         series: series,
                         onTap: () => push(
                           context,
@@ -130,7 +130,7 @@ class SearchSeries extends SearchDelegate {
                   for (ApiDetailsSeries series in snapshot.data!)
                     AppSeriesCard(
                       series: series,
-                      image: series.images['poster'],
+                      image: series.getImage(),
                       onTap: () => push(
                         context,
                         SearchDetailsPage(series: series),

@@ -66,9 +66,12 @@ class SearchBanner extends SearchDelegate {
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 3));
-      snackBar(context, response.message());
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }

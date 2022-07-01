@@ -1,27 +1,31 @@
 import 'package:intl/intl.dart';
 
 class UserSeriesInfo {
-  static DateFormat df = DateFormat('MM/yyyy');
+  final DateFormat _df = DateFormat('MM/yyyy');
 
+  final int id;
   final int duration;
   final int seasons;
   final int episodes;
   final DateTime beginAt;
   final DateTime endAt;
+  bool isWatching;
 
-  UserSeriesInfo(
-      this.duration, this.seasons, this.episodes, this.beginAt, this.endAt);
+  UserSeriesInfo(this.id, this.duration, this.seasons, this.episodes,
+      this.beginAt, this.endAt, this.isWatching);
 
   UserSeriesInfo.fromJson(Map<String, dynamic> json)
-      : duration = json['duration'],
+      : id = json['id'],
+        duration = json['duration'],
         seasons = json['seasons'],
         episodes = json['episodes'],
         beginAt = DateTime.parse(json['beginAt']),
-        endAt = DateTime.parse(json['endAt']);
+        endAt = DateTime.parse(json['endAt']),
+        isWatching = json['isWatching'];
 
-  String formatBeginAt() => df.format(beginAt);
+  String formatBeginAt() => _df.format(beginAt);
 
-  String formatEndAt() => df.format(endAt);
+  String formatEndAt() => _df.format(endAt);
 
   bool isValidDates() => beginAt.year > 1 && endAt.year > 1;
 }

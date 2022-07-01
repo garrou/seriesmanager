@@ -44,4 +44,10 @@ class SeriesService {
         await client.delete(Uri.parse('$endpoint/series/$seriesId'));
     return HttpResponse(response);
   }
+
+  Future<HttpResponse> updateWatching(int seriesId) async {
+    final Response response =
+        await client.patch(Uri.parse('$endpoint/series/$seriesId/watching'));
+    return HttpResponse(response);
+  }
 }

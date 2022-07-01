@@ -41,7 +41,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () => alertDialog(context, _delete),
+              onPressed: () => _deleteDialog(context, _delete),
               icon: const Icon(Icons.delete_outlined, size: iconSize),
             )
           ],
@@ -64,7 +64,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         ),
       );
 
-  Future<void> alertDialog(BuildContext context, VoidCallback onTap) =>
+  Future<void> _deleteDialog(BuildContext context, VoidCallback onTap) =>
       showDialog(
           context: context,
           builder: (context) {
@@ -96,10 +96,13 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 0));
-      snackBar(context, 'Série supprimée');
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }
 
@@ -168,6 +171,16 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
                       Time.minsToStringDays(snapshot.data!.duration),
                     ),
                   ),
+                  if (snapshot.data!.isValidDates())
+                    SwitchListTile(
+                      title: const Text('Continuer la série ?'),
+                      value: snapshot.data!.isWatching,
+                      activeColor: Colors.black,
+                      onChanged: (value) {
+                        _updateWatching(snapshot.data!.id);
+                        setState(() => snapshot.data!.isWatching = value);
+                      },
+                    ),
                 ],
               ),
             );
@@ -175,6 +188,16 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
           return const AppLoading();
         },
       );
+
+  void _updateWatching(int seriesId) async {
+    HttpResponse response = await SeriesService().updateWatching(seriesId);
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
+  }
 }
 
 class SeasonsDetailsViewed extends StatefulWidget {
@@ -302,7 +325,8 @@ class _SeasonsState extends State<Seasons> {
                     season: season,
                     onTap: () => push(
                       context,
-                      SeasonDetailsPage(series: widget.series, season: season),
+                      SeasonDetailsPage(
+                          series: widget.series, season: season.number),
                     ),
                   )
               ],
