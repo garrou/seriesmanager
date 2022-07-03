@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/stat.dart';
+import 'package:seriesmanager/models/user_stat.dart';
 import 'package:seriesmanager/services/stats_service.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -48,11 +49,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           child: GridView.count(
             shrinkWrap: true,
             controller: ScrollController(),
-            crossAxisCount: width < 600
-                ? 1
-                : width < 900
-                    ? 2
-                    : 3,
+            crossAxisCount: getNbEltByWidth(width),
             children: const <Widget>[
               Total(),
               CurrentMonth(),
@@ -61,6 +58,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               NbEpisodesByYears(),
               NbSeasonsByMonths(),
               TimeSeasonsByYears(),
+              // TODO: kind stats
             ],
           ),
         ),
@@ -220,9 +218,9 @@ class SeriesAddedYears extends StatefulWidget {
 }
 
 class _SeriesAddedYearsState extends State<SeriesAddedYears> {
-  late Future<List<Stat>> _series;
+  late Future<List<UserStat>> _series;
 
-  Future<List<Stat>> _loadAddedSeries() async {
+  Future<List<UserStat>> _loadAddedSeries() async {
     HttpResponse response = await _statsService.getAddedSeriesByYears();
 
     if (response.success()) {
@@ -239,7 +237,7 @@ class _SeriesAddedYearsState extends State<SeriesAddedYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -251,11 +249,11 @@ class _SeriesAddedYearsState extends State<SeriesAddedYears> {
                 title: ChartTitle(text: 'Séries ajoutées par années'),
                 legend: Legend(
                     isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-                series: <CircularSeries<Stat, dynamic>>[
-                  PieSeries<Stat, dynamic>(
+                series: <CircularSeries<UserStat, dynamic>>[
+                  PieSeries<UserStat, dynamic>(
                     dataSource: snapshot.data!,
-                    xValueMapper: (Stat stat, _) => stat.label,
-                    yValueMapper: (Stat stat, _) => stat.value,
+                    xValueMapper: (UserStat stat, _) => stat.label,
+                    yValueMapper: (UserStat stat, _) => stat.value,
                     dataLabelSettings: const DataLabelSettings(isVisible: true),
                     enableTooltip: true,
                   )
@@ -276,9 +274,9 @@ class NbSeasonsByYears extends StatefulWidget {
 }
 
 class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
-  late Future<List<Stat>> _stats;
+  late Future<List<UserStat>> _stats;
 
-  Future<List<Stat>> _load() async {
+  Future<List<UserStat>> _load() async {
     final HttpResponse response = await _statsService.getNbSeasonsByYears();
 
     if (response.success()) {
@@ -295,7 +293,7 @@ class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -306,12 +304,12 @@ class _NbSeasonsByYearsState extends State<NbSeasonsByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Saisons par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<Stat, dynamic>>[
-                  BarSeries<Stat, dynamic>(
+                series: <ChartSeries<UserStat, dynamic>>[
+                  BarSeries<UserStat, dynamic>(
                     color: Colors.red,
                     dataSource: snapshot.data!,
-                    xValueMapper: (Stat stat, _) => stat.label,
-                    yValueMapper: (Stat stat, _) => stat.value,
+                    xValueMapper: (UserStat stat, _) => stat.label,
+                    yValueMapper: (UserStat stat, _) => stat.value,
                   )
                 ],
               ),
@@ -330,9 +328,9 @@ class NbEpisodesByYears extends StatefulWidget {
 }
 
 class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
-  late Future<List<Stat>> _stats;
+  late Future<List<UserStat>> _stats;
 
-  Future<List<Stat>> _load() async {
+  Future<List<UserStat>> _load() async {
     final HttpResponse response = await _statsService.getNbEpisodesByYear();
 
     if (response.success()) {
@@ -349,7 +347,7 @@ class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -360,12 +358,12 @@ class _NbEpisodesByYearsState extends State<NbEpisodesByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Episodes par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<Stat, dynamic>>[
-                  BarSeries<Stat, dynamic>(
+                series: <ChartSeries<UserStat, dynamic>>[
+                  BarSeries<UserStat, dynamic>(
                     color: Colors.green,
                     dataSource: snapshot.data!,
-                    xValueMapper: (Stat stat, _) => stat.label,
-                    yValueMapper: (Stat stat, _) => stat.value,
+                    xValueMapper: (UserStat stat, _) => stat.label,
+                    yValueMapper: (UserStat stat, _) => stat.value,
                   )
                 ],
               ),
@@ -384,9 +382,9 @@ class TimeSeasonsByYears extends StatefulWidget {
 }
 
 class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
-  late Future<List<Stat>> _stats;
+  late Future<List<UserStat>> _stats;
 
-  Future<List<Stat>> _load() async {
+  Future<List<UserStat>> _load() async {
     final HttpResponse response = await _statsService.getTimeSeasonsByYear();
 
     if (response.success()) {
@@ -403,7 +401,7 @@ class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -414,12 +412,12 @@ class _TimeSeasonsByYearsState extends State<TimeSeasonsByYears> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Heures par années'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<Stat, dynamic>>[
-                  AreaSeries<Stat, dynamic>(
+                series: <ChartSeries<UserStat, dynamic>>[
+                  AreaSeries<UserStat, dynamic>(
                     color: Colors.orange,
                     dataSource: snapshot.data!,
-                    xValueMapper: (Stat stat, _) => stat.label,
-                    yValueMapper: (Stat stat, _) =>
+                    xValueMapper: (UserStat stat, _) => stat.label,
+                    yValueMapper: (UserStat stat, _) =>
                         Time.minsToHours(stat.value),
                     markerSettings: const MarkerSettings(isVisible: true),
                   )
@@ -463,9 +461,9 @@ class NbSeasonsByMonths extends StatefulWidget {
 }
 
 class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
-  late Future<List<Stat>> _stats;
+  late Future<List<UserStat>> _stats;
 
-  Future<List<Stat>> _load() async {
+  Future<List<UserStat>> _load() async {
     final HttpResponse response = await _statsService.getNbSeasonsByMonths();
 
     if (response.success()) {
@@ -482,7 +480,7 @@ class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _stats,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -493,12 +491,12 @@ class _NbSeasonsByMonthsState extends State<NbSeasonsByMonths> {
               child: SfCartesianChart(
                 title: ChartTitle(text: 'Saisons par mois'),
                 primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<Stat, dynamic>>[
-                  BarSeries<Stat, dynamic>(
+                series: <ChartSeries<UserStat, dynamic>>[
+                  BarSeries<UserStat, dynamic>(
                     color: Colors.purple,
                     dataSource: snapshot.data!,
-                    xValueMapper: (Stat stat, _) => stat.label,
-                    yValueMapper: (Stat stat, _) => stat.value,
+                    xValueMapper: (UserStat stat, _) => stat.label,
+                    yValueMapper: (UserStat stat, _) => stat.value,
                   )
                 ],
               ),

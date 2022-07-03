@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/stat.dart';
+import 'package:seriesmanager/models/user_stat.dart';
 import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
@@ -40,7 +41,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           ),
           actions: [
             IconButton(
-              onPressed: () => alertDialog(context, _delete),
+              onPressed: () => _deleteDialog(context, _delete),
               icon: const Icon(Icons.delete_outlined, size: iconSize),
             )
           ],
@@ -63,7 +64,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         ),
       );
 
-  Future<void> alertDialog(BuildContext context, VoidCallback onTap) =>
+  Future<void> _deleteDialog(BuildContext context, VoidCallback onTap) =>
       showDialog(
           context: context,
           builder: (context) {
@@ -95,10 +96,13 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 0));
-      snackBar(context, 'Série supprimée');
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }
 
@@ -167,6 +171,16 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
                       Time.minsToStringDays(snapshot.data!.duration),
                     ),
                   ),
+                  if (snapshot.data!.isValidDates())
+                    SwitchListTile(
+                      title: const Text('Continuer la série ?'),
+                      value: snapshot.data!.isWatching,
+                      activeColor: Colors.black,
+                      onChanged: (value) {
+                        _updateWatching(snapshot.data!.id);
+                        setState(() => snapshot.data!.isWatching = value);
+                      },
+                    ),
                 ],
               ),
             );
@@ -174,6 +188,16 @@ class _SeasonsInfosState extends State<SeasonsInfos> {
           return const AppLoading();
         },
       );
+
+  void _updateWatching(int seriesId) async {
+    HttpResponse response = await SeriesService().updateWatching(seriesId);
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
+  }
 }
 
 class SeasonsDetailsViewed extends StatefulWidget {
@@ -186,7 +210,7 @@ class SeasonsDetailsViewed extends StatefulWidget {
 }
 
 class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
-  late Future<List<Stat>> _details;
+  late Future<List<UserStat>> _details;
   bool _isVisible = false;
 
   @override
@@ -195,7 +219,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
     super.initState();
   }
 
-  Future<List<Stat>> _loadDetails() async {
+  Future<List<UserStat>> _loadDetails() async {
     HttpResponse response =
         await _seasonService.getDetailsSeasonsViewed(widget.series.id);
 
@@ -207,7 +231,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Stat>>(
+  Widget build(BuildContext context) => FutureBuilder<List<UserStat>>(
         future: _details,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -233,7 +257,7 @@ class _SeasonsDetailsViewedState extends State<SeasonsDetailsViewed> {
                     visible: _isVisible,
                     child: Column(
                       children: <Widget>[
-                        for (Stat details in snapshot.data!)
+                        for (UserStat details in snapshot.data!)
                           ListTile(
                             title: Text(
                               'Saison ${details.label}',
@@ -293,13 +317,7 @@ class _SeasonsState extends State<Seasons> {
             return GridView.count(
               controller: ScrollController(),
               shrinkWrap: true,
-              crossAxisCount: width < 400
-                  ? 1
-                  : width < 600
-                      ? 2
-                      : width < 900
-                          ? 3
-                          : 4,
+              crossAxisCount: getNbEltExpandedByWidth(width),
               children: <Widget>[
                 for (UserSeason season in snapshot.data!)
                   AppSeasonCard(
@@ -307,7 +325,8 @@ class _SeasonsState extends State<Seasons> {
                     season: season,
                     onTap: () => push(
                       context,
-                      SeasonDetailsPage(series: widget.series, season: season),
+                      SeasonDetailsPage(
+                          series: widget.series, season: season.number),
                     ),
                   )
               ],

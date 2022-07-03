@@ -1,18 +1,20 @@
 import 'package:intl/intl.dart';
 
 class UserSeasonInfo {
-  static DateFormat df = DateFormat('MM/yyyy');
+  final DateFormat _df = DateFormat('MM/yyyy');
 
-  final DateTime viewedAt;
-  final int duration;
+  int id;
+  DateTime viewedAt;
+  int duration;
 
-  UserSeasonInfo(this.viewedAt, this.duration);
+  UserSeasonInfo(this.id, this.viewedAt, this.duration);
 
   UserSeasonInfo.fromJson(Map<String, dynamic> json)
-      : viewedAt = DateTime.parse(json['viewedAt']),
+      : id = json['id'],
+        viewedAt = DateTime.parse(json['viewedAt']),
         duration = json['duration'];
 
-  String formatViewedAt() => df.format(viewedAt);
+  String formatViewedAt() => _df.format(viewedAt);
 }
 
 List<UserSeasonInfo> createUserSeasonInfo(

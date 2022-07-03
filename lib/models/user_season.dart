@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:seriesmanager/models/season.dart';
 
 class UserSeason extends Season {
-  static DateFormat df = DateFormat('dd/MM/yyyy');
+  final DateFormat _df = DateFormat('dd/MM/yyyy');
 
   final int? id;
   final int? seriesId;
@@ -25,10 +25,10 @@ class UserSeason extends Season {
         'image': image,
         'viewedAt': viewedAt.toUtc().toIso8601String(),
         'id': id,
-        'sid': seriesId
+        'seriesId': seriesId
       };
 
-  String formatViewedAt() => df.format(viewedAt);
+  String formatViewedAt() => _df.format(viewedAt);
 }
 
 List<UserSeason> createUserSeasons(List<dynamic>? records) => records == null

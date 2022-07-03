@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
@@ -34,12 +33,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          actions: [
-            IconButton(
-              onPressed: _onUpdateProfile,
-              icon: const Icon(Icons.save_outlined, size: iconSize),
-            )
-          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _onUpdateProfile,
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.save_outlined),
         ),
         body: AppResponsiveLayout(
           mobileLayout: mobileLayout(),

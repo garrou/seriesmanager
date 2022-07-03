@@ -30,10 +30,9 @@ class SearchService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> getEpisodesBySidBySeason(
-      int sid, int seasonNumber) async {
-    final Response response = await client.get(Uri.parse(
-        '$endpoint/search/series/$sid/seasons/$seasonNumber/episodes'));
+  Future<HttpResponse> getEpisodesBySidBySeason(int sid, int season) async {
+    final Response response = await client.get(
+        Uri.parse('$endpoint/search/series/$sid/seasons/$season/episodes'));
     return HttpResponse(response);
   }
 

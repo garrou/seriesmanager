@@ -3,6 +3,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
@@ -41,13 +42,7 @@ class SearchBanner extends SearchDelegate {
 
           return GridView.count(
             controller: ScrollController(),
-            crossAxisCount: width < 400
-                ? 1
-                : width < 600
-                    ? 2
-                    : width < 900
-                        ? 3
-                        : 4,
+            crossAxisCount: getNbEltExpandedByWidth(width),
             children: <Widget>[
               for (String image in snapshot.data!)
                 InkWell(
@@ -71,9 +66,12 @@ class SearchBanner extends SearchDelegate {
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 3));
-      snackBar(context, response.message());
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }

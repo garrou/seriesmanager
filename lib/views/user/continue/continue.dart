@@ -5,10 +5,14 @@ import 'package:flutter_guards/flutter_guards.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
+import 'package:seriesmanager/models/user_series.dart';
+import 'package:seriesmanager/models/user_series_continue.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
@@ -74,9 +78,9 @@ class MobileLayout extends StatefulWidget {
 }
 
 class _MobileLayoutState extends State<MobileLayout> {
-  late Future<List<SeriesToContinue>> _series;
+  late Future<List<UserSeriesToContinue>> _series;
 
-  Future<List<SeriesToContinue>> _loadSeriesToContinue() async {
+  Future<List<UserSeriesToContinue>> _loadSeriesToContinue() async {
     HttpResponse response = await SeasonService().getSeriesToContinue();
 
     if (response.success()) {
@@ -93,7 +97,8 @@ class _MobileLayoutState extends State<MobileLayout> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<SeriesToContinue>>(
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<UserSeriesToContinue>>(
         future: _series,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -120,11 +125,28 @@ class _MobileLayoutState extends State<MobileLayout> {
                   )
                 : Column(
                     children: <Widget>[
-                      for (SeriesToContinue series in snapshot.data!)
-                        ListTile(
-                          title: Text(series.title, style: boldTextStyle),
-                          subtitle: Text('${series.nbMissing} saison(s) à voir',
-                              style: minTextStyle),
+                      for (UserSeriesToContinue series in snapshot.data!)
+                        Card(
+                          elevation: 10,
+                          child: InkWell(
+                            onTap: () => push(
+                              context,
+                              SeriesDetailsPage(
+                                series: UserSeries(
+                                    series.id,
+                                    series.title,
+                                    series.poster,
+                                    series.episodeLength,
+                                    series.sid),
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text(series.title, style: boldTextStyle),
+                              subtitle: Text(
+                                  '${series.nbMissing} saison(s) à voir',
+                                  style: minTextStyle),
+                            ),
+                          ),
                         ),
                     ],
                   );
@@ -133,21 +155,3 @@ class _MobileLayoutState extends State<MobileLayout> {
         },
       );
 }
-
-class SeriesToContinue {
-  final String title;
-  final int nbMissing;
-
-  SeriesToContinue(this.title, this.nbMissing);
-
-  SeriesToContinue.fromJson(Map<String, dynamic> json)
-      : title = json['title'],
-        nbMissing = json['nbMissing'];
-}
-
-List<SeriesToContinue> createSeriesToContinue(List<dynamic>? records) =>
-    records == null
-        ? List.empty()
-        : records
-            .map((json) => SeriesToContinue.fromJson(json))
-            .toList(growable: false);

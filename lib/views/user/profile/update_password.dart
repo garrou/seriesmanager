@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/button.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
@@ -23,26 +20,23 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   final _confirm = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        actions: [
-          IconButton(
-            onPressed: _onUpdatePassword,
-            icon: const Icon(Icons.save_outlined, size: iconSize),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        controller: ScrollController(),
-        child: AppResponsiveLayout(
-          mobileLayout: mobileLayout(),
-          desktopLayout: desktopLayout(),
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
         ),
-      ),
-    );
-  }
+        floatingActionButton: FloatingActionButton(
+          onPressed: _onUpdatePassword,
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.save_outlined),
+        ),
+        body: SingleChildScrollView(
+          controller: ScrollController(),
+          child: AppResponsiveLayout(
+            mobileLayout: mobileLayout(),
+            desktopLayout: desktopLayout(),
+          ),
+        ),
+      );
 
   Widget desktopLayout() => Padding(
         child: mobileLayout(),
@@ -59,6 +53,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               label: 'Mot de passe actuel',
               textfieldController: _current,
               icon: const Icon(Icons.password_outlined, color: Colors.black),
+              validator: fieldValidator,
               obscureText: true,
             ),
             AppTextField(
@@ -101,7 +96,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         _current.text.trim(), _password.text.trim(), _confirm.text.trim());
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 3));
+      Navigator.pop(context);
     }
     snackBar(
       context,

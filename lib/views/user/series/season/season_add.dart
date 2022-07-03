@@ -8,6 +8,7 @@ import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
+import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/snackbar.dart';
@@ -53,24 +54,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('Aide', style: textStyle),
-                    content: Text(
-                      'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.',
-                      style: minTextStyle,
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Compris', style: textStyle),
-                      )
-                    ],
-                  );
-                },
-              ),
+              onPressed: _helpDialog,
               icon: const Icon(Icons.help_outline_outlined),
             ),
           ],
@@ -85,7 +69,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
               locale: LocaleType.fr,
             ),
             onConfirm: (datetime) => _addAllSeasons(
-              DateTime(datetime.year, datetime.month),
+              DateTime(datetime.year, datetime.month, 3),
             ),
           ),
           child: const Icon(Icons.add_outlined),
@@ -104,11 +88,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
                 controller: ScrollController(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                crossAxisCount: width < 400
-                    ? 1
-                    : width < 600
-                        ? 2
-                        : 4,
+                crossAxisCount: getNbEltExpandedByWidth(width),
                 children: <Widget>[
                   for (ApiSeason season in _seasonsLoaded)
                     ApiSeasonCard(season: season, series: widget.series)
@@ -120,16 +100,38 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
         ),
       );
 
+  Future<void> _helpDialog() => showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Aide', style: textStyle),
+            content: Text(
+              'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.',
+              style: minTextStyle,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Compris', style: textStyle),
+              )
+            ],
+          );
+        },
+      );
+
   void _addAllSeasons(DateTime date) async {
     final HttpResponse response = await SeasonService()
         .addAllSeasons(widget.series.id, _seasonsLoaded, date);
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 0));
-      snackBar(context, response.message());
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }
 
@@ -155,11 +157,14 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
             locale: LocaleType.fr,
           ),
           onConfirm: (datetime) => _addSeason(
-            DateTime(datetime.year, datetime.month),
+            DateTime(datetime.year, datetime.month, 3),
           ),
         ),
         onLongPress: () {
+          // TODO: mutliselect to add seasons
           // TODO : select to add
+          // TODO: backend use body to put path post
+          // TODO: update series name and picture
         },
         child: Padding(
           child: Badge(
@@ -218,8 +223,12 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
         const UserNav(initial: 0),
         SeriesDetailsPage(series: widget.series),
       );
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }

@@ -21,12 +21,11 @@ class SearchDetailsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(series.title, style: textStyle),
-        actions: [
-          IconButton(
-            onPressed: () => _addSeries(context),
-            icon: const Icon(Icons.add_outlined, size: iconSize),
-          ),
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addSeries(context),
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add_outlined),
       ),
       body: SingleChildScrollView(
         controller: ScrollController(),
@@ -38,15 +37,18 @@ class SearchDetailsPage extends StatelessWidget {
 
   void _addSeries(BuildContext context) async {
     HttpResponse response = await SeriesService().add(
-      UserSeries(
-          series.id, series.title, series.images['poster'], series.length),
+      UserSeries(series.id, series.title, series.getImage(), series.length),
     );
 
     if (response.success()) {
       pushAndRemove(context, const UserNav(initial: 0));
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }
 
