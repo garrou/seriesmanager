@@ -20,7 +20,7 @@ class UserSeries extends Series {
         'title': title,
         'poster': poster,
         'length': episodeLength,
-        'sid': sid
+        'sid': sid,
       };
 }
 
