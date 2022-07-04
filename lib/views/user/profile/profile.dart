@@ -7,7 +7,6 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
@@ -55,7 +54,11 @@ class _ProfilePageState extends State<ProfilePage> {
             IconButton(
               onPressed: () {
                 Storage.removeToken();
-                pushAndRemove(context, const LoginPage());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => const LoginPage()),
+                    (route) => false);
               },
               icon: const Icon(Icons.logout_outlined),
             ),
@@ -148,7 +151,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text('Mot de passe', style: textStyle),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => push(context, const UpdatePassword()),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const UpdatePassword())),
                   ),
                 ),
                 ListTile(

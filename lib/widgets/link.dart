@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 
 class AppLink extends StatelessWidget {
   final Widget child;
@@ -9,10 +8,11 @@ class AppLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: TextButton(
+      padding: const EdgeInsets.only(top: 10),
+      child: TextButton(
           child: child,
-          onPressed: () => push(context, destination),
-        ),
-      );
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => destination))));
 }

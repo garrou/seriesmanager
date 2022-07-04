@@ -5,27 +5,20 @@ import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
 
 class UserNav extends StatefulWidget {
-  final int initial;
-  const UserNav({Key? key, required this.initial}) : super(key: key);
+  const UserNav({Key? key}) : super(key: key);
 
   @override
   State<UserNav> createState() => _UserNavState();
 }
 
 class _UserNavState extends State<UserNav> {
-  late int _current;
+  int _current = 0;
   final _screens = [
     const SeriesPage(),
     const ContinuePage(),
     const StatisticsPage(),
     const ProfilePage()
   ];
-
-  @override
-  void initState() {
-    _current = widget.initial;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

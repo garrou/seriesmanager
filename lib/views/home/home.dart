@@ -5,8 +5,8 @@ import 'package:flutter_guards/flutter_guards.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/models/guard.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
+import 'package:seriesmanager/views/home/discover.dart';
 import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/button.dart';
 
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => Scaffold(
         body: AuthGuard(
           authStream: _streamController.stream,
-          signedIn: const UserNav(initial: 0),
+          signedIn: const UserNav(),
           signedOut: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -46,11 +46,19 @@ class _HomePageState extends State<HomePage> {
                 ),
                 AppButton(
                   content: 'Découvrir',
-                  onPressed: () {},
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const DiscoverPage())),
                 ),
                 AppButton(
                   content: "Se connecter",
-                  onPressed: () => push(context, const LoginPage()),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const LoginPage())),
                 )
               ],
             ),

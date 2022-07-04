@@ -4,7 +4,6 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -155,7 +154,10 @@ class _RegisterFormState extends State<RegisterForm> {
         _email.text, _username.text, _password.text, _confirm.text));
 
     if (response.success()) {
-      push(context, const LoginPage());
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const LoginPage()));
     }
     snackBar(
       context,

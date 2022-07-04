@@ -6,7 +6,6 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
@@ -41,7 +40,8 @@ class SearchDetailsPage extends StatelessWidget {
     );
 
     if (response.success()) {
-      doublePop(context, 'refresh');
+      Navigator.pop(context);
+      Navigator.pop(context, 'refresh');
     }
     snackBar(
       context,

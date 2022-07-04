@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
@@ -135,7 +134,10 @@ class _LoginFormState extends State<LoginForm> {
 
     if (response.success()) {
       Storage.setToken(response.content());
-      pushAndRemove(context, const UserNav(initial: 0));
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => const UserNav()),
+          (route) => false);
     }
     snackBar(
       context,
