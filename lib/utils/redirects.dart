@@ -11,13 +11,7 @@ void pushAndRemove(BuildContext context, Widget destination) =>
         MaterialPageRoute(builder: (BuildContext context) => destination),
         (route) => false);
 
-void doublePush(BuildContext context, Widget first, Widget second) {
-  Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => first),
-      (route) => false);
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (BuildContext context) => second),
-  );
+void doublePop(BuildContext context, String action) {
+  Navigator.pop(context);
+  Navigator.pop(context, action);
 }

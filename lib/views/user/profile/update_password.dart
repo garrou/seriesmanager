@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/textfield.dart';

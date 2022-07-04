@@ -5,7 +5,7 @@ import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -156,8 +156,11 @@ class _RegisterFormState extends State<RegisterForm> {
 
     if (response.success()) {
       push(context, const LoginPage());
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }

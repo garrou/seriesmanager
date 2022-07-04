@@ -87,7 +87,8 @@ class _ProfilePageState extends State<ProfilePage> {
           if (snapshot.hasError) {
             return const ErrorPage();
           } else if (snapshot.hasData) {
-            return Column(
+            return ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 3,
@@ -98,20 +99,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text('Bannière', style: textStyle),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => showSearch(
-                      context: context,
-                      delegate: SearchBanner(),
-                    ),
+                    onPressed: () async {
+                      final result = await showSearch(
+                          context: context, delegate: SearchBanner());
+
+                      if (result == 'refresh') {
+                        _refresh();
+                      }
+                    },
                   ),
                 ),
                 ListTile(
                   leading: const Icon(Icons.list_alt_outlined),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => push(
-                      context,
-                      UpdateProfile(profile: snapshot.data!),
-                    ),
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  UpdateProfile(profile: snapshot.data!)));
+
+                      if (result == 'refresh') {
+                        _refresh();
+                      }
+                    },
                   ),
                 ),
                 Padding(
@@ -153,4 +165,10 @@ class _ProfilePageState extends State<ProfilePage> {
           return const AppLoading();
         },
       );
+
+  Future<void> _refresh() async {
+    setState(() {
+      _profile = _loadProfile();
+    });
+  }
 }

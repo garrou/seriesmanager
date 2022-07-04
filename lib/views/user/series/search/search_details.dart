@@ -7,9 +7,9 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class SearchDetailsPage extends StatelessWidget {
@@ -41,9 +41,8 @@ class SearchDetailsPage extends StatelessWidget {
     );
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 0));
+      doublePop(context, 'refresh');
     }
-
     snackBar(
       context,
       response.message(),
@@ -264,24 +263,7 @@ class PlatformCard extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            platform,
-            semanticLabel: 'Plateforme',
-            loadingBuilder: (context, child, loadingProgress) {
-              return loadingProgress == null
-                  ? child
-                  : Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.grey,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.black,
-                        ),
-                        value: loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!,
-                      ),
-                    );
-            },
-          ),
+          child: AppNetworkImage(image: platform),
         ),
       );
 }

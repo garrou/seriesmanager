@@ -9,13 +9,15 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
+
+final _seriesService = SeriesService();
 
 class SeriesPage extends StatefulWidget {
   const SeriesPage({Key? key}) : super(key: key);
@@ -26,11 +28,29 @@ class SeriesPage extends StatefulWidget {
 
 class _SeriesPageState extends State<SeriesPage> {
   final StreamController<bool> _streamController = StreamController();
+  late Future<List<UserSeries>> _series;
 
   @override
   void initState() {
     Guard.checkAuth(_streamController);
+    _series = _loadSeries();
     super.initState();
+  }
+
+  Future<List<UserSeries>> _loadSeries() async {
+    final HttpResponse response = await _seriesService.getAll();
+
+    if (response.success()) {
+      return createUserSeries(response.content());
+    } else {
+      throw Exception();
+    }
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _series = _loadSeries();
+    });
   }
 
   @override
@@ -47,119 +67,80 @@ class _SeriesPageState extends State<SeriesPage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => push(context, const SearchPage()),
+          onPressed: () async {
+            final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => const SearchPage()));
+
+            if (result == 'refresh') {
+              _refresh();
+            }
+          },
           child: const Icon(Icons.add_outlined),
           backgroundColor: Colors.black,
         ),
         body: AuthGuard(
           loading: const AppLoading(),
           authStream: _streamController.stream,
-          signedIn: const AllUserSeries(),
           signedOut: const LoginPage(),
+          signedIn: FutureBuilder<List<UserSeries>>(
+            future: _series,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const ErrorPage();
+              } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
+
+                return GridView.count(
+                  controller: ScrollController(),
+                  crossAxisCount: getNbEltExpandedByWidth(width),
+                  children: <Widget>[
+                    for (UserSeries series in snapshot.data!)
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SeriesDetailsPage(series: series)));
+                          if (result == 'refresh') {
+                            _refresh();
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 10,
+                              child: series.poster.isNotEmpty
+                                  ? AppNetworkImage(image: series.poster)
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(series.title, style: textStyle)
+                                      ],
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              }
+              return const AppLoading();
+            },
+          ),
         ),
       );
 }
 
-class AllUserSeries extends StatefulWidget {
-  const AllUserSeries({Key? key}) : super(key: key);
-
-  @override
-  State<AllUserSeries> createState() => _AllUserSeriesState();
-}
-
-class _AllUserSeriesState extends State<AllUserSeries> {
-  final _seriesService = SeriesService();
-  late Future<List<UserSeries>> _series;
-
-  @override
-  void initState() {
-    _series = _loadSeries();
-    super.initState();
-  }
-
-  Future<List<UserSeries>> _loadSeries() async {
-    final HttpResponse response = await _seriesService.getAll();
-
-    if (response.success()) {
-      return createUserSeries(response.content());
-    } else {
-      throw Exception();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => FutureBuilder<List<UserSeries>>(
-        future: _series,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const ErrorPage();
-          } else if (snapshot.hasData) {
-            final width = MediaQuery.of(context).size.width;
-
-            return GridView.count(
-              controller: ScrollController(),
-              crossAxisCount: getNbEltExpandedByWidth(width),
-              children: <Widget>[
-                for (UserSeries series in snapshot.data!)
-                  GestureDetector(
-                    onTap: () => push(
-                      context,
-                      SeriesDetailsPage(series: series),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 10,
-                          child: series.poster.isNotEmpty
-                              ? Image.network(
-                                  series.poster,
-                                  semanticLabel: 'Image de la série',
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                    return loadingProgress == null
-                                        ? child
-                                        : Center(
-                                            child: CircularProgressIndicator(
-                                              backgroundColor: Colors.grey,
-                                              valueColor:
-                                                  const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                Colors.black,
-                                              ),
-                                              value: loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!,
-                                            ),
-                                          );
-                                  },
-                                )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(series.title, style: textStyle)
-                                  ],
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          }
-          return const AppLoading();
-        },
-      );
-}
-
 class SearchUserSeries extends SearchDelegate {
-  final SeriesService _seriesService = SeriesService();
-
   @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
@@ -191,10 +172,11 @@ class SearchUserSeries extends SearchDelegate {
                 AppSeriesCard(
                   series: series,
                   image: series.poster,
-                  onTap: () => push(
-                    context,
-                    SeriesDetailsPage(series: series),
-                  ),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              SeriesDetailsPage(series: series))),
                 )
             ],
           );

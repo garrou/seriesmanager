@@ -4,7 +4,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/auth_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
@@ -136,8 +136,11 @@ class _LoginFormState extends State<LoginForm> {
     if (response.success()) {
       Storage.setToken(response.content());
       pushAndRemove(context, const UserNav(initial: 0));
-    } else {
-      snackBar(context, response.message(), Colors.red);
     }
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
   }
 }

@@ -4,16 +4,14 @@ import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/gridview.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 
-class SearchBanner extends SearchDelegate {
-  final SearchService _searchService = SearchService();
+final _searchService = SearchService();
 
+class SearchBanner extends SearchDelegate {
   @override
   String get searchFieldLabel => 'Nom de la série';
 
@@ -65,9 +63,8 @@ class SearchBanner extends SearchDelegate {
     HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 3));
+      Navigator.pop(context, 'refresh');
     }
-
     snackBar(
       context,
       response.message(),

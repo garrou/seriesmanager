@@ -10,13 +10,13 @@ import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/dialog.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
-import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+
+final _seasonService = SeasonService();
 
 class AddSeasonPage extends StatefulWidget {
   final UserSeries series;
@@ -32,11 +32,11 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
 
   @override
   void initState() {
-    _seasons = _load();
+    _seasons = _loadSeasons();
     super.initState();
   }
 
-  Future<List<ApiSeason>> _load() async {
+  Future<List<ApiSeason>> _loadSeasons() async {
     HttpResponse response =
         await SearchService().getSeasonsBySid(widget.series.sid!);
 
@@ -54,7 +54,8 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              onPressed: _helpDialog,
+              onPressed: () => helpDialog(context,
+                  'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.'),
               icon: const Icon(Icons.help_outline_outlined),
             ),
           ],
@@ -75,63 +76,53 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
           child: const Icon(Icons.add_outlined),
           backgroundColor: Colors.black,
         ),
-        body: FutureBuilder<List<ApiSeason>>(
-          future: _seasons,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const ErrorPage();
-            } else if (snapshot.hasData) {
-              final width = MediaQuery.of(context).size.width;
-              _seasonsLoaded = snapshot.data!;
+        body: RefreshIndicator(
+          onRefresh: _refresh,
+          color: Colors.black,
+          child: FutureBuilder<List<ApiSeason>>(
+            future: _seasons,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const ErrorPage();
+              } else if (snapshot.hasData) {
+                final width = MediaQuery.of(context).size.width;
+                _seasonsLoaded = snapshot.data!;
 
-              return GridView.count(
-                controller: ScrollController(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                crossAxisCount: getNbEltExpandedByWidth(width),
-                children: <Widget>[
-                  for (ApiSeason season in _seasonsLoaded)
-                    ApiSeasonCard(season: season, series: widget.series)
-                ],
-              );
-            }
-            return const AppLoading();
-          },
+                return GridView.count(
+                  controller: ScrollController(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  crossAxisCount: getNbEltExpandedByWidth(width),
+                  children: <Widget>[
+                    for (ApiSeason season in _seasonsLoaded)
+                      ApiSeasonCard(season: season, series: widget.series)
+                  ],
+                );
+              }
+              return const AppLoading();
+            },
+          ),
         ),
       );
 
-  Future<void> _helpDialog() => showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Aide', style: textStyle),
-            content: Text(
-              'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.',
-              style: minTextStyle,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Compris', style: textStyle),
-              )
-            ],
-          );
-        },
-      );
-
   void _addAllSeasons(DateTime date) async {
-    final HttpResponse response = await SeasonService()
-        .addAllSeasons(widget.series.id, _seasonsLoaded, date);
+    final HttpResponse response = await _seasonService.addAllSeasons(
+        widget.series.id, _seasonsLoaded, date);
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 0));
+      Navigator.pop(context, 'refresh');
     }
-
     snackBar(
       context,
       response.message(),
       response.success() ? Colors.black : Colors.red,
     );
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _seasons = _loadSeasons();
+    });
   }
 }
 
@@ -163,7 +154,6 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
         onLongPress: () {
           // TODO: mutliselect to add seasons
           // TODO : select to add
-          // TODO: backend use body to put path post
           // TODO: update series name and picture
         },
         child: Padding(
@@ -215,16 +205,11 @@ class _ApiSeasonCardState extends State<ApiSeasonCard> {
     final season = UserSeason(widget.season.number, widget.season.episodes,
         widget.season.image, date, widget.series.id);
 
-    final HttpResponse response = await SeasonService().add(season);
+    final HttpResponse response = await _seasonService.add(season);
 
     if (response.success()) {
-      doublePush(
-        context,
-        const UserNav(initial: 0),
-        SeriesDetailsPage(series: widget.series),
-      );
+      Navigator.pop(context, 'refresh');
     }
-
     snackBar(
       context,
       response.message(),

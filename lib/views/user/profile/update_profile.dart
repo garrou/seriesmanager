@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
@@ -89,7 +87,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         .updateProfile(_username.text.trim(), _email.text.trim());
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 3));
+      Navigator.pop(context, 'refresh');
     }
     snackBar(
       context,

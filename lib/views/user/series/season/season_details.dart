@@ -7,12 +7,9 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
-import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -148,9 +145,10 @@ class _SeasonInfosState extends State<SeasonInfos> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete_outline_outlined),
-                            onPressed: () => _delete(userSeasonInfo.id),
-                          ),
+                              icon: const Icon(Icons.delete_outline_outlined),
+                              onPressed: () {
+                                _delete(userSeasonInfo.id);
+                              }),
                         ],
                       ),
                     ),
@@ -173,6 +171,9 @@ class _SeasonInfosState extends State<SeasonInfos> {
     HttpResponse response =
         await _seasonService.updateSeason(seasonId, viewedAt);
 
+    if (response.success()) {
+      Navigator.pop(context, 'refresh');
+    }
     snackBar(
       context,
       response.message(),
@@ -184,10 +185,8 @@ class _SeasonInfosState extends State<SeasonInfos> {
     HttpResponse response = await _seasonService.deleteSeason(seasonId);
 
     if (response.success()) {
-      doublePush(context, const UserNav(initial: 0),
-          SeriesDetailsPage(series: widget.series));
+      Navigator.pop(context, 'refresh');
     }
-
     snackBar(
       context,
       response.message(),

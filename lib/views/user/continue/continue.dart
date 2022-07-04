@@ -5,11 +5,11 @@ import 'package:flutter_guards/flutter_guards.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_continue.dart';
 import 'package:seriesmanager/services/season_service.dart';
+import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
@@ -25,60 +25,7 @@ class ContinuePage extends StatefulWidget {
 
 class _ContinuePageState extends State<ContinuePage> {
   final StreamController<bool> _streamController = StreamController();
-
-  @override
-  void initState() {
-    Guard.checkAuth(_streamController);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('En cours', style: textStyle),
-          backgroundColor: Colors.black,
-        ),
-        body: AuthGuard(
-          loading: const AppLoading(),
-          authStream: _streamController.stream,
-          signedOut: const LoginPage(),
-          signedIn: SingleChildScrollView(
-            controller: ScrollController(),
-            child: const AppResponsiveLayout(
-              mobileLayout: MobileLayout(),
-              desktopLayout: DesktopLayout(),
-            ),
-          ),
-        ),
-      );
-}
-
-class DesktopLayout extends StatefulWidget {
-  const DesktopLayout({Key? key}) : super(key: key);
-
-  @override
-  State<DesktopLayout> createState() => _DesktopLayoutState();
-}
-
-class _DesktopLayoutState extends State<DesktopLayout> {
-  @override
-  Widget build(BuildContext context) => Padding(
-        child: const MobileLayout(),
-        padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width / 8,
-        ),
-      );
-}
-
-class MobileLayout extends StatefulWidget {
-  const MobileLayout({Key? key}) : super(key: key);
-
-  @override
-  State<MobileLayout> createState() => _MobileLayoutState();
-}
-
-class _MobileLayoutState extends State<MobileLayout> {
-  late Future<List<UserSeriesToContinue>> _series;
+  late Future<List<UserSeriesToContinue>> _initSeries;
 
   Future<List<UserSeriesToContinue>> _loadSeriesToContinue() async {
     HttpResponse response = await SeasonService().getSeriesToContinue();
@@ -92,59 +39,106 @@ class _MobileLayoutState extends State<MobileLayout> {
 
   @override
   void initState() {
-    _series = _loadSeriesToContinue();
+    Guard.checkAuth(_streamController);
+    _initSeries = _loadSeriesToContinue();
     super.initState();
   }
 
+  void _updateWatching(int seriesId) async {
+    HttpResponse response = await SeriesService().updateWatching(seriesId);
+
+    snackBar(
+      context,
+      response.message(),
+      response.success() ? Colors.black : Colors.red,
+    );
+  }
+
+  Future _refresh() async {
+    setState(() {
+      _initSeries = _loadSeriesToContinue();
+    });
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      FutureBuilder<List<UserSeriesToContinue>>(
-        future: _series,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text('En cours', style: textStyle),
+          backgroundColor: Colors.black,
+          actions: [
+            IconButton(
+              onPressed: _refresh,
+              icon: const Icon(Icons.refresh_outlined),
+            )
+          ],
+        ),
+        body: AuthGuard(
+          loading: const AppLoading(),
+          authStream: _streamController.stream,
+          signedOut: const LoginPage(),
+          signedIn: SingleChildScrollView(
+            controller: ScrollController(),
+            child: AppResponsiveLayout(
+              mobileLayout: mobileLayout(),
+              desktopLayout: desktopLayout(),
+            ),
+          ),
+        ),
+      );
+
+  Widget desktopLayout() => Padding(
+        child: mobileLayout(),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 8,
+        ),
+      );
+
+  Widget mobileLayout() => FutureBuilder<List<UserSeriesToContinue>>(
+        future: _initSeries,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const ErrorPage();
           } else if (snapshot.hasData) {
             return snapshot.data!.isEmpty
-                ? Column(
-                    children: <Widget>[
-                      Center(
-                        child: Card(
-                          elevation: 10,
-                          child: SvgPicture.asset(
-                            'assets/up_to_date.svg',
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            width: MediaQuery.of(context).size.width / 2,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        child: Text('Vous êtes à jour !', style: textStyle),
-                        padding: const EdgeInsets.all(10),
-                      ),
-                    ],
-                  )
+                ? const UpToDate()
                 : Column(
                     children: <Widget>[
                       for (UserSeriesToContinue series in snapshot.data!)
                         Card(
                           elevation: 10,
                           child: InkWell(
-                            onTap: () => push(
-                              context,
-                              SeriesDetailsPage(
-                                series: UserSeries(
-                                    series.id,
-                                    series.title,
-                                    series.poster,
-                                    series.episodeLength,
-                                    series.sid),
+                            onTap: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SeriesDetailsPage(
+                                    series: series.toUserSeries(),
+                                  ),
+                                ),
+                              );
+
+                              if (result == 'refresh') {
+                                _refresh();
+                              }
+                            },
+                            child: Dismissible(
+                              key: Key('${series.id}'),
+                              background: Container(
+                                color: Colors.red,
+                                child: const Icon(Icons.cancel_outlined),
                               ),
-                            ),
-                            child: ListTile(
-                              title: Text(series.title, style: boldTextStyle),
-                              subtitle: Text(
+                              onDismissed: (direction) {
+                                snapshot.data!.remove(series);
+                                _updateWatching(series.id);
+                              },
+                              child: ListTile(
+                                title: Text(series.title, style: boldTextStyle),
+                                subtitle: Text(
                                   '${series.nbMissing} saison(s) à voir',
-                                  style: minTextStyle),
+                                  style: minTextStyle,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -153,5 +147,34 @@ class _MobileLayoutState extends State<MobileLayout> {
           }
           return const AppLoading();
         },
+      );
+}
+
+class UpToDate extends StatefulWidget {
+  const UpToDate({Key? key}) : super(key: key);
+
+  @override
+  State<UpToDate> createState() => _UpToDateState();
+}
+
+class _UpToDateState extends State<UpToDate> {
+  @override
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          Center(
+            child: Card(
+              elevation: 10,
+              child: SvgPicture.asset(
+                'assets/up_to_date.svg',
+                height: MediaQuery.of(context).size.height * 0.6,
+                width: MediaQuery.of(context).size.width / 2,
+              ),
+            ),
+          ),
+          Padding(
+            child: Text('Vous êtes à jour !', style: textStyle),
+            padding: const EdgeInsets.all(10),
+          ),
+        ],
       );
 }
