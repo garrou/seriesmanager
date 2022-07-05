@@ -52,15 +52,10 @@ class _SearchPageState extends State<SearchPage> {
           title: Text('Ajouter une série', style: textStyle),
           actions: [
             IconButton(
-                icon: const Icon(Icons.search_outlined, size: iconSize),
-                onPressed: () async {
-                  final result = await showSearch(
-                      context: context, delegate: SearchSeries());
-
-                  if (result == 'refresh') {
-                    Navigator.pop(context, result);
-                  }
-                })
+              icon: const Icon(Icons.search_outlined, size: iconSize),
+              onPressed: () =>
+                  showSearch(context: context, delegate: SearchSeries()),
+            )
           ],
         ),
         body: AuthGuard(

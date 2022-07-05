@@ -168,12 +168,8 @@ class _SeasonInfosState extends State<SeasonInfos> {
       );
 
   void _update(int seasonId, DateTime viewedAt) async {
-    HttpResponse response =
-        await _seasonService.updateSeason(seasonId, viewedAt);
+    HttpResponse response = await _seasonService.update(seasonId, viewedAt);
 
-    if (response.success()) {
-      Navigator.pop(context, 'refresh');
-    }
     snackBar(
       context,
       response.message(),
@@ -182,10 +178,10 @@ class _SeasonInfosState extends State<SeasonInfos> {
   }
 
   void _delete(int seasonId) async {
-    HttpResponse response = await _seasonService.deleteSeason(seasonId);
+    HttpResponse response = await _seasonService.delete(seasonId);
 
     if (response.success()) {
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context);
     }
     snackBar(
       context,

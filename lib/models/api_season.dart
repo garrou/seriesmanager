@@ -1,6 +1,8 @@
 import 'package:seriesmanager/models/season.dart';
 
 class ApiSeason extends Season {
+  bool isSelected = false;
+
   ApiSeason(int number, int episodes, String image)
       : super(number, episodes, image);
 

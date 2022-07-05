@@ -41,7 +41,6 @@ class SearchDetailsPage extends StatelessWidget {
 
     if (response.success()) {
       Navigator.pop(context);
-      Navigator.pop(context, 'refresh');
     }
     snackBar(
       context,

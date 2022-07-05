@@ -108,7 +108,7 @@ class _ContinuePageState extends State<ContinuePage> {
                           elevation: 10,
                           child: InkWell(
                             onTap: () async {
-                              final result = await Navigator.push(
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
@@ -117,10 +117,7 @@ class _ContinuePageState extends State<ContinuePage> {
                                   ),
                                 ),
                               );
-
-                              if (result == 'refresh') {
-                                _refresh();
-                              }
+                              _refresh();
                             },
                             child: Dismissible(
                               key: Key('${series.id}'),

@@ -87,7 +87,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         .updateProfile(_username.text.trim(), _email.text.trim());
 
     if (response.success()) {
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context);
     }
     snackBar(
       context,

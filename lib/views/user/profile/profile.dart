@@ -103,12 +103,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () async {
-                      final result = await showSearch(
+                      await showSearch(
                           context: context, delegate: SearchBanner());
-
-                      if (result == 'refresh') {
-                        _refresh();
-                      }
+                      _refresh();
                     },
                   ),
                 ),
@@ -117,15 +114,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () async {
-                      final result = await Navigator.push(
+                      await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   UpdateProfile(profile: snapshot.data!)));
-
-                      if (result == 'refresh') {
-                        _refresh();
-                      }
+                      _refresh();
                     },
                   ),
                 ),

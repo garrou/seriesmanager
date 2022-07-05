@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 
 class AppSeriesCard extends StatelessWidget {
   final dynamic series;
@@ -24,24 +25,7 @@ class AppSeriesCard extends StatelessWidget {
             onTap: onTap,
             onLongPress: () {},
             child: image.isNotEmpty
-                ? Image.network(
-                    image,
-                    semanticLabel: 'Image de la série',
-                    loadingBuilder: (context, child, loadingProgress) {
-                      return loadingProgress == null
-                          ? child
-                          : Center(
-                              child: CircularProgressIndicator(
-                                backgroundColor: Colors.grey,
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.black,
-                                ),
-                                value: loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!,
-                              ),
-                            );
-                    },
-                  )
+                ? AppNetworkImage(image: image)
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [Text(series.title, style: textStyle)],

@@ -54,8 +54,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
   }
 
   Future<UserSeriesInfo> _loadSeriesInfos() async {
-    HttpResponse response =
-        await _seriesServices.getInfosBySeriesId(widget.series.id);
+    HttpResponse response = await _seriesServices.getInfos(widget.series.id);
 
     if (response.success()) {
       return UserSeriesInfo.fromJson(response.content());
@@ -92,15 +91,12 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final result = await Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) =>
                         AddSeasonPage(series: widget.series)));
-
-            if (result == 'refresh') {
-              _refresh();
-            }
+            _refresh();
           },
           backgroundColor: Colors.black,
           child: const Icon(Icons.add_outlined),
@@ -224,16 +220,13 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                             series: widget.series,
                             season: season,
                             onTap: () async {
-                              final result = await Navigator.push(
+                              await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SeasonDetailsPage(
                                           series: widget.series,
                                           season: season.number)));
-
-                              if (result == "refresh") {
-                                _refresh();
-                              }
+                              _refresh();
                             })
                     ],
                   );
@@ -248,9 +241,6 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
   void _updateWatching(int seriesId) async {
     HttpResponse response = await _seriesServices.updateWatching(seriesId);
 
-    if (response.success()) {
-      Navigator.pop(context, 'refresh');
-    }
     snackBar(
       context,
       response.message(),
@@ -268,10 +258,10 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
   void _delete() async {
     final HttpResponse response =
-        await _seriesServices.deleteBySeriesId(widget.series.id);
+        await _seriesServices.delete(widget.series.id);
 
     if (response.success()) {
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context);
     }
     snackBar(
       context,

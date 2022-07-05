@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:seriesmanager/models/api_season.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/season.dart';
-import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/widgets/dialog.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/error/error.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
@@ -27,12 +25,13 @@ class AddSeasonPage extends StatefulWidget {
 }
 
 class _AddSeasonPageState extends State<AddSeasonPage> {
-  late Future<List<ApiSeason>> _seasons;
-  List<ApiSeason> _seasonsLoaded = [];
+  late Future<List<ApiSeason>> _future;
+  List<ApiSeason> _seasons = [];
+  final List<ApiSeason> _selected = [];
 
   @override
   void initState() {
-    _seasons = _loadSeasons();
+    _future = _loadSeasons();
     super.initState();
   }
 
@@ -52,163 +51,97 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
         appBar: AppBar(
           title: Text('Saisons', style: textStyle),
           backgroundColor: Colors.black,
-          actions: [
-            IconButton(
-              onPressed: () => helpDialog(context,
-                  'Pour ajouter toutes les saisons cliquez sur le bouton en bas à droite, pour ajouter une saison cliquez sur la saison concernée.'),
-              icon: const Icon(Icons.help_outline_outlined),
-            ),
-          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => DatePicker.showPicker(
-            context,
-            pickerModel: CustomMonthPicker(
-              currentTime: DateTime.now(),
-              minTime: DateTime(2000),
-              maxTime: DateTime.now(),
-              locale: LocaleType.fr,
-            ),
-            onConfirm: (datetime) => _addAllSeasons(
-              DateTime(datetime.year, datetime.month, 3),
-            ),
-          ),
-          child: const Icon(Icons.add_outlined),
-          backgroundColor: Colors.black,
-        ),
-        body: RefreshIndicator(
-          onRefresh: _refresh,
-          color: Colors.black,
-          child: FutureBuilder<List<ApiSeason>>(
-            future: _seasons,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const ErrorPage();
-              } else if (snapshot.hasData) {
-                final width = MediaQuery.of(context).size.width;
-                _seasonsLoaded = snapshot.data!;
-
-                return GridView.count(
-                  controller: ScrollController(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  crossAxisCount: getNbEltExpandedByWidth(width),
-                  children: <Widget>[
-                    for (ApiSeason season in _seasonsLoaded)
-                      ApiSeasonCard(season: season, series: widget.series)
-                  ],
-                );
-              }
-              return const AppLoading();
-            },
-          ),
-        ),
-      );
-
-  void _addAllSeasons(DateTime date) async {
-    final HttpResponse response = await _seasonService.addAllSeasons(
-        widget.series.id, _seasonsLoaded, date);
-
-    if (response.success()) {
-      Navigator.pop(context, 'refresh');
-    }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
-  }
-
-  Future<void> _refresh() async {
-    setState(() {
-      _seasons = _loadSeasons();
-    });
-  }
-}
-
-class ApiSeasonCard extends StatefulWidget {
-  final Season season;
-  final UserSeries series;
-  const ApiSeasonCard({Key? key, required this.season, required this.series})
-      : super(key: key);
-
-  @override
-  State<ApiSeasonCard> createState() => _ApiSeasonCardState();
-}
-
-class _ApiSeasonCardState extends State<ApiSeasonCard> {
-  @override
-  Widget build(BuildContext context) => InkWell(
-        onTap: () => DatePicker.showPicker(
-          context,
-          pickerModel: CustomMonthPicker(
-            currentTime: DateTime.now(),
-            maxTime: DateTime.now(),
-            minTime: DateTime(2000),
-            locale: LocaleType.fr,
-          ),
-          onConfirm: (datetime) => _addSeason(
-            DateTime(datetime.year, datetime.month, 3),
-          ),
-        ),
-        onLongPress: () {
-          // TODO: mutliselect to add seasons
-          // TODO : select to add
-          // TODO: update series name and picture
-        },
-        child: Padding(
-          child: Badge(
-            position: BadgePosition.topEnd(end: 15),
-            badgeColor: Colors.black,
-            padding: const EdgeInsets.all(5),
-            badgeContent: Text(
-              '${widget.season.number}',
-              style: const TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+        floatingActionButton: _selected.isEmpty
+            ? null
+            : FloatingActionButton(
+                onPressed: () => DatePicker.showPicker(
+                  context,
+                  pickerModel: CustomMonthPicker(
+                    currentTime: DateTime.now(),
+                    minTime: DateTime(2000),
+                    maxTime: DateTime.now(),
+                    locale: LocaleType.fr,
+                  ),
+                  onConfirm: (datetime) =>
+                      _addSeasons(DateTime(datetime.year, datetime.month, 3)),
+                ),
+                child: const Icon(Icons.add_outlined),
+                backgroundColor: Colors.black,
               ),
-              elevation: 10,
-              child: widget.season.image.isNotEmpty
-                  ? Image.network(
-                      widget.season.image,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        return loadingProgress == null
-                            ? child
-                            : Center(
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.grey,
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                    Colors.black,
-                                  ),
-                                  value: loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!,
-                                ),
-                              );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        'Episodes : ${widget.season.episodes}',
-                        style: textStyle,
+        body: FutureBuilder<List<ApiSeason>>(
+          future: _future,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const ErrorPage();
+            } else if (snapshot.hasData) {
+              final width = MediaQuery.of(context).size.width;
+              _seasons = snapshot.data!;
+
+              return GridView.count(
+                controller: ScrollController(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                crossAxisCount: getNbEltExpandedByWidth(width),
+                children: <Widget>[
+                  for (ApiSeason season in _seasons)
+                    Badge(
+                      position: BadgePosition.topEnd(end: 25),
+                      badgeColor: Colors.black,
+                      padding: const EdgeInsets.all(10),
+                      badgeContent: Text(
+                        '${season.number}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                    ),
-            ),
-          ),
-          padding: const EdgeInsets.all(10),
+                      child: Card(
+                        color: season.isSelected ? Colors.yellow[700] : null,
+                        elevation: 10,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              season.isSelected = !season.isSelected;
+
+                              if (season.isSelected) {
+                                _selected.add(season);
+                              } else {
+                                _selected.remove(season);
+                              }
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: season.image.isNotEmpty
+                                ? AppNetworkImage(image: season.image)
+                                : Center(
+                                    child: Text(
+                                      'Episodes : ${season.episodes}',
+                                      style: textStyle,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              );
+            }
+            return const AppLoading();
+          },
         ),
       );
 
-  void _addSeason(DateTime date) async {
-    final season = UserSeason(widget.season.number, widget.season.episodes,
-        widget.season.image, date, widget.series.id);
-
-    final HttpResponse response = await _seasonService.add(season);
+  void _addSeasons(DateTime date) async {
+    final HttpResponse response =
+        await _seasonService.add(widget.series.id, _selected, date);
 
     if (response.success()) {
-      Navigator.pop(context, 'refresh');
+      setState(() {
+        _selected.clear();
+        for (var s in _seasons) {
+          s.isSelected = false;
+        }
+      });
     }
     snackBar(
       context,

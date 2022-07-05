@@ -68,14 +68,11 @@ class _SeriesPageState extends State<SeriesPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final result = await Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => const SearchPage()));
-
-            if (result == 'refresh') {
-              _refresh();
-            }
+            _refresh();
           },
           child: const Icon(Icons.add_outlined),
           backgroundColor: Colors.black,
@@ -99,14 +96,12 @@ class _SeriesPageState extends State<SeriesPage> {
                     for (UserSeries series in snapshot.data!)
                       GestureDetector(
                         onTap: () async {
-                          final result = await Navigator.push(
+                          await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       SeriesDetailsPage(series: series)));
-                          if (result == 'refresh') {
-                            _refresh();
-                          }
+                          _refresh();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(5),

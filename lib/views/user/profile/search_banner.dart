@@ -63,7 +63,7 @@ class SearchBanner extends SearchDelegate {
     HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
-      Navigator.pop(context, 'refresh');
+      Navigator.pop(context);
     }
     snackBar(
       context,
