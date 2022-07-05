@@ -11,6 +11,9 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/charts/area_chart.dart';
+import 'package:seriesmanager/widgets/charts/bar_chart.dart';
+import 'package:seriesmanager/widgets/charts/pie_chart.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -167,19 +170,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: SfCircularChart(
-                title: ChartTitle(text: 'Séries ajoutées par années'),
-                legend: Legend(
-                    isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-                series: <CircularSeries<UserStat, dynamic>>[
-                  PieSeries<UserStat, dynamic>(
-                    dataSource: snapshot.data!,
-                    xValueMapper: (UserStat stat, _) => stat.label,
-                    yValueMapper: (UserStat stat, _) => stat.value,
-                    dataLabelSettings: const DataLabelSettings(isVisible: true),
-                    enableTooltip: true,
-                  )
-                ],
+              child: AppPieChart(
+                title: 'Séries ajoutées par années',
+                stats: snapshot.data!,
               ),
             );
           }
@@ -205,17 +198,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: SfCartesianChart(
-                title: ChartTitle(text: 'Saisons par années'),
-                primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<UserStat, dynamic>>[
-                  BarSeries<UserStat, dynamic>(
-                    color: Colors.red,
-                    dataSource: snapshot.data!,
-                    xValueMapper: (UserStat stat, _) => stat.label,
-                    yValueMapper: (UserStat stat, _) => stat.value,
-                  )
-                ],
+              child: AppBarChart(
+                title: 'Saisons par années',
+                stats: snapshot.data!,
+                color: Colors.red,
               ),
             );
           }
@@ -241,17 +227,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: SfCartesianChart(
-                title: ChartTitle(text: 'Episodes par années'),
-                primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<UserStat, dynamic>>[
-                  BarSeries<UserStat, dynamic>(
-                    color: Colors.green,
-                    dataSource: snapshot.data!,
-                    xValueMapper: (UserStat stat, _) => stat.label,
-                    yValueMapper: (UserStat stat, _) => stat.value,
-                  )
-                ],
+              child: AppBarChart(
+                title: 'Episodes par années',
+                stats: snapshot.data!,
+                color: Colors.green,
               ),
             );
           }
@@ -277,17 +256,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: SfCartesianChart(
-                title: ChartTitle(text: 'Saisons par mois'),
-                primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<UserStat, dynamic>>[
-                  BarSeries<UserStat, dynamic>(
-                    color: Colors.purple,
-                    dataSource: snapshot.data!,
-                    xValueMapper: (UserStat stat, _) => stat.label,
-                    yValueMapper: (UserStat stat, _) => stat.value,
-                  )
-                ],
+              child: AppBarChart(
+                title: 'Saisons par mois',
+                stats: snapshot.data!,
+                color: Colors.purple,
               ),
             );
           }
@@ -313,19 +285,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: SfCartesianChart(
-                title: ChartTitle(text: 'Heures par années'),
-                primaryXAxis: CategoryAxis(),
-                series: <ChartSeries<UserStat, dynamic>>[
-                  AreaSeries<UserStat, dynamic>(
-                    color: Colors.orange,
-                    dataSource: snapshot.data!,
-                    xValueMapper: (UserStat stat, _) => stat.label,
-                    yValueMapper: (UserStat stat, _) =>
-                        Time.minsToHours(stat.value),
-                    markerSettings: const MarkerSettings(isVisible: true),
-                  )
-                ],
+              child: AppAreaChart(
+                title: 'Heures par années',
+                stats: snapshot.data!,
+                color: Colors.orange,
+                isTime: true,
               ),
             );
           }
