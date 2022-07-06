@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/styles/text.dart';
 
 void snackBar(BuildContext context, String? message, [Color? color]) =>
     ScaffoldMessenger.of(context)

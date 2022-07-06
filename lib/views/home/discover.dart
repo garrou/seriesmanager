@@ -52,7 +52,7 @@ De nombreux graphiques sont disponibles pour visualiser votre activité.
           ),
           next: Icon(
             Icons.arrow_forward_outlined,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).primaryColor,
           ),
           done: Text(
             'Compris',

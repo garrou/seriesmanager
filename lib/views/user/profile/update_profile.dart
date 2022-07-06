@@ -38,7 +38,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               Theme.of(context).floatingActionButtonTheme.backgroundColor,
           child: Icon(
             Icons.save_outlined,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
         body: AppResponsiveLayout(
@@ -65,7 +65,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               validator: (value) => lengthValidator(value, 3, 50),
               icon: Icon(
                 Icons.person_outline,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             AppTextField(
@@ -75,7 +75,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               validator: emailValidator,
               icon: Icon(
                 Icons.alternate_email_outlined,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/auth_service.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
@@ -22,9 +22,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) => const Scaffold(
-        body: AppResponsiveLayout(
-          mobileLayout: MobileLayout(),
-          desktopLayout: DesktopLayout(),
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: MobileLayout(),
+            desktopLayout: DesktopLayout(),
+          ),
         ),
       );
 }
@@ -47,7 +49,7 @@ class MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20),
-        child: ListView(
+        child: Column(
           children: <Widget>[
             SvgPicture.asset(
               'assets/login.svg',
@@ -96,7 +98,7 @@ class _LoginFormState extends State<LoginForm> {
                 validator: emailValidator,
                 icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -107,7 +109,7 @@ class _LoginFormState extends State<LoginForm> {
                 obscureText: true,
                 icon: Icon(
                   Icons.password_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppButton(

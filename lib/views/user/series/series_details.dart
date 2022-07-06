@@ -6,9 +6,7 @@ import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
-import 'package:seriesmanager/styles/button.dart';
-import 'package:seriesmanager/styles/gridview.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/widgets/error.dart';
@@ -102,7 +100,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
               Theme.of(context).floatingActionButtonTheme.backgroundColor,
           child: Icon(
             Icons.add_outlined,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
         body: ListView(

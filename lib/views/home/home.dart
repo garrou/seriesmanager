@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/views/home/discover.dart';

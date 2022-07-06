@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series_continue.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/error.dart';
@@ -124,7 +123,7 @@ class _ContinuePageState extends State<ContinuePage> {
                                 color: Colors.red,
                                 child: Icon(
                                   Icons.cancel_outlined,
-                                  color: Theme.of(context).iconTheme.color,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                               onDismissed: (direction) {

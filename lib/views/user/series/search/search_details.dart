@@ -4,8 +4,7 @@ import 'package:seriesmanager/models/api_details_series.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
-import 'package:seriesmanager/styles/button.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
@@ -27,7 +26,7 @@ class SearchDetailsPage extends StatelessWidget {
             Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: Icon(
           Icons.add_outlined,
-          color: Theme.of(context).iconTheme.color,
+          color: Theme.of(context).backgroundColor,
         ),
       ),
       body: SingleChildScrollView(

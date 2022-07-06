@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
                 ? ThemeData(
                     brightness: Brightness.dark,
                     primaryColor: Colors.white,
+                    backgroundColor: Colors.white,
                     textSelectionTheme: const TextSelectionThemeData(
                       selectionHandleColor:
                           Colors.white, // Change bubble to red
@@ -39,12 +40,11 @@ class MyApp extends StatelessWidget {
                         const FloatingActionButtonThemeData(
                       backgroundColor: Colors.black,
                     ),
-                    iconTheme: const IconThemeData(color: Colors.white),
                   )
                 : ThemeData(
                     brightness: Brightness.light,
-                    backgroundColor: Colors.white,
                     primaryColor: Colors.black,
+                    backgroundColor: Colors.white,
                     textSelectionTheme: const TextSelectionThemeData(
                       selectionHandleColor:
                           Colors.black, // Change bubble to red
@@ -59,7 +59,6 @@ class MyApp extends StatelessWidget {
                         const FloatingActionButtonThemeData(
                       backgroundColor: Colors.black,
                     ),
-                    iconTheme: const IconThemeData(color: Colors.white),
                   ),
           );
         }),

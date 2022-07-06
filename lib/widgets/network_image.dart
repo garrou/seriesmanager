@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 
 class AppNetworkImage extends StatelessWidget {
   final String image;

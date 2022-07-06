@@ -8,7 +8,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/providers/theme_provider.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/error.dart';

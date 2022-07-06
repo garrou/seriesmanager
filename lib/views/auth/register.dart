@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/services/auth_service.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
@@ -22,9 +22,11 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) => const Scaffold(
-        body: AppResponsiveLayout(
-          mobileLayout: MobileLayout(),
-          desktopLayout: DesktopLayout(),
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: MobileLayout(),
+            desktopLayout: DesktopLayout(),
+          ),
         ),
       );
 }
@@ -47,7 +49,7 @@ class MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 30),
-        child: ListView(
+        child: Column(
           children: <Widget>[
             SvgPicture.asset(
               'assets/register.svg',
@@ -98,7 +100,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 validator: emailValidator,
                 icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -108,7 +110,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 validator: (value) => lengthValidator(value, 3, 50),
                 icon: Icon(
                   Icons.person_outline,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -119,7 +121,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 obscureText: true,
                 icon: Icon(
                   Icons.password_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -135,7 +137,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 obscureText: true,
                 icon: Icon(
                   Icons.password_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppButton(

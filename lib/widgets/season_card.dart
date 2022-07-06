@@ -2,7 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/season.dart';
 import 'package:seriesmanager/models/series.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 
 class AppSeasonCard extends StatelessWidget {

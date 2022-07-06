@@ -6,8 +6,7 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
-import 'package:seriesmanager/styles/gridview.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/widgets/error.dart';
@@ -70,7 +69,7 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
                     Theme.of(context).floatingActionButtonTheme.backgroundColor,
                 child: Icon(
                   Icons.add_outlined,
-                  color: Theme.of(context).iconTheme.color,
+                  color: Theme.of(context).backgroundColor,
                 ),
               ),
         body: FutureBuilder<List<ApiSeason>>(

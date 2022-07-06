@@ -30,7 +30,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               Theme.of(context).floatingActionButtonTheme.backgroundColor,
           child: Icon(
             Icons.save_outlined,
-            color: Theme.of(context).iconTheme.color,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
         body: SingleChildScrollView(
@@ -58,7 +58,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               textfieldController: _current,
               icon: Icon(
                 Icons.password_outlined,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).primaryColor,
               ),
               validator: fieldValidator,
               obscureText: true,
@@ -70,7 +70,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               validator: (value) => lengthValidator(value, 8, 50),
               icon: Icon(
                 Icons.password_outlined,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).primaryColor,
               ),
               obscureText: true,
             ),
@@ -80,7 +80,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               textfieldController: _confirm,
               icon: Icon(
                 Icons.password_outlined,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).primaryColor,
               ),
               obscureText: true,
               // ignore: body_might_complete_normally_nullable
