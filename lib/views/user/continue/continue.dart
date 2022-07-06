@@ -11,7 +11,7 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -73,7 +73,6 @@ class _ContinuePageState extends State<ContinuePage> {
           ],
         ),
         body: AuthGuard(
-          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedOut: const LoginPage(),
           signedIn: SingleChildScrollView(
@@ -97,7 +96,7 @@ class _ContinuePageState extends State<ContinuePage> {
         future: _initSeries,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return snapshot.data!.isEmpty
                 ? const UpToDate()
@@ -123,7 +122,10 @@ class _ContinuePageState extends State<ContinuePage> {
                               key: Key('${series.id}'),
                               background: Container(
                                 color: Colors.red,
-                                child: const Icon(Icons.cancel_outlined),
+                                child: Icon(
+                                  Icons.cancel_outlined,
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
                               ),
                               onDismissed: (direction) {
                                 snapshot.data!.remove(series);
@@ -156,22 +158,25 @@ class UpToDate extends StatefulWidget {
 
 class _UpToDateState extends State<UpToDate> {
   @override
-  Widget build(BuildContext context) => Column(
-        children: <Widget>[
-          Center(
-            child: Card(
-              elevation: 10,
-              child: SvgPicture.asset(
-                'assets/up_to_date.svg',
-                height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width / 2,
-              ),
+  Widget build(BuildContext context) => Center(
+        child: Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          ),
+          elevation: 10,
+          child: Padding(
+            padding: const EdgeInsets.all(40),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Image.asset('assets/check.png'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text('Vous êtes à jour', style: boldTextStyle),
+                ),
+              ],
             ),
           ),
-          Padding(
-            child: Text('Vous êtes à jour !', style: textStyle),
-            padding: const EdgeInsets.all(10),
-          ),
-        ],
+        ),
       );
 }

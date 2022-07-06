@@ -23,8 +23,12 @@ class SearchDetailsPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addSeries(context),
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add_outlined),
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        child: Icon(
+          Icons.add_outlined,
+          color: Theme.of(context).iconTheme.color,
+        ),
       ),
       body: SingleChildScrollView(
         controller: ScrollController(),

@@ -9,7 +9,7 @@ import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -106,7 +106,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
           future: _infos,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const ErrorPage();
+              return const AppError();
             } else if (snapshot.hasData) {
               final int nb = snapshot.data!.length;
               final String s = nb > 1 ? 's' : '';
@@ -239,7 +239,7 @@ class _EpisodesListState extends State<EpisodesList> {
             future: _episodes,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const ErrorPage();
+                return const AppError();
               } else if (snapshot.hasData) {
                 return SingleChildScrollView(
                   controller: ScrollController(),

@@ -4,14 +4,14 @@ import 'package:seriesmanager/views/user/profile/profile.dart';
 import 'package:seriesmanager/views/user/series/series.dart';
 import 'package:seriesmanager/views/user/statistics/statistics.dart';
 
-class UserNav extends StatefulWidget {
-  const UserNav({Key? key}) : super(key: key);
+class MemberHome extends StatefulWidget {
+  const MemberHome({Key? key}) : super(key: key);
 
   @override
-  State<UserNav> createState() => _UserNavState();
+  State<MemberHome> createState() => _MemberHomeState();
 }
 
-class _UserNavState extends State<UserNav> {
+class _MemberHomeState extends State<MemberHome> {
   int _current = 0;
   final _screens = [
     const SeriesPage(),

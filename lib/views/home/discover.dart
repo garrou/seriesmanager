@@ -46,16 +46,25 @@ De nombreux graphiques sont disponibles pour visualiser votre activité.
             ),
           ],
           showSkipButton: true,
-          skip: const Text('Passer', style: TextStyle(color: Colors.black)),
-          next: const Icon(Icons.arrow_forward_outlined, color: Colors.black),
-          done: const Text('Compris', style: TextStyle(color: Colors.black)),
+          skip: Text(
+            'Passer',
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          next: Icon(
+            Icons.arrow_forward_outlined,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          done: Text(
+            'Compris',
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
           curve: Curves.easeIn,
-          dotsDecorator: const DotsDecorator(
-            size: Size(10.0, 10.0),
-            color: Colors.black,
-            activeColor: Colors.black,
-            activeSize: Size(10.0, 10.0),
-            activeShape: RoundedRectangleBorder(
+          dotsDecorator: DotsDecorator(
+            size: const Size(10.0, 10.0),
+            color: Colors.grey,
+            activeColor: Theme.of(context).primaryColor,
+            activeSize: const Size(10.0, 10.0),
+            activeShape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
           ),

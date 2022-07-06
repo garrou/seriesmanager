@@ -10,7 +10,7 @@ import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/series/search/search_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
@@ -65,7 +65,7 @@ class _SearchPageState extends State<SearchPage> {
             future: _discoverSeries,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const ErrorPage();
+                return const AppError();
               } else if (snapshot.hasData) {
                 final width = MediaQuery.of(context).size.width;
 
@@ -117,7 +117,7 @@ class SearchSeries extends SearchDelegate {
         future: _searchService.getSeriesByName(query),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             final width = MediaQuery.of(context).size.width;
 

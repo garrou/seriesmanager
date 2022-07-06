@@ -6,10 +6,11 @@ void snackBar(BuildContext context, String? message, [Color? color]) =>
       ..removeCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          backgroundColor: Colors.black,
-          content: Text(message ?? 'Erreur', style: textStyle),
+          backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
+          content: Text(message ?? 'Erreur',
+              style: Theme.of(context).snackBarTheme.contentTextStyle),
           action: SnackBarAction(
-            textColor: Colors.white,
+            textColor: Theme.of(context).snackBarTheme.actionTextColor,
             label: 'Ok',
             onPressed: () {},
           ),

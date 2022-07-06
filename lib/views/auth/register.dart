@@ -96,9 +96,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(
+                icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Colors.black,
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
               AppTextField(
@@ -106,7 +106,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 label: "Nom d'utilisateur",
                 textfieldController: _username,
                 validator: (value) => lengthValidator(value, 3, 50),
-                icon: const Icon(Icons.person_outline, color: Colors.black),
+                icon: Icon(
+                  Icons.person_outline,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,
@@ -114,7 +117,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 textfieldController: _password,
                 validator: (value) => lengthValidator(value, 8, 50),
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,
@@ -127,7 +133,10 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 },
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
               AppButton(
                 content: "S'inscrire",

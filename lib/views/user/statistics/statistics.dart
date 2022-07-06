@@ -10,12 +10,11 @@ import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/widgets/charts/area_chart.dart';
 import 'package:seriesmanager/widgets/charts/bar_chart.dart';
 import 'package:seriesmanager/widgets/charts/pie_chart.dart';
 import 'package:seriesmanager/widgets/loading.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 final StatsService _statsService = StatsService();
 
@@ -79,7 +78,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               future: _nbSeries,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   return Column(
                     children: <Widget>[
@@ -101,7 +100,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               future: _totalTime,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   final int mins = snapshot.data!['total'];
                   return CardTime(mins: mins);
@@ -131,7 +130,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               future: _timeCurrentMonth,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   final int mins = snapshot.data!['total'];
 
@@ -166,7 +165,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         future: _seriesAddedYears,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
@@ -194,7 +193,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         future: _nbSeasonsByYears,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
@@ -223,7 +222,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         future: _nbEpisodesByYears,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
@@ -252,7 +251,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         future: _nbSeasonsByMonths,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
@@ -281,7 +280,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         future: _timeSeasonsByYears,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Card(
               elevation: 10,
@@ -326,7 +325,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
         ],
       ),
       body: AuthGuard(
-        loading: const AppLoading(),
         authStream: _streamController.stream,
         signedOut: const LoginPage(),
         signedIn: SingleChildScrollView(

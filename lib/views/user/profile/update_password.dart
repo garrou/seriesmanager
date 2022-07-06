@@ -26,8 +26,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _onUpdatePassword,
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.save_outlined),
+          backgroundColor:
+              Theme.of(context).floatingActionButtonTheme.backgroundColor,
+          child: Icon(
+            Icons.save_outlined,
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
         body: SingleChildScrollView(
           controller: ScrollController(),
@@ -52,7 +56,10 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               keyboardType: TextInputType.text,
               label: 'Mot de passe actuel',
               textfieldController: _current,
-              icon: const Icon(Icons.password_outlined, color: Colors.black),
+              icon: Icon(
+                Icons.password_outlined,
+                color: Theme.of(context).iconTheme.color,
+              ),
               validator: fieldValidator,
               obscureText: true,
             ),
@@ -61,9 +68,9 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               label: 'Nouveau mot de passe',
               textfieldController: _password,
               validator: (value) => lengthValidator(value, 8, 50),
-              icon: const Icon(
+              icon: Icon(
                 Icons.password_outlined,
-                color: Colors.black,
+                color: Theme.of(context).iconTheme.color,
               ),
               obscureText: true,
             ),
@@ -71,7 +78,10 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               keyboardType: TextInputType.text,
               label: 'Confirmer le mot de passe',
               textfieldController: _confirm,
-              icon: const Icon(Icons.password_outlined, color: Colors.black),
+              icon: Icon(
+                Icons.password_outlined,
+                color: Theme.of(context).iconTheme.color,
+              ),
               obscureText: true,
               // ignore: body_might_complete_normally_nullable
               validator: (value) {

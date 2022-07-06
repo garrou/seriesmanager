@@ -6,7 +6,7 @@ import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
-import 'package:seriesmanager/views/user/nav.dart';
+import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';
@@ -94,9 +94,9 @@ class _LoginFormState extends State<LoginForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(
+                icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Colors.black,
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
               AppTextField(
@@ -105,7 +105,10 @@ class _LoginFormState extends State<LoginForm> {
                 textfieldController: _password,
                 validator: fieldValidator,
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
               AppButton(
                 content: 'Connexion',
@@ -135,7 +138,8 @@ class _LoginFormState extends State<LoginForm> {
       Storage.setToken(response.content());
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (BuildContext context) => const UserNav()),
+          MaterialPageRoute(
+              builder: (BuildContext context) => const MemberHome()),
           (route) => false);
     }
   }

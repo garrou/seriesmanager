@@ -11,7 +11,7 @@ import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/series/season/season_add.dart';
 import 'package:seriesmanager/views/user/series/season/season_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
@@ -98,8 +98,12 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                         AddSeasonPage(series: widget.series)));
             _refresh();
           },
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.add_outlined),
+          backgroundColor:
+              Theme.of(context).floatingActionButtonTheme.backgroundColor,
+          child: Icon(
+            Icons.add_outlined,
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
         body: ListView(
           children: <Widget>[
@@ -107,7 +111,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
               future: _seriesInfos,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   return Card(
                     elevation: 10,
@@ -162,7 +166,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
               future: _details,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   return Card(
                     elevation: 10,
@@ -206,7 +210,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
               future: _seasons,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const ErrorPage();
+                  return const AppError();
                 } else if (snapshot.hasData) {
                   final width = MediaQuery.of(context).size.width;
 

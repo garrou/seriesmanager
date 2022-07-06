@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
+import 'package:provider/provider.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
+import 'package:seriesmanager/providers/theme_provider.dart';
 import 'package:seriesmanager/services/user_service.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/views/user/profile/update_password.dart';
 import 'package:seriesmanager/views/user/profile/update_profile.dart';
@@ -57,7 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) => const LoginPage()),
+                      builder: (BuildContext context) => const LoginPage(),
+                    ),
                     (route) => false);
               },
               icon: const Icon(Icons.logout_outlined),
@@ -65,7 +68,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         body: AuthGuard(
-          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedOut: const LoginPage(),
           signedIn: SingleChildScrollView(
@@ -88,14 +90,28 @@ class _ProfilePageState extends State<ProfilePage> {
         future: _profile,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
-            return ListView(
-              shrinkWrap: true,
+            return Column(
               children: <Widget>[
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 3,
                   child: AppNetworkImage(image: snapshot.data!.banner),
+                ),
+                Consumer<ThemeModel>(
+                  builder: (context, ThemeModel themeNotifier, child) {
+                    return SwitchListTile(
+                      title: Text('Thème', style: textStyle),
+                      value: themeNotifier.isDark,
+                      activeColor: Theme.of(context).primaryColor,
+                      onChanged: (value) => themeNotifier.isDark = value,
+                      secondary: Icon(
+                        themeNotifier.isDark
+                            ? Icons.nightlight_round_outlined
+                            : Icons.wb_sunny_outlined,
+                      ),
+                    );
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.image_outlined),

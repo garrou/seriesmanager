@@ -9,8 +9,8 @@ import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/button.dart';
 import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
+import 'package:seriesmanager/views/home/home.dart';
 import 'package:seriesmanager/views/user/series/search/search.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
@@ -38,11 +38,15 @@ class _SeriesPageState extends State<SeriesPage> {
   }
 
   Future<List<UserSeries>> _loadSeries() async {
-    final HttpResponse response = await _seriesService.getAll();
+    try {
+      final HttpResponse response = await _seriesService.getAll();
 
-    if (response.success()) {
-      return createUserSeries(response.content());
-    } else {
+      if (response.success()) {
+        return createUserSeries(response.content());
+      } else {
+        throw Exception();
+      }
+    } on Exception catch (_) {
       throw Exception();
     }
   }
@@ -74,18 +78,21 @@ class _SeriesPageState extends State<SeriesPage> {
                     builder: (BuildContext context) => const SearchPage()));
             _refresh();
           },
-          child: const Icon(Icons.add_outlined),
-          backgroundColor: Colors.black,
+          backgroundColor:
+              Theme.of(context).floatingActionButtonTheme.backgroundColor,
+          child: Icon(
+            Icons.add_outlined,
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
         body: AuthGuard(
-          loading: const AppLoading(),
           authStream: _streamController.stream,
-          signedOut: const LoginPage(),
+          signedOut: const HomePage(),
           signedIn: FutureBuilder<List<UserSeries>>(
             future: _series,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const ErrorPage();
+                return const AppError();
               } else if (snapshot.hasData) {
                 final width = MediaQuery.of(context).size.width;
 
@@ -155,7 +162,7 @@ class SearchUserSeries extends SearchDelegate {
       future: _seriesService.getByName(query),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const ErrorPage();
+          return const AppError();
         } else if (snapshot.hasData) {
           final width = MediaQuery.of(context).size.width;
 

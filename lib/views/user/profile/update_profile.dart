@@ -34,8 +34,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _onUpdateProfile,
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.save_outlined),
+          backgroundColor:
+              Theme.of(context).floatingActionButtonTheme.backgroundColor,
+          child: Icon(
+            Icons.save_outlined,
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
         body: AppResponsiveLayout(
           mobileLayout: mobileLayout(),
@@ -59,16 +63,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
               label: "Nom d'utilisateur",
               textfieldController: _username,
               validator: (value) => lengthValidator(value, 3, 50),
-              icon: const Icon(Icons.person_outline, color: Colors.black),
+              icon: Icon(
+                Icons.person_outline,
+                color: Theme.of(context).iconTheme.color,
+              ),
             ),
             AppTextField(
               keyboardType: TextInputType.emailAddress,
               label: 'Email',
               textfieldController: _email,
               validator: emailValidator,
-              icon: const Icon(
+              icon: Icon(
                 Icons.alternate_email_outlined,
-                color: Colors.black,
+                color: Theme.of(context).iconTheme.color,
               ),
             ),
           ],

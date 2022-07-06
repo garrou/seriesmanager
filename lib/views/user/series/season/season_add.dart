@@ -10,7 +10,7 @@ import 'package:seriesmanager/styles/gridview.dart';
 import 'package:seriesmanager/styles/text.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 
@@ -66,14 +66,18 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
                   onConfirm: (datetime) =>
                       _addSeasons(DateTime(datetime.year, datetime.month, 3)),
                 ),
-                child: const Icon(Icons.add_outlined),
-                backgroundColor: Colors.black,
+                backgroundColor:
+                    Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                child: Icon(
+                  Icons.add_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
               ),
         body: FutureBuilder<List<ApiSeason>>(
           future: _future,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const ErrorPage();
+              return const AppError();
             } else if (snapshot.hasData) {
               final width = MediaQuery.of(context).size.width;
               _seasons = snapshot.data!;

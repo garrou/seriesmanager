@@ -14,8 +14,8 @@ class AppNetworkImage extends StatelessWidget {
               : Center(
                   child: CircularProgressIndicator(
                     backgroundColor: Colors.grey,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.black,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor,
                     ),
                     value: loadingProgress.cumulativeBytesLoaded /
                         loadingProgress.expectedTotalBytes!,
