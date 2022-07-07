@@ -128,9 +128,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             FutureBuilder<dynamic>(
               future: _timeCurrentMonth,
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const AppError();
-                } else if (snapshot.hasData) {
+                if (snapshot.hasData) {
                   final int mins = snapshot.data!['total'];
 
                   return Column(
@@ -163,9 +161,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _statsSeriesAddedYears() => FutureBuilder<List<UserStat>>(
         future: _seriesAddedYears,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const AppError();
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             return Card(
               elevation: 10,
               child: AppPieChart(
@@ -191,9 +187,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _statsNbSeasonsByYears() => FutureBuilder<List<UserStat>>(
         future: _nbSeasonsByYears,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const AppError();
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             return Card(
               elevation: 10,
               child: AppBarChart(
@@ -220,9 +214,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _statsNbEpisodesByYears() => FutureBuilder<List<UserStat>>(
         future: _nbEpisodesByYears,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const AppError();
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             return Card(
               elevation: 10,
               child: AppBarChart(
@@ -249,9 +241,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _statsNbSeasonsByMonths() => FutureBuilder<List<UserStat>>(
         future: _nbSeasonsByMonths,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const AppError();
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             return Card(
               elevation: 10,
               child: AppBarChart(
@@ -278,9 +268,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _statsTimeByYears() => FutureBuilder<List<UserStat>>(
         future: _timeSeasonsByYears,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const AppError();
-          } else if (snapshot.hasData) {
+          if (snapshot.hasData) {
             return Card(
               elevation: 10,
               child: AppAreaChart(

@@ -64,10 +64,6 @@ class SearchBanner extends SearchDelegate {
     if (response.success()) {
       Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

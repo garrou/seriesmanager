@@ -90,10 +90,12 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        AddSeasonPage(series: widget.series)));
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    AddSeasonPage(series: widget.series),
+              ),
+            );
             _refresh();
           },
           backgroundColor:
@@ -223,11 +225,13 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                             season: season,
                             onTap: () async {
                               await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SeasonDetailsPage(
-                                          series: widget.series,
-                                          season: season.number)));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SeasonDetailsPage(
+                                      series: widget.series,
+                                      season: season.number),
+                                ),
+                              );
                               _refresh();
                             })
                     ],
@@ -242,12 +246,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
   void _updateWatching(int seriesId) async {
     HttpResponse response = await _seriesServices.updateWatching(seriesId);
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 
   Future<void> _refresh() async {
@@ -265,10 +264,6 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
     if (response.success()) {
       Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

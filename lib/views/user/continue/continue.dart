@@ -45,12 +45,7 @@ class _ContinuePageState extends State<ContinuePage> {
 
   void _updateWatching(int seriesId) async {
     HttpResponse response = await SeriesService().updateWatching(seriesId);
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 
   Future _refresh() async {

@@ -166,14 +166,12 @@ class _RegisterFormState extends State<RegisterForm> {
 
     if (response.success()) {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => const LoginPage()));
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const LoginPage(),
+        ),
+      );
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

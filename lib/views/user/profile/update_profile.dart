@@ -96,10 +96,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
     if (response.success()) {
       Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

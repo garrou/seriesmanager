@@ -108,10 +108,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     if (response.success()) {
       Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

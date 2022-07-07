@@ -146,10 +146,6 @@ class _AddSeasonPageState extends State<AddSeasonPage> {
         }
       });
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

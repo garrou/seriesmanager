@@ -10,6 +10,7 @@ import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
 class LoginPage extends StatefulWidget {
@@ -141,8 +142,11 @@ class _LoginFormState extends State<LoginForm> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => const MemberHome()),
+            builder: (BuildContext context) => const MemberHome(),
+          ),
           (route) => false);
+    } else {
+      snackBar(context, response.message());
     }
   }
 }

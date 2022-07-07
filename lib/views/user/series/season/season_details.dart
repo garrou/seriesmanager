@@ -169,12 +169,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
 
   void _update(int seasonId, DateTime viewedAt) async {
     HttpResponse response = await _seasonService.update(seasonId, viewedAt);
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 
   void _delete(int seasonId) async {
@@ -183,11 +178,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
     if (response.success()) {
       Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }
 
