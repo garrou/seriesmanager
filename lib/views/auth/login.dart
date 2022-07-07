@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/auth_service.dart';
-import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/register.dart';
-import 'package:seriesmanager/views/user/nav.dart';
+import 'package:seriesmanager/views/user/home.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/button.dart';
 import 'package:seriesmanager/widgets/link.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,9 +23,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) => const Scaffold(
-        body: AppResponsiveLayout(
-          mobileLayout: MobileLayout(),
-          desktopLayout: DesktopLayout(),
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: MobileLayout(),
+            desktopLayout: DesktopLayout(),
+          ),
         ),
       );
 }
@@ -49,7 +50,7 @@ class MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 20),
-        child: ListView(
+        child: Column(
           children: <Widget>[
             SvgPicture.asset(
               'assets/login.svg',
@@ -96,9 +97,9 @@ class _LoginFormState extends State<LoginForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(
+                icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -107,7 +108,10 @@ class _LoginFormState extends State<LoginForm> {
                 textfieldController: _password,
                 validator: fieldValidator,
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               AppButton(
                 content: 'Connexion',
@@ -135,9 +139,14 @@ class _LoginFormState extends State<LoginForm> {
 
     if (response.success()) {
       Storage.setToken(response.content());
-      pushAndRemove(context, const UserNav(initial: 0));
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const MemberHome(),
+          ),
+          (route) => false);
     } else {
-      snackBar(context, response.message(), Colors.red);
+      snackBar(context, response.message());
     }
   }
 }

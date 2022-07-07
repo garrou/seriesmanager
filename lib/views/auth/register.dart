@@ -3,9 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_register.dart';
 import 'package:seriesmanager/services/auth_service.dart';
-import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/styles/styles.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -23,9 +22,11 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) => const Scaffold(
-        body: AppResponsiveLayout(
-          mobileLayout: MobileLayout(),
-          desktopLayout: DesktopLayout(),
+        body: SingleChildScrollView(
+          child: AppResponsiveLayout(
+            mobileLayout: MobileLayout(),
+            desktopLayout: DesktopLayout(),
+          ),
         ),
       );
 }
@@ -48,7 +49,7 @@ class MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: 30),
-        child: ListView(
+        child: Column(
           children: <Widget>[
             SvgPicture.asset(
               'assets/register.svg',
@@ -97,9 +98,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 label: 'Email',
                 textfieldController: _email,
                 validator: emailValidator,
-                icon: const Icon(
+                icon: Icon(
                   Icons.alternate_email_outlined,
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               AppTextField(
@@ -107,7 +108,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 label: "Nom d'utilisateur",
                 textfieldController: _username,
                 validator: (value) => lengthValidator(value, 3, 50),
-                icon: const Icon(Icons.person_outline, color: Colors.black),
+                icon: Icon(
+                  Icons.person_outline,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,
@@ -115,7 +119,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 textfieldController: _password,
                 validator: (value) => lengthValidator(value, 8, 50),
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               AppTextField(
                 keyboardType: TextInputType.text,
@@ -128,7 +135,10 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 },
                 obscureText: true,
-                icon: const Icon(Icons.password_outlined, color: Colors.black),
+                icon: Icon(
+                  Icons.password_outlined,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               AppButton(
                 content: "S'inscrire",
@@ -155,9 +165,13 @@ class _RegisterFormState extends State<RegisterForm> {
         _email.text, _username.text, _password.text, _confirm.text));
 
     if (response.success()) {
-      push(context, const LoginPage());
-    } else {
-      snackBar(context, response.message(), Colors.red);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const LoginPage(),
+        ),
+      );
     }
+    snackBar(context, response.message());
   }
 }

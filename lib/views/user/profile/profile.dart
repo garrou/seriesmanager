@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_guards/flutter_guards.dart';
+import 'package:provider/provider.dart';
 import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
+import 'package:seriesmanager/providers/theme_provider.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/utils/storage.dart';
 import 'package:seriesmanager/views/auth/login.dart';
-import 'package:seriesmanager/views/error/error.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/profile/search_banner.dart';
 import 'package:seriesmanager/views/user/profile/update_password.dart';
 import 'package:seriesmanager/views/user/profile/update_profile.dart';
@@ -55,14 +56,18 @@ class _ProfilePageState extends State<ProfilePage> {
             IconButton(
               onPressed: () {
                 Storage.removeToken();
-                pushAndRemove(context, const LoginPage());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const LoginPage(),
+                    ),
+                    (route) => false);
               },
               icon: const Icon(Icons.logout_outlined),
             ),
           ],
         ),
         body: AuthGuard(
-          loading: const AppLoading(),
           authStream: _streamController.stream,
           signedOut: const LoginPage(),
           signedIn: SingleChildScrollView(
@@ -85,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
         future: _profile,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const ErrorPage();
+            return const AppError();
           } else if (snapshot.hasData) {
             return Column(
               children: <Widget>[
@@ -93,25 +98,45 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: MediaQuery.of(context).size.height / 3,
                   child: AppNetworkImage(image: snapshot.data!.banner),
                 ),
+                Consumer<ThemeModel>(
+                  builder: (context, ThemeModel themeNotifier, child) {
+                    return SwitchListTile(
+                      title: Text('Thème', style: textStyle),
+                      value: themeNotifier.isDark,
+                      activeColor: Theme.of(context).primaryColor,
+                      onChanged: (value) => themeNotifier.isDark = value,
+                      secondary: Icon(
+                        themeNotifier.isDark
+                            ? Icons.nightlight_round_outlined
+                            : Icons.wb_sunny_outlined,
+                      ),
+                    );
+                  },
+                ),
                 ListTile(
                   leading: const Icon(Icons.image_outlined),
                   title: Text('Bannière', style: textStyle),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => showSearch(
-                      context: context,
-                      delegate: SearchBanner(),
-                    ),
+                    onPressed: () async {
+                      await showSearch(
+                          context: context, delegate: SearchBanner());
+                      _refresh();
+                    },
                   ),
                 ),
                 ListTile(
                   leading: const Icon(Icons.list_alt_outlined),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => push(
-                      context,
-                      UpdateProfile(profile: snapshot.data!),
-                    ),
+                    onPressed: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  UpdateProfile(profile: snapshot.data!)));
+                      _refresh();
+                    },
                   ),
                 ),
                 Padding(
@@ -136,7 +161,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text('Mot de passe', style: textStyle),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => push(context, const UpdatePassword()),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const UpdatePassword())),
                   ),
                 ),
                 ListTile(
@@ -153,4 +182,10 @@ class _ProfilePageState extends State<ProfilePage> {
           return const AppLoading();
         },
       );
+
+  Future<void> _refresh() async {
+    setState(() {
+      _profile = _loadProfile();
+    });
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/styles/textfield.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController textfieldController;
@@ -33,12 +32,18 @@ class AppTextField extends StatelessWidget {
           obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon: icon,
-            focusedBorder: textFieldBorder,
-            border: textFieldBorder,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            ),
             labelText: label,
-            labelStyle: const TextStyle(color: Colors.black),
+            labelStyle: TextStyle(color: Theme.of(context).primaryColor),
           ),
-          cursorColor: Colors.black,
+          cursorColor: Theme.of(context).primaryColor,
           validator: validator,
         ),
       );

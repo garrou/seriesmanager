@@ -10,6 +10,9 @@ class UserSeriesToContinue extends UserSeries {
   UserSeriesToContinue.fromJson(Map<String, dynamic> json)
       : nbMissing = json['nbMissing'],
         super.fromJson(json);
+
+  UserSeries toUserSeries() =>
+      UserSeries(id, title, poster, episodeLength, sid);
 }
 
 List<UserSeriesToContinue> createSeriesToContinue(List<dynamic>? records) =>
@@ -17,4 +20,4 @@ List<UserSeriesToContinue> createSeriesToContinue(List<dynamic>? records) =>
         ? List.empty()
         : records
             .map((json) => UserSeriesToContinue.fromJson(json))
-            .toList(growable: false);
+            .toList(growable: true);

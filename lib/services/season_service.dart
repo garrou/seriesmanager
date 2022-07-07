@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:seriesmanager/models/api_season.dart';
 import 'package:seriesmanager/models/http_response.dart';
-import 'package:seriesmanager/models/user_season.dart';
 import 'package:seriesmanager/utils/constants.dart';
 import 'package:seriesmanager/models/interceptor.dart';
 
@@ -21,14 +20,6 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> add(UserSeason season) async {
-    final Response response = await client.post(
-      Uri.parse('$endpoint/seasons/'),
-      body: jsonEncode(season),
-    );
-    return HttpResponse(response);
-  }
-
   Future<HttpResponse> getInfosByNumberBySeriesId(
       int number, int seriesId) async {
     final Response response = await client
@@ -42,10 +33,10 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> addAllSeasons(
+  Future<HttpResponse> add(
       int seriesId, List<ApiSeason> seasons, DateTime viewedAt) async {
     final Response response = await client.post(
-      Uri.parse('$endpoint/seasons/series/all'),
+      Uri.parse('$endpoint/seasons/'),
       body: jsonEncode(
         <String, dynamic>{
           'seasons': seasons,
@@ -63,7 +54,7 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> updateSeason(int seasonId, DateTime viewedAt) async {
+  Future<HttpResponse> update(int seasonId, DateTime viewedAt) async {
     final Response response = await client.patch(
       Uri.parse('$endpoint/seasons/$seasonId'),
       body: jsonEncode(
@@ -76,7 +67,7 @@ class SeasonService {
     return HttpResponse(response);
   }
 
-  Future<HttpResponse> deleteSeason(int seasonId) async {
+  Future<HttpResponse> delete(int seasonId) async {
     final Response response = await client.delete(
       Uri.parse('$endpoint/seasons/$seasonId'),
     );

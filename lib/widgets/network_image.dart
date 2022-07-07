@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/styles/text.dart';
+import 'package:seriesmanager/styles/styles.dart';
 
 class AppNetworkImage extends StatelessWidget {
   final String image;
@@ -14,8 +14,8 @@ class AppNetworkImage extends StatelessWidget {
               : Center(
                   child: CircularProgressIndicator(
                     backgroundColor: Colors.grey,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.black,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor,
                     ),
                     value: loadingProgress.cumulativeBytesLoaded /
                         loadingProgress.expectedTotalBytes!,

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
-import 'package:seriesmanager/views/user/nav.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 import 'package:seriesmanager/widgets/textfield.dart';
 
@@ -36,8 +34,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _onUpdateProfile,
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.save_outlined),
+          backgroundColor:
+              Theme.of(context).floatingActionButtonTheme.backgroundColor,
+          child: Icon(
+            Icons.save_outlined,
+            color: Theme.of(context).backgroundColor,
+          ),
         ),
         body: AppResponsiveLayout(
           mobileLayout: mobileLayout(),
@@ -61,16 +63,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
               label: "Nom d'utilisateur",
               textfieldController: _username,
               validator: (value) => lengthValidator(value, 3, 50),
-              icon: const Icon(Icons.person_outline, color: Colors.black),
+              icon: Icon(
+                Icons.person_outline,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
             AppTextField(
               keyboardType: TextInputType.emailAddress,
               label: 'Email',
               textfieldController: _email,
               validator: emailValidator,
-              icon: const Icon(
+              icon: Icon(
                 Icons.alternate_email_outlined,
-                color: Colors.black,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ],
@@ -89,12 +94,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
         .updateProfile(_username.text.trim(), _email.text.trim());
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 3));
+      Navigator.pop(context);
     }
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

@@ -9,13 +9,9 @@ class Guard {
     try {
       HttpResponse response = await UserService().getUser();
       streamController.add(response.success());
-
-      if (!response.success()) {
-        Storage.removeToken();
-      }
-    } on Exception {
-      Storage.removeToken();
-      streamController.add(false);
+    } on Exception catch (_) {
+      String token = await Storage.getToken();
+      streamController.add(token.isNotEmpty);
     }
   }
 }

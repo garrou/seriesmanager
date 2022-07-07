@@ -6,13 +6,10 @@ import 'package:seriesmanager/models/user_season_info.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/season_service.dart';
-import 'package:seriesmanager/styles/text.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
+import 'package:seriesmanager/styles/styles.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
-import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
-import 'package:seriesmanager/views/user/series/series_details.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/widgets/date_picker.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -109,7 +106,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
           future: _infos,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const ErrorPage();
+              return const AppError();
             } else if (snapshot.hasData) {
               final int nb = snapshot.data!.length;
               final String s = nb > 1 ? 's' : '';
@@ -148,9 +145,10 @@ class _SeasonInfosState extends State<SeasonInfos> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete_outline_outlined),
-                            onPressed: () => _delete(userSeasonInfo.id),
-                          ),
+                              icon: const Icon(Icons.delete_outline_outlined),
+                              onPressed: () {
+                                _delete(userSeasonInfo.id);
+                              }),
                         ],
                       ),
                     ),
@@ -170,29 +168,17 @@ class _SeasonInfosState extends State<SeasonInfos> {
       );
 
   void _update(int seasonId, DateTime viewedAt) async {
-    HttpResponse response =
-        await _seasonService.updateSeason(seasonId, viewedAt);
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    HttpResponse response = await _seasonService.update(seasonId, viewedAt);
+    snackBar(context, response.message());
   }
 
   void _delete(int seasonId) async {
-    HttpResponse response = await _seasonService.deleteSeason(seasonId);
+    HttpResponse response = await _seasonService.delete(seasonId);
 
     if (response.success()) {
-      doublePush(context, const UserNav(initial: 0),
-          SeriesDetailsPage(series: widget.series));
+      Navigator.pop(context);
     }
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }
 
@@ -244,7 +230,7 @@ class _EpisodesListState extends State<EpisodesList> {
             future: _episodes,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const ErrorPage();
+                return const AppError();
               } else if (snapshot.hasData) {
                 return SingleChildScrollView(
                   controller: ScrollController(),

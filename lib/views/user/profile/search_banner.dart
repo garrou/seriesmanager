@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/services/search_service.dart';
 import 'package:seriesmanager/services/user_service.dart';
-import 'package:seriesmanager/styles/button.dart';
-import 'package:seriesmanager/styles/gridview.dart';
-import 'package:seriesmanager/utils/redirects.dart';
-import 'package:seriesmanager/utils/snackbar.dart';
-import 'package:seriesmanager/views/error/error.dart';
-import 'package:seriesmanager/views/user/nav.dart';
+import 'package:seriesmanager/styles/styles.dart';
+import 'package:seriesmanager/widgets/snackbar.dart';
+import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 
-class SearchBanner extends SearchDelegate {
-  final SearchService _searchService = SearchService();
+final _searchService = SearchService();
 
+class SearchBanner extends SearchDelegate {
   @override
   String get searchFieldLabel => 'Nom de la série';
 
@@ -36,7 +33,7 @@ class SearchBanner extends SearchDelegate {
       future: _searchService.getSeriesImagesByName(query),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const ErrorPage();
+          return const AppError();
         } else if (snapshot.hasData) {
           final width = MediaQuery.of(context).size.width;
 
@@ -65,13 +62,8 @@ class SearchBanner extends SearchDelegate {
     HttpResponse response = await UserService().updateBanner(banner);
 
     if (response.success()) {
-      pushAndRemove(context, const UserNav(initial: 3));
+      Navigator.pop(context);
     }
-
-    snackBar(
-      context,
-      response.message(),
-      response.success() ? Colors.black : Colors.red,
-    );
+    snackBar(context, response.message());
   }
 }

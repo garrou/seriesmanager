@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seriesmanager/styles/button.dart';
+import 'package:seriesmanager/styles/styles.dart';
 
 class AppButton extends StatelessWidget {
   final String content;
@@ -15,7 +15,7 @@ class AppButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onPressed,
             child: Text(content, style: buttonTextStyle),
-            style: roundedButtonStyle,
+            style: roundedStyle,
           ),
         ),
         padding: const EdgeInsets.all(5),
