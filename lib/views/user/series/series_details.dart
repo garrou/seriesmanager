@@ -145,16 +145,15 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                             Time.minsToStringDays(snapshot.data!.duration),
                           ),
                         ),
-                        if (snapshot.data!.isValidDates())
-                          SwitchListTile(
-                            title: const Text('Continuer la série ?'),
-                            value: snapshot.data!.isWatching,
-                            activeColor: Colors.black,
-                            onChanged: (value) {
-                              _updateWatching(snapshot.data!.id);
-                              setState(() => snapshot.data!.isWatching = value);
-                            },
-                          ),
+                        SwitchListTile(
+                          title: const Text('Continuer la série ?'),
+                          value: snapshot.data!.isWatching,
+                          activeColor: Colors.black,
+                          onChanged: (value) {
+                            _updateWatching(snapshot.data!.id);
+                            setState(() => snapshot.data!.isWatching = value);
+                          },
+                        ),
                       ],
                     ),
                   );

@@ -115,7 +115,7 @@ class _ContinuePageState extends State<ContinuePage> {
                             child: Dismissible(
                               key: Key('${series.id}'),
                               background: Container(
-                                color: Colors.red,
+                                color: Colors.yellow[700],
                                 child: Icon(
                                   Icons.cancel_outlined,
                                   color: Theme.of(context).primaryColor,

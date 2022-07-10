@@ -40,7 +40,7 @@ class _MemberHomeState extends State<MemberHome> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.play_arrow_outlined),
-              label: 'En cours',
+              label: 'À voir',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
