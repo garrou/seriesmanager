@@ -35,7 +35,7 @@ class SeriesService {
 
   Future<HttpResponse> getInfos(int seriesId) async {
     final Response response =
-        await client.get(Uri.parse('$endpoint/series/$seriesId/infos'));
+        await client.get(Uri.parse('$endpoint/series/$seriesId'));
     return HttpResponse(response);
   }
 
