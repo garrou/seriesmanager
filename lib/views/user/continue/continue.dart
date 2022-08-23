@@ -6,9 +6,7 @@ import 'package:seriesmanager/models/guard.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series_continue.dart';
 import 'package:seriesmanager/services/season_service.dart';
-import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/styles.dart';
-import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
@@ -41,11 +39,6 @@ class _ContinuePageState extends State<ContinuePage> {
     Guard.checkAuth(_streamController);
     _initSeries = _loadSeriesToContinue();
     super.initState();
-  }
-
-  void _updateWatching(int seriesId) async {
-    HttpResponse response = await SeriesService().updateWatching(seriesId);
-    snackBar(context, response.message());
   }
 
   Future _refresh() async {
@@ -97,40 +90,26 @@ class _ContinuePageState extends State<ContinuePage> {
                 : Column(
                     children: <Widget>[
                       for (UserSeriesToContinue series in snapshot.data!)
-                        Card(
-                          elevation: 10,
-                          child: InkWell(
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      SeriesDetailsPage(
-                                    series: series.toUserSeries(),
-                                  ),
-                                ),
-                              );
-                              _refresh();
-                            },
-                            child: Dismissible(
-                              key: Key('${series.id}'),
-                              background: Container(
-                                color: Colors.red,
-                                child: Icon(
-                                  Icons.cancel_outlined,
-                                  color: Theme.of(context).primaryColor,
+                        InkWell(
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SeriesDetailsPage(
+                                  series: series.toUserSeries(),
                                 ),
                               ),
-                              onDismissed: (direction) {
-                                snapshot.data!.remove(series);
-                                _updateWatching(series.id);
-                              },
-                              child: ListTile(
-                                title: Text(series.title, style: boldTextStyle),
-                                subtitle: Text(
-                                  '${series.nbMissing} saison(s) à voir',
-                                  style: minTextStyle,
-                                ),
+                            );
+                            _refresh();
+                          },
+                          child: Card(
+                            elevation: 10,
+                            child: ListTile(
+                              title: Text(series.title, style: boldTextStyle),
+                              subtitle: Text(
+                                '${series.nbMissing} saison(s) à voir',
+                                style: minTextStyle,
                               ),
                             ),
                           ),

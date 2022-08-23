@@ -106,6 +106,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           ),
         ),
         body: ListView(
+          controller: ScrollController(),
           children: <Widget>[
             FutureBuilder<UserSeriesInfo>(
               future: _seriesInfos,
@@ -117,7 +118,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                     elevation: 10,
                     child: Column(
                       children: <Widget>[
-                        if (snapshot.data!.isValidDates())
+                        if (snapshot.data!.hasValidDates())
                           ListTile(
                             leading: const Icon(Icons.calendar_month_outlined),
                             title: Text(
@@ -145,7 +146,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                             Time.minsToStringDays(snapshot.data!.duration),
                           ),
                         ),
-                        if (snapshot.data!.isValidDates())
+                        if (snapshot.data!.hasValidDates())
                           SwitchListTile(
                             title: const Text('Continuer la série ?'),
                             value: snapshot.data!.isWatching,
@@ -215,25 +216,26 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                   final width = MediaQuery.of(context).size.width;
 
                   return GridView.count(
-                    controller: ScrollController(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     crossAxisCount: getNbEltExpandedByWidth(width),
                     children: <Widget>[
                       for (UserSeason season in snapshot.data!)
                         AppSeasonCard(
-                            series: widget.series,
-                            season: season,
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SeasonDetailsPage(
-                                      series: widget.series,
-                                      season: season.number),
-                                ),
-                              );
-                              _refresh();
-                            })
+                          series: widget.series,
+                          season: season,
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SeasonDetailsPage(
+                                    series: widget.series,
+                                    season: season.number),
+                              ),
+                            );
+                            _refresh();
+                          },
+                        )
                     ],
                   );
                 }

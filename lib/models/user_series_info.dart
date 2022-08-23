@@ -27,5 +27,5 @@ class UserSeriesInfo {
 
   String formatEndAt() => _df.format(endAt);
 
-  bool isValidDates() => beginAt.year > 1 && endAt.year > 1;
+  bool hasValidDates() => beginAt.year > 1 && endAt.year > 1;
 }

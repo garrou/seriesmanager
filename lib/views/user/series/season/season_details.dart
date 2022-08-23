@@ -83,7 +83,7 @@ class _SeasonInfosState extends State<SeasonInfos> {
   late Future<List<UserSeasonInfo>> _infos;
 
   Future<List<UserSeasonInfo>> _loadInfos() async {
-    HttpResponse response = await _seasonService.getInfosByNumberBySeriesId(
+    HttpResponse response = await _seasonService.getByNumberBySeriesId(
         widget.season, widget.series.id);
 
     if (response.success()) {
