@@ -10,8 +10,8 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         child: SizedBox(
-          height: 50,
-          width: 200,
+          height: 40,
+          width: 150,
           child: ElevatedButton(
             onPressed: onPressed,
             child: Text(content, style: buttonTextStyle),
