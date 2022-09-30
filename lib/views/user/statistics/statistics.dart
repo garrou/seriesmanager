@@ -29,11 +29,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
   late Future<int> _nbSeries;
   late Future<dynamic> _totalTime;
   late Future<dynamic> _timeCurrentMonth;
-  late Future<List<UserStat>> _seriesAddedYears;
+  late Future<List<UserStat>> _timeSeasonsByYears;
   late Future<List<UserStat>> _nbSeasonsByYears;
   late Future<List<UserStat>> _nbEpisodesByYears;
   late Future<List<UserStat>> _nbSeasonsByMonths;
-  late Future<List<UserStat>> _timeSeasonsByYears;
+  late Future<List<UserStat>> _seriesAddedYears;
 
   @override
   void initState() {
@@ -41,11 +41,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
     _nbSeries = _loadTotalSeries();
     _totalTime = _loadTotalTime();
     _timeCurrentMonth = _loadTimeCurrentMonth();
-    _seriesAddedYears = _loadSeriesAddedYears();
+    _timeSeasonsByYears = _loadTimeByYears();
     _nbSeasonsByYears = _loadNbSeasonsByYears();
     _nbEpisodesByYears = _loadNbEpisodesByYears();
     _nbSeasonsByMonths = _loadNbSeasonsByMonths();
-    _timeSeasonsByYears = _loadTimeByYears();
+    _seriesAddedYears = _loadSeriesAddedYears();
     super.initState();
   }
 
@@ -148,8 +148,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
         ),
       );
 
-  Future<List<UserStat>> _loadSeriesAddedYears() async {
-    HttpResponse response = await _statsService.getAddedSeriesByYears();
+  Future<List<UserStat>> _loadTimeByYears() async {
+    final HttpResponse response = await _statsService.getTimeSeasonsByYear();
 
     if (response.success()) {
       return createStats(response.content());
@@ -158,15 +158,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
     }
   }
 
-  Widget _statsSeriesAddedYears() => FutureBuilder<List<UserStat>>(
-        future: _seriesAddedYears,
+  Widget _statsTimeByYears() => FutureBuilder<List<UserStat>>(
+        future: _timeSeasonsByYears,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: AppPieChart(
-                title: 'Séries ajoutées par années',
+              child: AppAreaChart(
+                title: 'Heures par années',
                 stats: snapshot.data!,
+                color: Colors.orange,
+                isTime: true,
               ),
             );
           }
@@ -255,8 +257,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
         },
       );
 
-  Future<List<UserStat>> _loadTimeByYears() async {
-    final HttpResponse response = await _statsService.getTimeSeasonsByYear();
+  Future<List<UserStat>> _loadSeriesAddedYears() async {
+    HttpResponse response = await _statsService.getAddedSeriesByYears();
 
     if (response.success()) {
       return createStats(response.content());
@@ -265,17 +267,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
     }
   }
 
-  Widget _statsTimeByYears() => FutureBuilder<List<UserStat>>(
-        future: _timeSeasonsByYears,
+  Widget _statsSeriesAddedYears() => FutureBuilder<List<UserStat>>(
+        future: _seriesAddedYears,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Card(
               elevation: 10,
-              child: AppAreaChart(
-                title: 'Heures par années',
+              child: AppPieChart(
+                title: 'Séries ajoutées par années',
                 stats: snapshot.data!,
-                color: Colors.orange,
-                isTime: true,
               ),
             );
           }
@@ -288,11 +288,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
       _nbSeries = _loadTotalSeries();
       _totalTime = _loadTotalTime();
       _timeCurrentMonth = _loadTimeCurrentMonth();
-      _seriesAddedYears = _loadSeriesAddedYears();
+      _timeSeasonsByYears = _loadTimeByYears();
       _nbSeasonsByYears = _loadNbSeasonsByYears();
       _nbEpisodesByYears = _loadNbEpisodesByYears();
       _nbSeasonsByMonths = _loadNbSeasonsByMonths();
-      _timeSeasonsByYears = _loadTimeByYears();
+      _seriesAddedYears = _loadSeriesAddedYears();
     });
   }
 
@@ -323,11 +323,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
             children: <Widget>[
               _statsTotal(),
               _statsCurrentMonth(),
-              _statsSeriesAddedYears(),
+              _statsTimeByYears(),
               _statsNbSeasonsByYears(),
               _statsNbEpisodesByYears(),
               _statsNbSeasonsByMonths(),
-              _statsTimeByYears(),
+              _statsSeriesAddedYears(),
             ],
           ),
         ),
