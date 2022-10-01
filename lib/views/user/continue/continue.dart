@@ -11,6 +11,7 @@ import 'package:seriesmanager/views/auth/login.dart';
 import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
+import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
 
 class ContinuePage extends StatefulWidget {
@@ -106,11 +107,18 @@ class _ContinuePageState extends State<ContinuePage> {
                           child: Card(
                             elevation: 10,
                             child: ListTile(
+                              leading: SizedBox(
+                                height: 100,
+                                width: 50,
+                                child: AppNetworkImage(image: series.poster),
+                              ),
                               title: Text(series.title, style: boldTextStyle),
                               subtitle: Text(
                                 '${series.nbMissing} saison(s) à voir',
                                 style: minTextStyle,
                               ),
+                              trailing:
+                                  const Icon(Icons.arrow_forward_ios_outlined),
                             ),
                           ),
                         ),

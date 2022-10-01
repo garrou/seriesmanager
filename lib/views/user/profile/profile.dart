@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   leading: const Icon(Icons.image_outlined),
                   title: Text('Bannière', style: textStyle),
                   trailing: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
+                    icon: const Icon(Icons.arrow_forward_ios_outlined),
                     onPressed: () async {
                       await showSearch(
                           context: context, delegate: SearchBanner());
@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ListTile(
                   leading: const Icon(Icons.list_alt_outlined),
                   trailing: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
+                    icon: const Icon(Icons.arrow_forward_ios_outlined),
                     onPressed: () async {
                       await Navigator.push(
                           context,
@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   leading: const Icon(Icons.password_outlined),
                   title: Text('Mot de passe', style: textStyle),
                   trailing: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
+                    icon: const Icon(Icons.arrow_forward_ios_outlined),
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(

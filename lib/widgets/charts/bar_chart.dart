@@ -26,7 +26,11 @@ class _AppBarChartState extends State<AppBarChart> {
 
   @override
   void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
+    _tooltipBehavior = TooltipBehavior(
+      enable: true,
+      format: 'point.x : point.y',
+      header: '',
+    );
     super.initState();
   }
 
