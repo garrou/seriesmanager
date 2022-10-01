@@ -181,8 +181,8 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                             leading: const Icon(Icons.movie_outlined),
                             title: const Text('Détails de visionnage'),
                             trailing: _isVisible
-                                ? const Icon(Icons.arrow_upward_outlined)
-                                : const Icon(Icons.arrow_downward_outlined),
+                                ? const Icon(Icons.arrow_drop_up_outlined)
+                                : const Icon(Icons.arrow_drop_down),
                           ),
                         ),
                         Visibility(

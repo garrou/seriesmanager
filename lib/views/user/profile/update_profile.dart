@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_profile.dart';
 import 'package:seriesmanager/services/user_service.dart';
+import 'package:seriesmanager/styles/styles.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/validator.dart';
 import 'package:seriesmanager/widgets/responsive_layout.dart';
@@ -30,6 +31,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
+          title: Text('Modifier mes informations', style: textStyle),
           backgroundColor: Colors.black,
         ),
         floatingActionButton: FloatingActionButton(

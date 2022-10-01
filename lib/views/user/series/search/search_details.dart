@@ -164,8 +164,8 @@ class _MobileLayoutState extends State<MobileLayout> {
                     leading: const Icon(Icons.movie_outlined),
                     title: Text('Genres', style: textStyle),
                     trailing: _isVisibleKind
-                        ? const Icon(Icons.arrow_upward_outlined)
-                        : const Icon(Icons.arrow_downward_outlined),
+                        ? const Icon(Icons.arrow_drop_up_outlined)
+                        : const Icon(Icons.arrow_drop_down),
                   ),
                 ),
                 Visibility(
@@ -191,8 +191,8 @@ class _MobileLayoutState extends State<MobileLayout> {
                     leading: const Icon(Icons.list_alt_outlined),
                     title: Text('Saisons et épisodes', style: textStyle),
                     trailing: _isVisibleSeasons
-                        ? const Icon(Icons.arrow_upward_outlined)
-                        : const Icon(Icons.arrow_downward_outlined),
+                        ? const Icon(Icons.arrow_drop_up_outlined)
+                        : const Icon(Icons.arrow_drop_down),
                   ),
                 ),
                 Visibility(
