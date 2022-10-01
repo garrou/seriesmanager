@@ -36,7 +36,8 @@ class _AppAreaChartState extends State<AppAreaChart> {
         primaryXAxis: CategoryAxis(),
         tooltipBehavior: _tooltipBehavior,
         series: <ChartSeries<UserStat, dynamic>>[
-          AreaSeries<UserStat, dynamic>(
+          SplineAreaSeries<UserStat, dynamic>(
+            splineType: SplineType.natural,
             enableTooltip: true,
             color: widget.color,
             dataSource: widget.stats,
