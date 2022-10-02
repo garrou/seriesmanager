@@ -7,6 +7,7 @@ import 'package:seriesmanager/models/user_series_info.dart';
 import 'package:seriesmanager/services/season_service.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/styles.dart';
+import 'package:seriesmanager/views/user/series/details/series_characters.dart';
 import 'package:seriesmanager/widgets/snackbar.dart';
 import 'package:seriesmanager/utils/time.dart';
 import 'package:seriesmanager/widgets/error.dart';
@@ -82,7 +83,17 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           ),
           actions: <Widget>[
             IconButton(
-              onPressed: _delete,
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      SeriesCharactersPage(sid: widget.series.sid!),
+                ),
+              ),
+              icon: const Icon(Icons.info_outline_rounded, size: iconSize),
+            ),
+            IconButton(
+              onPressed: _showDeleteDialog,
               icon: const Icon(Icons.delete_outlined, size: iconSize),
             )
           ],
@@ -258,6 +269,35 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
       _seasons = _loadSeasons();
     });
   }
+
+  Future<void> _showDeleteDialog() async => showDialog<void>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          title: const Text('Supprimer la série ?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Cette action est irréversible.'),
+                Text('Les saisons visionnées seront également supprimées.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annuler'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Confirmer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _delete();
+              },
+            ),
+          ],
+        ),
+      );
 
   void _delete() async {
     final HttpResponse response =

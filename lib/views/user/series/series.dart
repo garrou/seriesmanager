@@ -7,10 +7,10 @@ import 'package:seriesmanager/models/http_response.dart';
 import 'package:seriesmanager/models/user_series.dart';
 import 'package:seriesmanager/services/series_service.dart';
 import 'package:seriesmanager/styles/styles.dart';
+import 'package:seriesmanager/views/user/series/details/series_details.dart';
 import 'package:seriesmanager/widgets/error.dart';
 import 'package:seriesmanager/views/home/home.dart';
 import 'package:seriesmanager/views/user/series/search/search.dart';
-import 'package:seriesmanager/views/user/series/series_details.dart';
 import 'package:seriesmanager/widgets/loading.dart';
 import 'package:seriesmanager/widgets/network_image.dart';
 import 'package:seriesmanager/widgets/series_card.dart';
@@ -27,6 +27,7 @@ class SeriesPage extends StatefulWidget {
 class _SeriesPageState extends State<SeriesPage> {
   final StreamController<bool> _streamController = StreamController();
   late Future<List<UserSeries>> _series;
+  int page = 1;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _SeriesPageState extends State<SeriesPage> {
 
   Future<List<UserSeries>> _loadSeries() async {
     try {
-      final HttpResponse response = await _seriesService.getAll();
+      final HttpResponse response = await _seriesService.getAll(page);
 
       if (response.success()) {
         return createUserSeries(response.content());
@@ -94,42 +95,59 @@ class _SeriesPageState extends State<SeriesPage> {
               } else if (snapshot.hasData) {
                 final width = MediaQuery.of(context).size.width;
 
-                return GridView.count(
-                  controller: ScrollController(),
-                  crossAxisCount: getNbEltExpandedByWidth(width),
+                return ListView(
                   children: <Widget>[
-                    for (UserSeries series in snapshot.data!)
-                      GestureDetector(
-                        onTap: () async {
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
+                    GridView.count(
+                      shrinkWrap: true,
+                      controller: ScrollController(),
+                      crossAxisCount: getNbEltExpandedByWidth(width),
+                      children: <Widget>[
+                        for (UserSeries series in snapshot.data!)
+                          GestureDetector(
+                            onTap: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                   builder: (context) =>
-                                      SeriesDetailsPage(series: series)));
-                          _refresh();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                                      SeriesDetailsPage(series: series),
+                                ),
+                              );
+                              _refresh();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  elevation: 10,
+                                  child: series.poster.isNotEmpty
+                                      ? AppNetworkImage(image: series.poster)
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(series.title, style: textStyle)
+                                          ],
+                                        ),
+                                ),
                               ),
-                              elevation: 10,
-                              child: series.poster.isNotEmpty
-                                  ? AppNetworkImage(image: series.poster)
-                                  : Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(series.title, style: textStyle)
-                                      ],
-                                    ),
                             ),
                           ),
-                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_downward_outlined),
+                        onPressed: () {
+                          setState(() => page++);
+                          _refresh();
+                        },
                       ),
+                    ),
                   ],
                 );
               }

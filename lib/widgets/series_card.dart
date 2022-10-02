@@ -23,7 +23,6 @@ class AppSeriesCard extends StatelessWidget {
           elevation: 10,
           child: InkWell(
             onTap: onTap,
-            onLongPress: () {},
             child: image.isNotEmpty
                 ? AppNetworkImage(image: image)
                 : Column(
