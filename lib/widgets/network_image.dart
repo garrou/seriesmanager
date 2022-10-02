@@ -25,7 +25,7 @@ class AppNetworkImage extends StatelessWidget {
         errorBuilder:
             (BuildContext context, Object exception, StackTrace? stackTrace) =>
                 Center(
-          child: Text('Image non disponible', style: textStyle),
+          child: Text('X', style: textStyle),
         ),
       );
 }

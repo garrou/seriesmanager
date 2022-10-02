@@ -13,8 +13,9 @@ class SeriesService {
     HttpInterceptor(),
   ]);
 
-  Future<HttpResponse> getAll() async {
-    final Response response = await client.get(Uri.parse('$endpoint/series/'));
+  Future<HttpResponse> getAll(int page) async {
+    final Response response =
+        await client.get(Uri.parse('$endpoint/series?page=$page'));
     return HttpResponse(response);
   }
 

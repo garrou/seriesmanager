@@ -145,10 +145,10 @@ class _SeasonInfosState extends State<SeasonInfos> {
                             ),
                           ),
                           IconButton(
-                              icon: const Icon(Icons.delete_outline_outlined),
-                              onPressed: () {
-                                _delete(userSeasonInfo.id);
-                              }),
+                            icon: const Icon(Icons.delete_outline_outlined),
+                            onPressed: () =>
+                                _showDeleteDialog(userSeasonInfo.id),
+                          ),
                         ],
                       ),
                     ),
@@ -171,6 +171,28 @@ class _SeasonInfosState extends State<SeasonInfos> {
     HttpResponse response = await _seasonService.update(seasonId, viewedAt);
     snackBar(context, response.message());
   }
+
+  Future<void> _showDeleteDialog(int seasonId) async => showDialog<void>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          title: const Text('Supprimer la saison ?'),
+          content: const Text('Cette action est irréversible.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annuler'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Confirmer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _delete(seasonId);
+              },
+            ),
+          ],
+        ),
+      );
 
   void _delete(int seasonId) async {
     HttpResponse response = await _seasonService.delete(seasonId);
